@@ -18,3 +18,6 @@ SOURCES += main.cpp\
 HEADERS  += client.h
 
 FORMS    += client.ui
+
+RESOURCES += \
+    image.qrc
