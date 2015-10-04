@@ -1,40 +1,53 @@
 #include "client.h"
 #include "ui_client.h"
 
-Client::Client(QWidget *parent) :
-    QMainWindow(parent),
-    ui(new Ui::Client)
+Client::Client(QWidget *parent) : QMainWindow(parent), ui(new Ui::Client)
 {
     ui->setupUi(this);
-    personDates = "null";
+    personDates = false;
     tcpSocket = new QTcpSocket(this);
 
+    connect(ui->userSetting, SIGNAL(clicked()), this, SLOT(on_userSetting_clicked()));
     connect(tcpSocket, SIGNAL(readyRead()), this, SLOT(getMessage()));
     connect(tcpSocket, SIGNAL(error(QAbstractSocket::SocketError)), this, SLOT(show_Error(QAbstractSocket::SocketError)));
     connect(tcpSocket, SIGNAL(connected()), this, SLOT(send_personal_data()));
     connect(tcpSocket, SIGNAL(disconnected()), this, SLOT(onDisconnect()));
-
-}
-
-Client::~Client()
-{
-    delete ui;
 }
 
 void Client::on_sendMessage_clicked()
 {
+    QString message = ui->editText->text();
+    ui->editText->clear();
 
+    blockSize = 0;
 
+    if (!message.isEmpty())
+    {
+        if (message.at(0) == '/')
+        {
+            sendUserCommand(message);
+        }
+        else
+        {
+            QByteArray msg;
+            QDataStream out(&msg, QIODevice::WriteOnly);
+            out.setVersion(QDataStream::Qt_5_4);
+
+            out << message;
+            tcpSocket->write(msg);
+        }
+    }
 }
 
 void Client::on_userStatus_clicked()
 {
-    QDataStream in(tcpSocket);
     QString hostname = "127.0.0.1";
     quint16 port = 55155;
     QString status = tr("-> Connecting to 127.0.0.1 on port 55155.");
-    new QListWidgetItem(status, ui->userList);
+
+    new QListWidgetItem(status, ui->chatDialog);
     ui->chatDialog->scrollToBottom();
+
     tcpSocket->abort();
     tcpSocket->connectToHost(hostname, port);
 }
@@ -47,14 +60,16 @@ void Client::getMessage()
     QString message;
     in >> message;
 
-    QStringRef checkMessage(&message, 0, 5);
-    int command = 0; // 1 = userlist
+    int command = 0; // 0 - пусто, 1 - Список пользователей
 
-    if(checkMessage == "_LIST")
+    QStringRef checkMessage(&message, 0, 5);
+
+    if (checkMessage == "_LST_")
         command = 1;
 
     QStringList commandList;
 
+    //Первая строка(команда) сообщает о том, что будет получена команда на список онлайн. Удалется и затем формируется список.
     switch(command)
     {
       case 1:
@@ -66,12 +81,10 @@ void Client::getMessage()
         {
             new QListWidgetItem(i, ui->userList);
         }
-
         break;
     default:
-        new QListWidgetItem(message, ui->userList);
+        new QListWidgetItem(message, ui->chatDialog);
         ui->chatDialog->scrollToBottom();
-
     }
 }
 
@@ -103,9 +116,9 @@ void Client::show_Error(QAbstractSocket::SocketError errorSocket)
 
 void Client::send_personal_data()
 {
-    if(personDates!="null")
+    if(!personDates)
     {
-        personDates = "Ok";
+        personDates = true;
 
         new QListWidgetItem("Sending personal dates...", ui->chatDialog);
         ui->chatDialog->scrollToBottom();
@@ -114,7 +127,7 @@ void Client::send_personal_data()
         QDataStream out(&block, QIODevice::WriteOnly);
         out.setVersion(QDataStream::Qt_5_4);
 
-        QString command = "_USER_";
+        QString command = "_USR_";
         QString username = "Anton";
         out << command;
         out << username;
@@ -127,5 +140,27 @@ void Client::onDisconnect()
     new QListWidgetItem("Disconnected..", ui->chatDialog);
     ui->chatDialog->scrollToBottom();
     ui->userList->clear();
-    personDates = "null";
+    personDates = false;
+}
+
+void Client::sendUserCommand(QString command)
+{
+    QByteArray msg;
+    QDataStream out(&msg, QIODevice::WriteOnly);
+    out.setVersion(QDataStream::Qt_5_4);
+
+    command = "_UCD_ " + command;
+    out << command;
+
+    tcpSocket->write(msg);
+}
+
+void Client::on_userSetting_clicked()
+{
+   //
+}
+
+Client::~Client()
+{
+    delete ui;
 }

@@ -5,6 +5,8 @@
 #include <QTcpSocket>
 #include <QMessageBox>
 #include <QHostAddress>
+#include <QStackedLayout>
+#include <QListWidgetItem>
 
 
 namespace Ui {
@@ -20,19 +22,23 @@ public:
     ~Client();
 
 private slots:
-    void getMessage();
-    void on_sendMessage_clicked();
-    void on_userStatus_clicked();
-    void show_Error(QAbstractSocket::SocketError errorSocket);
-    void send_personal_data();
-    void onDisconnect();
+    void getMessage();                  //Получение сообщений
+    void on_sendMessage_clicked();      //Отправка сообщения
+    void on_userStatus_clicked();       //Соединение к серверу (переработать)
+    void show_Error(QAbstractSocket::SocketError errorSocket);  //Их большая часть в коде -_-
+    void send_personal_data();          //Отправка сведений о клиенте
+    void onDisconnect();                //Отключение
+    void sendUserCommand(QString command);
+    void on_userSetting_clicked();      //Настройки (-)
 
 private:
+    QStackedLayout *layout;
     Ui::Client *ui;
-    QString personDates;
     QTcpSocket *tcpSocket;
     quint16 blockSize;
     QString getIP();
+    bool personDates;
+    bool sethide;
 
 };
 
