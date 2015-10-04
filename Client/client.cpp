@@ -1,17 +1,23 @@
 #include "client.h"
 #include "ui_client.h"
+#include <QDebug>
+#include <QPixmap>
 
 Client::Client(QWidget *parent) : QMainWindow(parent), ui(new Ui::Client)
 {
     ui->setupUi(this);
     personDates = false;
     tcpSocket = new QTcpSocket(this);
-
-    connect(ui->userSetting, SIGNAL(clicked()), this, SLOT(on_userSetting_clicked()));
+    QPixmap pix;
+    pix = QApplication::style()->standardPixmap(QStyle::SP_TrashIcon);
+    QIcon pic(":/Client/apple.jpg");
+    ui->label_3->setPixmap(pix);
     connect(tcpSocket, SIGNAL(readyRead()), this, SLOT(getMessage()));
     connect(tcpSocket, SIGNAL(error(QAbstractSocket::SocketError)), this, SLOT(show_Error(QAbstractSocket::SocketError)));
     connect(tcpSocket, SIGNAL(connected()), this, SLOT(send_personal_data()));
     connect(tcpSocket, SIGNAL(disconnected()), this, SLOT(onDisconnect()));
+    connect(ui->userSetting, SIGNAL(clicked()), this, SLOT(on_userSetting_clicked()));
+
 }
 
 void Client::on_sendMessage_clicked()
@@ -60,31 +66,40 @@ void Client::getMessage()
     QString message;
     in >> message;
 
-    int command = 0; // 0 - пусто, 1 - Список пользователей
+    enum class COMMAND { NONE, USERLIST};
+    COMMAND cmd = COMMAND::NONE;
 
-    QStringRef checkMessage(&message, 0, 5);
-
-    if (checkMessage == "_LST_")
-        command = 1;
+    QStringRef checkCmd(&message, 0, 5);
+    if (checkCmd == "_LST_")
+        cmd = COMMAND::USERLIST;
 
     QStringList commandList;
-
-    //Первая строка(команда) сообщает о том, что будет получена команда на список онлайн. Удалется и затем формируется список.
-    switch(command)
+    switch (cmd)
     {
-      case 1:
+    case COMMAND::USERLIST:
+          qDebug() << "LOL";
         commandList = message.split(" ", QString::SkipEmptyParts);
         commandList.removeFirst();
         ui->userList->clear();
 
-        for(auto i : commandList)
+         QListWidgetItem *q;
+        for (auto i : commandList)
         {
-            new QListWidgetItem(i, ui->userList);
+
+            q = new QListWidgetItem(i, ui->userList);
+            q->setSizeHint(QSize(0,65));
+            q->setTextAlignment(10);
+
         }
         break;
     default:
-        new QListWidgetItem(message, ui->chatDialog);
+
+qDebug() << "LOL(((";
+        //in >> message;
+       new QListWidgetItem(message, ui->chatDialog);
+
         ui->chatDialog->scrollToBottom();
+
     }
 }
 
@@ -164,3 +179,4 @@ Client::~Client()
 {
     delete ui;
 }
+

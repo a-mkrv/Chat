@@ -320,8 +320,8 @@ QString Server::getUsername(int ID)
 
 QString Server::timeconnect()
 {
-    QStringList time = QDateTime::currentDateTime().toString().split(" ", QString::SkipEmptyParts);
-    return "[" + time.takeFirst() + "]";
+    QString time = QDateTime::currentDateTime().toString();
+    return "[" + time + "]";
 }
 
 Server::~Server()

@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>971</width>
-    <height>631</height>
+    <width>1061</width>
+    <height>590</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -20,24 +20,45 @@
    <widget class="QPushButton" name="userSetting">
     <property name="geometry">
      <rect>
-      <x>670</x>
+      <x>980</x>
       <y>10</y>
       <width>51</width>
-      <height>51</height>
+      <height>41</height>
      </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">color: rgb(127, 0, 63);
+    background-color: rgb(255, 255, 255);
+    selection-color: white;
+    selection-background-color: rgb(191, 31, 127);
+    border: 2px groove gray;
+    border-radius: 10px;
+    padding: 2px 4px;</string>
     </property>
     <property name="text">
      <string>USSET</string>
+    </property>
+    <property name="flat">
+     <bool>true</bool>
     </property>
    </widget>
    <widget class="QPushButton" name="userStatus">
     <property name="geometry">
      <rect>
-      <x>750</x>
+      <x>910</x>
       <y>10</y>
       <width>51</width>
-      <height>51</height>
+      <height>41</height>
      </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">color: rgb(127, 0, 63);
+    background-color: rgb(255, 255, 255);
+    selection-color: white;
+    selection-background-color: rgb(191, 31, 127);
+    border: 2px groove gray;
+    border-radius: 10px;
+    padding: 2px 4px;</string>
     </property>
     <property name="text">
      <string>ON</string>
@@ -49,10 +70,10 @@
     </property>
     <property name="geometry">
      <rect>
-      <x>650</x>
-      <y>70</y>
+      <x>370</x>
+      <y>0</y>
       <width>31</width>
-      <height>541</height>
+      <height>591</height>
      </rect>
     </property>
     <property name="minimumSize">
@@ -83,42 +104,54 @@
    <widget class="QWidget" name="widget" native="true">
     <property name="geometry">
      <rect>
-      <x>0</x>
-      <y>489</y>
-      <width>661</width>
-      <height>121</height>
+      <x>385</x>
+      <y>480</y>
+      <width>678</width>
+      <height>111</height>
      </rect>
     </property>
     <property name="styleSheet">
-     <string notr="true">background-color: rgb(255, 244, 245);</string>
+     <string notr="true">background-color: rgb(235, 235, 235);</string>
     </property>
     <widget class="QLineEdit" name="editText">
      <property name="geometry">
       <rect>
-       <x>20</x>
-       <y>20</y>
-       <width>631</width>
-       <height>71</height>
+       <x>40</x>
+       <y>30</y>
+       <width>601</width>
+       <height>51</height>
       </rect>
      </property>
      <property name="styleSheet">
-      <string notr="true">background-color: rgb(255, 255, 255);</string>
+      <string notr="true">color: rgb(127, 0, 63);
+    background-color: rgb(255, 255, 255);
+    selection-color: white;
+    selection-background-color: rgb(191, 31, 127);
+    border: 2px groove gray;
+    border-radius: 10px;
+    padding: 2px 4px;</string>
      </property>
     </widget>
     <widget class="QPushButton" name="sendMessage">
      <property name="geometry">
       <rect>
-       <x>590</x>
-       <y>30</y>
+       <x>580</x>
+       <y>40</y>
        <width>41</width>
-       <height>41</height>
+       <height>31</height>
       </rect>
      </property>
      <property name="styleSheet">
-      <string notr="true">background-color: rgb(253, 255, 244);</string>
+      <string notr="true">color: rgb(127, 0, 63);
+    background-color: rgb(255, 255, 255);
+    selection-color: white;
+    selection-background-color: rgb(191, 31, 127);
+    border: 2px groove gray;
+    border-radius: 10px;
+    padding: 2px 4px;</string>
      </property>
      <property name="text">
-      <string>Send</string>
+      <string>-&gt;</string>
      </property>
      <property name="checkable">
       <bool>false</bool>
@@ -130,51 +163,248 @@
       <bool>false</bool>
      </property>
      <property name="flat">
-      <bool>true</bool>
+      <bool>false</bool>
      </property>
     </widget>
    </widget>
    <widget class="QListWidget" name="userList">
     <property name="geometry">
      <rect>
-      <x>680</x>
-      <y>70</y>
-      <width>291</width>
-      <height>541</height>
+      <x>-1</x>
+      <y>60</y>
+      <width>383</width>
+      <height>531</height>
      </rect>
     </property>
     <property name="frameShape">
      <enum>QFrame::VLine</enum>
     </property>
+    <property name="lineWidth">
+     <number>1</number>
+    </property>
+    <property name="autoScrollMargin">
+     <number>16</number>
+    </property>
+    <property name="tabKeyNavigation">
+     <bool>false</bool>
+    </property>
+    <property name="dragEnabled">
+     <bool>false</bool>
+    </property>
+    <property name="iconSize">
+     <size>
+      <width>90</width>
+      <height>90</height>
+     </size>
+    </property>
+    <property name="textElideMode">
+     <enum>Qt::ElideRight</enum>
+    </property>
+    <property name="verticalScrollMode">
+     <enum>QAbstractItemView::ScrollPerItem</enum>
+    </property>
+    <property name="resizeMode">
+     <enum>QListView::Fixed</enum>
+    </property>
+    <property name="layoutMode">
+     <enum>QListView::SinglePass</enum>
+    </property>
+    <property name="spacing">
+     <number>3</number>
+    </property>
+    <property name="viewMode">
+     <enum>QListView::ListMode</enum>
+    </property>
+    <property name="uniformItemSizes">
+     <bool>false</bool>
+    </property>
+    <property name="wordWrap">
+     <bool>false</bool>
+    </property>
+    <property name="sortingEnabled">
+     <bool>true</bool>
+    </property>
     <item>
      <property name="text">
       <string>Новый элемент</string>
+     </property>
+     <property name="icon">
+      <iconset>
+       <normaloff>:/new/prefix1/bg3.jpg</normaloff>:/new/prefix1/bg3.jpg</iconset>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>Новый элемент</string>
+     </property>
+     <property name="icon">
+      <iconset>
+       <normalon>:/new/prefix1/bg3.jpg</normalon>
+      </iconset>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>Новый элемент</string>
+     </property>
+     <property name="icon">
+      <iconset>
+       <normaloff>:/new/prefix1/bg3.jpg</normaloff>:/new/prefix1/bg3.jpg</iconset>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>Новый элемент</string>
+     </property>
+     <property name="icon">
+      <iconset>
+       <normaloff>:/new/prefix1/bg3.jpg</normaloff>:/new/prefix1/bg3.jpg</iconset>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>Новый элемент</string>
+     </property>
+     <property name="toolTip">
+      <string/>
+     </property>
+     <property name="whatsThis">
+      <string/>
+     </property>
+     <property name="font">
+      <font>
+       <family>Buxton Sketch</family>
+       <pointsize>14</pointsize>
+       <weight>50</weight>
+       <bold>false</bold>
+       <stylestrategy>PreferDefault</stylestrategy>
+      </font>
+     </property>
+     <property name="background">
+      <brush brushstyle="NoBrush">
+       <color alpha="255">
+        <red>0</red>
+        <green>0</green>
+        <blue>0</blue>
+       </color>
+      </brush>
+     </property>
+     <property name="foreground">
+      <brush brushstyle="NoBrush">
+       <color alpha="255">
+        <red>0</red>
+        <green>0</green>
+        <blue>0</blue>
+       </color>
+      </brush>
+     </property>
+     <property name="icon">
+      <iconset>
+       <normaloff>:/new/prefix1/bg3.jpg</normaloff>
+       <normalon>:/new/prefix1/bg3.jpg</normalon>:/new/prefix1/bg3.jpg</iconset>
      </property>
     </item>
    </widget>
    <widget class="QListWidget" name="chatDialog">
     <property name="geometry">
      <rect>
-      <x>0</x>
-      <y>70</y>
-      <width>651</width>
+      <x>385</x>
+      <y>60</y>
+      <width>677</width>
       <height>421</height>
      </rect>
     </property>
+    <property name="styleSheet">
+     <string notr="true">background-color: rgb(218, 228, 235);</string>
+    </property>
     <property name="frameShape">
-     <enum>QFrame::VLine</enum>
+     <enum>QFrame::NoFrame</enum>
+    </property>
+    <property name="sizeAdjustPolicy">
+     <enum>QAbstractScrollArea::AdjustIgnored</enum>
     </property>
    </widget>
-  </widget>
-  <widget class="QMenuBar" name="menuBar">
-   <property name="geometry">
-    <rect>
-     <x>0</x>
-     <y>0</y>
-     <width>971</width>
-     <height>26</height>
-    </rect>
-   </property>
+   <widget class="QLabel" name="label">
+    <property name="geometry">
+     <rect>
+      <x>-1</x>
+      <y>0</y>
+      <width>383</width>
+      <height>61</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">
+background-color: rgb(235, 235, 235);</string>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_2">
+    <property name="geometry">
+     <rect>
+      <x>385</x>
+      <y>0</y>
+      <width>678</width>
+      <height>61</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">background-color: rgb(235, 235, 235);</string>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="lineEdit">
+    <property name="geometry">
+     <rect>
+      <x>60</x>
+      <y>11</y>
+      <width>281</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">
+    background-color: rgb(255, 255, 255);
+    selection-color: white;
+    selection-background-color: rgb(191, 31, 127);
+    border: 2px groove gray;
+    border-radius: 10px;
+    padding: 2px 4px;</string>
+    </property>
+    <property name="placeholderText">
+     <string>Search</string>
+    </property>
+    <property name="cursorMoveStyle">
+     <enum>Qt::LogicalMoveStyle</enum>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_3">
+    <property name="geometry">
+     <rect>
+      <x>20</x>
+      <y>15</y>
+      <width>31</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>TextLabel</string>
+    </property>
+   </widget>
+   <zorder>line</zorder>
+   <zorder>widget</zorder>
+   <zorder>userList</zorder>
+   <zorder>chatDialog</zorder>
+   <zorder>label</zorder>
+   <zorder>label_2</zorder>
+   <zorder>userSetting</zorder>
+   <zorder>userStatus</zorder>
+   <zorder>lineEdit</zorder>
+   <zorder>label_3</zorder>
   </widget>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
