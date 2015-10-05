@@ -17,32 +17,7 @@
    <string notr="true"/>
   </property>
   <widget class="QWidget" name="centralWidget">
-   <widget class="QPushButton" name="userSetting">
-    <property name="geometry">
-     <rect>
-      <x>980</x>
-      <y>10</y>
-      <width>51</width>
-      <height>41</height>
-     </rect>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">color: rgb(127, 0, 63);
-    background-color: rgb(255, 255, 255);
-    selection-color: white;
-    selection-background-color: rgb(191, 31, 127);
-    border: 2px groove gray;
-    border-radius: 10px;
-    padding: 2px 4px;</string>
-    </property>
-    <property name="text">
-     <string>USSET</string>
-    </property>
-    <property name="flat">
-     <bool>true</bool>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="userStatus">
+   <widget class="QPushButton" name="connect_button">
     <property name="geometry">
      <rect>
       <x>910</x>
@@ -226,82 +201,39 @@
     </property>
     <item>
      <property name="text">
-      <string>Новый элемент</string>
+      <string>Антон</string>
      </property>
      <property name="icon">
-      <iconset>
+      <iconset resource="image.qrc">
        <normaloff>:/new/prefix1/bg3.jpg</normaloff>:/new/prefix1/bg3.jpg</iconset>
      </property>
     </item>
     <item>
      <property name="text">
-      <string>Новый элемент</string>
+      <string>Машка</string>
+     </property>
+     <property name="icon">
+      <iconset resource="image.qrc">
+       <normaloff>:/new/prefix1/bg3.jpg</normaloff>:/new/prefix1/bg3.jpg</iconset>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>Петрович</string>
+     </property>
+     <property name="icon">
+      <iconset resource="image.qrc">
+       <normaloff>:/new/prefix1/bg3.jpg</normaloff>:/new/prefix1/bg3.jpg</iconset>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>Санек</string>
      </property>
      <property name="icon">
       <iconset>
        <normalon>:/new/prefix1/bg3.jpg</normalon>
       </iconset>
-     </property>
-    </item>
-    <item>
-     <property name="text">
-      <string>Новый элемент</string>
-     </property>
-     <property name="icon">
-      <iconset>
-       <normaloff>:/new/prefix1/bg3.jpg</normaloff>:/new/prefix1/bg3.jpg</iconset>
-     </property>
-    </item>
-    <item>
-     <property name="text">
-      <string>Новый элемент</string>
-     </property>
-     <property name="icon">
-      <iconset>
-       <normaloff>:/new/prefix1/bg3.jpg</normaloff>:/new/prefix1/bg3.jpg</iconset>
-     </property>
-    </item>
-    <item>
-     <property name="text">
-      <string>Новый элемент</string>
-     </property>
-     <property name="toolTip">
-      <string/>
-     </property>
-     <property name="whatsThis">
-      <string/>
-     </property>
-     <property name="font">
-      <font>
-       <family>Buxton Sketch</family>
-       <pointsize>14</pointsize>
-       <weight>50</weight>
-       <bold>false</bold>
-       <stylestrategy>PreferDefault</stylestrategy>
-      </font>
-     </property>
-     <property name="background">
-      <brush brushstyle="NoBrush">
-       <color alpha="255">
-        <red>0</red>
-        <green>0</green>
-        <blue>0</blue>
-       </color>
-      </brush>
-     </property>
-     <property name="foreground">
-      <brush brushstyle="NoBrush">
-       <color alpha="255">
-        <red>0</red>
-        <green>0</green>
-        <blue>0</blue>
-       </color>
-      </brush>
-     </property>
-     <property name="icon">
-      <iconset>
-       <normaloff>:/new/prefix1/bg3.jpg</normaloff>
-       <normalon>:/new/prefix1/bg3.jpg</normalon>:/new/prefix1/bg3.jpg</iconset>
      </property>
     </item>
    </widget>
@@ -324,7 +256,7 @@
      <enum>QAbstractScrollArea::AdjustIgnored</enum>
     </property>
    </widget>
-   <widget class="QLabel" name="label">
+   <widget class="QLabel" name="background_inder_list">
     <property name="geometry">
      <rect>
       <x>-1</x>
@@ -341,7 +273,7 @@ background-color: rgb(235, 235, 235);</string>
      <string/>
     </property>
    </widget>
-   <widget class="QLabel" name="label_2">
+   <widget class="QLabel" name="background_under_chat">
     <property name="geometry">
      <rect>
       <x>385</x>
@@ -357,17 +289,154 @@ background-color: rgb(235, 235, 235);</string>
      <string/>
     </property>
    </widget>
-   <widget class="QLineEdit" name="lineEdit">
+   <widget class="QWidget" name="horizontalLayoutWidget">
     <property name="geometry">
      <rect>
-      <x>60</x>
-      <y>11</y>
-      <width>281</width>
-      <height>31</height>
+      <x>0</x>
+      <y>0</y>
+      <width>381</width>
+      <height>61</height>
+     </rect>
+    </property>
+    <layout class="QHBoxLayout" name="horizontalLayout" stretch="0,0,0,0,1">
+     <property name="spacing">
+      <number>15</number>
+     </property>
+     <property name="sizeConstraint">
+      <enum>QLayout::SetDefaultConstraint</enum>
+     </property>
+     <property name="leftMargin">
+      <number>8</number>
+     </property>
+     <property name="topMargin">
+      <number>5</number>
+     </property>
+     <property name="rightMargin">
+      <number>9</number>
+     </property>
+     <property name="bottomMargin">
+      <number>0</number>
+     </property>
+     <item>
+      <widget class="QPushButton" name="userSetting_button">
+       <property name="styleSheet">
+        <string notr="true">color: rgb(127, 0, 63);
+    background-color: rgb(255, 255, 255);
+    selection-color: white;
+    selection-background-color: rgb(191, 31, 127);
+    border: 2px groove gray;
+    border-radius: 10px;
+    padding: 4px 8px;</string>
+       </property>
+       <property name="text">
+        <string>SET</string>
+       </property>
+       <property name="flat">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="newContact_Button">
+       <property name="styleSheet">
+        <string notr="true">color: rgb(127, 0, 63);
+    background-color: rgb(255, 255, 255);
+    selection-color: white;
+    selection-background-color: rgb(191, 31, 127);
+    border: 2px groove gray;
+    border-radius: 10px;
+    padding: 4px 8px;</string>
+       </property>
+       <property name="text">
+        <string>ADD</string>
+       </property>
+       <property name="flat">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <spacer name="horizontalSpacer_3">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>26</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item>
+      <widget class="QLabel" name="search_label">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="sizeIncrement">
+        <size>
+         <width>0</width>
+         <height>0</height>
+        </size>
+       </property>
+       <property name="baseSize">
+        <size>
+         <width>0</width>
+         <height>0</height>
+        </size>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">color: rgb(127, 0, 63);
+    background-color: rgb(255, 255, 255);
+    selection-color: white;
+    selection-background-color: rgb(191, 31, 127);
+    border: 2px groove gray;
+    border-radius: 10px;
+    padding: 4px 8px;</string>
+       </property>
+       <property name="frameShape">
+        <enum>QFrame::NoFrame</enum>
+       </property>
+       <property name="text">
+        <string>S</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLineEdit" name="search_line_edit">
+       <property name="styleSheet">
+        <string notr="true">
+    background-color: rgb(255, 255, 255);
+    selection-color: white;
+    selection-background-color: rgb(191, 31, 127);
+    border: 2px groove gray;
+    border-radius: 10px;
+    padding: 2px 4px;</string>
+       </property>
+       <property name="placeholderText">
+        <string>Search</string>
+       </property>
+       <property name="cursorMoveStyle">
+        <enum>Qt::LogicalMoveStyle</enum>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </widget>
+   <widget class="QPushButton" name="about_user_button">
+    <property name="geometry">
+     <rect>
+      <x>980</x>
+      <y>10</y>
+      <width>61</width>
+      <height>41</height>
      </rect>
     </property>
     <property name="styleSheet">
-     <string notr="true">
+     <string notr="true">color: rgb(127, 0, 63);
     background-color: rgb(255, 255, 255);
     selection-color: white;
     selection-background-color: rgb(191, 31, 127);
@@ -375,39 +444,374 @@ background-color: rgb(235, 235, 235);</string>
     border-radius: 10px;
     padding: 2px 4px;</string>
     </property>
-    <property name="placeholderText">
-     <string>Search</string>
-    </property>
-    <property name="cursorMoveStyle">
-     <enum>Qt::LogicalMoveStyle</enum>
+    <property name="text">
+     <string>ABOUT</string>
     </property>
    </widget>
-   <widget class="QLabel" name="label_3">
+   <widget class="QWidget" name="widget_2" native="true">
     <property name="geometry">
      <rect>
-      <x>20</x>
-      <y>15</y>
-      <width>31</width>
-      <height>21</height>
+      <x>0</x>
+      <y>0</y>
+      <width>1061</width>
+      <height>601</height>
      </rect>
     </property>
-    <property name="text">
-     <string>TextLabel</string>
+    <property name="styleSheet">
+     <string notr="true">background-color: rgb(253, 255, 242);
+background-color: rgb(10, 88, 170);</string>
     </property>
+    <widget class="QPushButton" name="close_setting_button_2">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>20</y>
+       <width>51</width>
+       <height>41</height>
+      </rect>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">color: rgb(127, 0, 63);
+    background-color: rgb(255, 255, 255);
+    selection-color: white;
+    selection-background-color: rgb(191, 31, 127);
+    border: 2px groove gray;
+    border-radius: 10px;
+    padding: 4px 8px;</string>
+     </property>
+     <property name="text">
+      <string>BACK</string>
+     </property>
+    </widget>
+    <widget class="QListWidget" name="userList_3">
+     <property name="geometry">
+      <rect>
+       <x>0</x>
+       <y>70</y>
+       <width>281</width>
+       <height>521</height>
+      </rect>
+     </property>
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">background-color: rgb(255, 255, 255);</string>
+     </property>
+     <property name="frameShape">
+      <enum>QFrame::NoFrame</enum>
+     </property>
+     <property name="lineWidth">
+      <number>1</number>
+     </property>
+     <property name="autoScrollMargin">
+      <number>16</number>
+     </property>
+     <property name="tabKeyNavigation">
+      <bool>false</bool>
+     </property>
+     <property name="dragEnabled">
+      <bool>false</bool>
+     </property>
+     <property name="iconSize">
+      <size>
+       <width>90</width>
+       <height>90</height>
+      </size>
+     </property>
+     <property name="textElideMode">
+      <enum>Qt::ElideRight</enum>
+     </property>
+     <property name="verticalScrollMode">
+      <enum>QAbstractItemView::ScrollPerItem</enum>
+     </property>
+     <property name="spacing">
+      <number>11</number>
+     </property>
+     <item>
+      <property name="text">
+       <string>Profile</string>
+      </property>
+      <property name="toolTip">
+       <string/>
+      </property>
+      <property name="whatsThis">
+       <string/>
+      </property>
+      <property name="font">
+       <font>
+        <family>Buxton Sketch</family>
+        <pointsize>14</pointsize>
+        <weight>50</weight>
+        <bold>false</bold>
+        <stylestrategy>PreferDefault</stylestrategy>
+       </font>
+      </property>
+      <property name="background">
+       <brush brushstyle="NoBrush">
+        <color alpha="255">
+         <red>0</red>
+         <green>0</green>
+         <blue>0</blue>
+        </color>
+       </brush>
+      </property>
+      <property name="foreground">
+       <brush brushstyle="NoBrush">
+        <color alpha="255">
+         <red>0</red>
+         <green>0</green>
+         <blue>0</blue>
+        </color>
+       </brush>
+      </property>
+      <property name="icon">
+       <iconset resource="image.qrc">
+        <normaloff>:/new/prefix1/bg3.jpg</normaloff>
+        <normalon>:/new/prefix1/bg3.jpg</normalon>:/new/prefix1/bg3.jpg</iconset>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Interface</string>
+      </property>
+      <property name="icon">
+       <iconset resource="image.qrc">
+        <normaloff>:/new/prefix1/bg3.jpg</normaloff>:/new/prefix1/bg3.jpg</iconset>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Chat options</string>
+      </property>
+      <property name="icon">
+       <iconset resource="image.qrc">
+        <normaloff>:/new/prefix1/bg3.jpg</normaloff>:/new/prefix1/bg3.jpg</iconset>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Network</string>
+      </property>
+      <property name="icon">
+       <iconset>
+        <normalon>:/new/prefix1/bg3.jpg</normalon>
+       </iconset>
+      </property>
+     </item>
+    </widget>
+    <widget class="QLabel" name="background_under_chat_4">
+     <property name="geometry">
+      <rect>
+       <x>290</x>
+       <y>0</y>
+       <width>771</width>
+       <height>71</height>
+      </rect>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">background-color: rgb(235, 235, 235);</string>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+    </widget>
+    <widget class="QListWidget" name="chatDialog_3">
+     <property name="geometry">
+      <rect>
+       <x>290</x>
+       <y>70</y>
+       <width>771</width>
+       <height>521</height>
+      </rect>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">background-color: rgb(218, 228, 235);</string>
+     </property>
+     <property name="frameShape">
+      <enum>QFrame::NoFrame</enum>
+     </property>
+     <property name="sizeAdjustPolicy">
+      <enum>QAbstractScrollArea::AdjustIgnored</enum>
+     </property>
+    </widget>
+    <widget class="Line" name="line_6">
+     <property name="windowModality">
+      <enum>Qt::NonModal</enum>
+     </property>
+     <property name="geometry">
+      <rect>
+       <x>270</x>
+       <y>0</y>
+       <width>31</width>
+       <height>591</height>
+      </rect>
+     </property>
+     <property name="minimumSize">
+      <size>
+       <width>5</width>
+       <height>0</height>
+      </size>
+     </property>
+     <property name="contextMenuPolicy">
+      <enum>Qt::DefaultContextMenu</enum>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">background-color: rgb(255, 255, 255);</string>
+     </property>
+     <property name="frameShadow">
+      <enum>QFrame::Sunken</enum>
+     </property>
+     <property name="lineWidth">
+      <number>2</number>
+     </property>
+     <property name="midLineWidth">
+      <number>0</number>
+     </property>
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+    </widget>
+    <widget class="QLabel" name="background_under_chat_5">
+     <property name="geometry">
+      <rect>
+       <x>0</x>
+       <y>0</y>
+       <width>281</width>
+       <height>71</height>
+      </rect>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">background-color: rgb(235, 235, 235);</string>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+    </widget>
+    <widget class="Line" name="line_7">
+     <property name="geometry">
+      <rect>
+       <x>0</x>
+       <y>300</y>
+       <width>281</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">background-color: rgb(255, 255, 255);</string>
+     </property>
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+    </widget>
+    <widget class="Line" name="line_8">
+     <property name="geometry">
+      <rect>
+       <x>0</x>
+       <y>220</y>
+       <width>281</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">background-color: rgb(255, 255, 255);</string>
+     </property>
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+    </widget>
+    <widget class="Line" name="line_9">
+     <property name="geometry">
+      <rect>
+       <x>0</x>
+       <y>140</y>
+       <width>281</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">background-color: rgb(255, 255, 255);</string>
+     </property>
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+    </widget>
+    <widget class="QStackedWidget" name="stackedWidget">
+     <property name="geometry">
+      <rect>
+       <x>310</x>
+       <y>70</y>
+       <width>751</width>
+       <height>521</height>
+      </rect>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">background-color: rgb(218, 228, 235);</string>
+     </property>
+     <property name="currentIndex">
+      <number>0</number>
+     </property>
+     <widget class="QWidget" name="page">
+      <widget class="QLabel" name="label">
+       <property name="geometry">
+        <rect>
+         <x>40</x>
+         <y>30</y>
+         <width>55</width>
+         <height>16</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>Profile</string>
+       </property>
+      </widget>
+     </widget>
+     <widget class="QWidget" name="page_3">
+      <widget class="QLabel" name="label_2">
+       <property name="geometry">
+        <rect>
+         <x>30</x>
+         <y>30</y>
+         <width>55</width>
+         <height>16</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>Interface</string>
+       </property>
+      </widget>
+     </widget>
+     <widget class="QWidget" name="page_2"/>
+    </widget>
+    <zorder>userList_3</zorder>
+    <zorder>background_under_chat_4</zorder>
+    <zorder>chatDialog_3</zorder>
+    <zorder>line_6</zorder>
+    <zorder>background_under_chat_5</zorder>
+    <zorder>line_7</zorder>
+    <zorder>line_8</zorder>
+    <zorder>line_9</zorder>
+    <zorder>close_setting_button_2</zorder>
+    <zorder>stackedWidget</zorder>
    </widget>
    <zorder>line</zorder>
    <zorder>widget</zorder>
    <zorder>userList</zorder>
+   <zorder>background_inder_list</zorder>
+   <zorder>background_under_chat</zorder>
+   <zorder>horizontalLayoutWidget</zorder>
+   <zorder>about_user_button</zorder>
+   <zorder>connect_button</zorder>
    <zorder>chatDialog</zorder>
-   <zorder>label</zorder>
-   <zorder>label_2</zorder>
-   <zorder>userSetting</zorder>
-   <zorder>userStatus</zorder>
-   <zorder>lineEdit</zorder>
-   <zorder>label_3</zorder>
+   <zorder>widget_2</zorder>
   </widget>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
- <resources/>
+ <resources>
+  <include location="image.qrc"/>
+ </resources>
  <connections/>
 </ui>

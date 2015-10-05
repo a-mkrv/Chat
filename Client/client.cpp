@@ -7,17 +7,21 @@ Client::Client(QWidget *parent) : QMainWindow(parent), ui(new Ui::Client)
 {
     ui->setupUi(this);
     personDates = false;
+    ui->widget_2->hide();
     tcpSocket = new QTcpSocket(this);
-    QPixmap pix;
-    pix = QApplication::style()->standardPixmap(QStyle::SP_TrashIcon);
-    QIcon pic(":/Client/apple.jpg");
-    ui->label_3->setPixmap(pix);
     connect(tcpSocket, SIGNAL(readyRead()), this, SLOT(getMessage()));
     connect(tcpSocket, SIGNAL(error(QAbstractSocket::SocketError)), this, SLOT(show_Error(QAbstractSocket::SocketError)));
     connect(tcpSocket, SIGNAL(connected()), this, SLOT(send_personal_data()));
     connect(tcpSocket, SIGNAL(disconnected()), this, SLOT(onDisconnect()));
-    connect(ui->userSetting, SIGNAL(clicked()), this, SLOT(on_userSetting_clicked()));
+    connect(ui->userSetting_button, SIGNAL(clicked()), this, SLOT(on_userSetting_clicked()));
+    connect(ui->close_setting_button_2, SIGNAL(clicked()), this, SLOT(on_close_setting_button_clicked()));
+    connect(ui->userList_3, SIGNAL(itemActivated(QListWidgetItem*)), SLOT(whisperOnClick(QListWidgetItem*)));
+}
 
+void Client::whisperOnClick(QListWidgetItem* user)
+{
+    if(user->text()=="Interface")
+        ui->stackedWidget->setCurrentIndex(1); // и т.д
 }
 
 void Client::on_sendMessage_clicked()
@@ -45,7 +49,7 @@ void Client::on_sendMessage_clicked()
     }
 }
 
-void Client::on_userStatus_clicked()
+void Client::on_connect_button_clicked()
 {
     QString hostname = "127.0.0.1";
     quint16 port = 55155;
@@ -74,6 +78,7 @@ void Client::getMessage()
         cmd = COMMAND::USERLIST;
 
     QStringList commandList;
+    QIcon pic(":/new/prefix1/bg3.jpg");
     switch (cmd)
     {
     case COMMAND::USERLIST:
@@ -89,12 +94,13 @@ void Client::getMessage()
             q = new QListWidgetItem(i, ui->userList);
             q->setSizeHint(QSize(0,65));
             q->setTextAlignment(10);
+            q->setIcon(pic);
 
         }
         break;
     default:
 
-qDebug() << "LOL(((";
+        qDebug() << "LOL(((";
         //in >> message;
        new QListWidgetItem(message, ui->chatDialog);
 
@@ -172,11 +178,18 @@ void Client::sendUserCommand(QString command)
 
 void Client::on_userSetting_clicked()
 {
-   //
+   ui->widget_2->show();
+   qDebug() << ui->userList_3->item(1)->text();
 }
 
 Client::~Client()
 {
     delete ui;
+}
+
+void Client::on_close_setting_button_clicked()
+{
+    ui->userList_3->clearFocus();
+    ui->widget_2->hide();
 }
 
