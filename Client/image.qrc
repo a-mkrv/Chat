@@ -1,6 +1,9 @@
 <RCC>
     <qresource prefix="/new/prefix1">
         <file>bg3.jpg</file>
-        <file>w256h2561380453921Search256x25632.png</file>
+        <file>Resource/globe grid.png</file>
+        <file>Resource/profile5.png</file>
+        <file>Resource/squares110.png</file>
+        <file>Resource/write50.png</file>
     </qresource>
 </RCC>

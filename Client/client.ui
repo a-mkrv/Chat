@@ -518,8 +518,8 @@ background-color: rgb(10, 88, 170);</string>
      </property>
      <property name="iconSize">
       <size>
-       <width>90</width>
-       <height>90</height>
+       <width>70</width>
+       <height>70</height>
       </size>
      </property>
      <property name="textElideMode">
@@ -543,7 +543,7 @@ background-color: rgb(10, 88, 170);</string>
       </property>
       <property name="font">
        <font>
-        <family>Buxton Sketch</family>
+        <family>Sitka Small</family>
         <pointsize>14</pointsize>
         <weight>50</weight>
         <bold>false</bold>
@@ -570,45 +570,61 @@ background-color: rgb(10, 88, 170);</string>
       </property>
       <property name="icon">
        <iconset resource="image.qrc">
-        <normaloff>:/new/prefix1/bg3.jpg</normaloff>
-        <normalon>:/new/prefix1/bg3.jpg</normalon>:/new/prefix1/bg3.jpg</iconset>
+        <normaloff>:/new/prefix1/Resource/profile5.png</normaloff>:/new/prefix1/Resource/profile5.png</iconset>
       </property>
      </item>
      <item>
       <property name="text">
        <string>Interface</string>
       </property>
+      <property name="font">
+       <font>
+        <family>Sitka Small</family>
+        <pointsize>14</pointsize>
+       </font>
+      </property>
       <property name="icon">
        <iconset resource="image.qrc">
-        <normaloff>:/new/prefix1/bg3.jpg</normaloff>:/new/prefix1/bg3.jpg</iconset>
+        <normaloff>:/new/prefix1/Resource/squares110.png</normaloff>:/new/prefix1/Resource/squares110.png</iconset>
       </property>
      </item>
      <item>
       <property name="text">
        <string>Chat options</string>
       </property>
+      <property name="font">
+       <font>
+        <family>Sitka Small</family>
+        <pointsize>14</pointsize>
+       </font>
+      </property>
       <property name="icon">
        <iconset resource="image.qrc">
-        <normaloff>:/new/prefix1/bg3.jpg</normaloff>:/new/prefix1/bg3.jpg</iconset>
+        <normaloff>:/new/prefix1/Resource/write50.png</normaloff>:/new/prefix1/Resource/write50.png</iconset>
       </property>
      </item>
      <item>
       <property name="text">
        <string>Network</string>
       </property>
+      <property name="font">
+       <font>
+        <family>Sitka Small</family>
+        <pointsize>14</pointsize>
+       </font>
+      </property>
       <property name="icon">
-       <iconset>
-        <normalon>:/new/prefix1/bg3.jpg</normalon>
-       </iconset>
+       <iconset resource="image.qrc">
+        <normaloff>:/new/prefix1/Resource/globe grid.png</normaloff>:/new/prefix1/Resource/globe grid.png</iconset>
       </property>
      </item>
     </widget>
     <widget class="QLabel" name="background_under_chat_4">
      <property name="geometry">
       <rect>
-       <x>290</x>
+       <x>285</x>
        <y>0</y>
-       <width>771</width>
+       <width>778</width>
        <height>71</height>
       </rect>
      </property>
@@ -680,7 +696,7 @@ background-color: rgb(10, 88, 170);</string>
       <rect>
        <x>0</x>
        <y>0</y>
-       <width>281</width>
+       <width>283</width>
        <height>71</height>
       </rect>
      </property>
@@ -695,7 +711,7 @@ background-color: rgb(10, 88, 170);</string>
      <property name="geometry">
       <rect>
        <x>0</x>
-       <y>300</y>
+       <y>330</y>
        <width>281</width>
        <height>16</height>
       </rect>
@@ -711,7 +727,7 @@ background-color: rgb(10, 88, 170);</string>
      <property name="geometry">
       <rect>
        <x>0</x>
-       <y>220</y>
+       <y>240</y>
        <width>281</width>
        <height>16</height>
       </rect>
@@ -727,7 +743,7 @@ background-color: rgb(10, 88, 170);</string>
      <property name="geometry">
       <rect>
        <x>0</x>
-       <y>140</y>
+       <y>150</y>
        <width>281</width>
        <height>16</height>
       </rect>
@@ -742,9 +758,9 @@ background-color: rgb(10, 88, 170);</string>
     <widget class="QStackedWidget" name="stackedWidget">
      <property name="geometry">
       <rect>
-       <x>310</x>
+       <x>285</x>
        <y>70</y>
-       <width>751</width>
+       <width>771</width>
        <height>521</height>
       </rect>
      </property>
@@ -787,7 +803,6 @@ background-color: rgb(10, 88, 170);</string>
      <widget class="QWidget" name="page_2"/>
     </widget>
     <zorder>userList_3</zorder>
-    <zorder>background_under_chat_4</zorder>
     <zorder>chatDialog_3</zorder>
     <zorder>line_6</zorder>
     <zorder>background_under_chat_5</zorder>
@@ -796,6 +811,7 @@ background-color: rgb(10, 88, 170);</string>
     <zorder>line_9</zorder>
     <zorder>close_setting_button_2</zorder>
     <zorder>stackedWidget</zorder>
+    <zorder>background_under_chat_4</zorder>
    </widget>
    <zorder>line</zorder>
    <zorder>widget</zorder>

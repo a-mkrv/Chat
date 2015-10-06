@@ -18,12 +18,6 @@ Client::Client(QWidget *parent) : QMainWindow(parent), ui(new Ui::Client)
     connect(ui->userList_3, SIGNAL(itemActivated(QListWidgetItem*)), SLOT(whisperOnClick(QListWidgetItem*)));
 }
 
-void Client::whisperOnClick(QListWidgetItem* user)
-{
-    if(user->text()=="Interface")
-        ui->stackedWidget->setCurrentIndex(1); // и т.д
-}
-
 void Client::on_sendMessage_clicked()
 {
     QString message = ui->editText->text();
@@ -179,17 +173,32 @@ void Client::sendUserCommand(QString command)
 void Client::on_userSetting_clicked()
 {
    ui->widget_2->show();
-   qDebug() << ui->userList_3->item(1)->text();
+   //qDebug() << ui->userList_3->item(1)->text();
+}
+
+void Client::on_close_setting_button_clicked()
+{
+    ui->userList_3->clearFocus();
+    ui->userList_3->clearSelection();
+    ui->stackedWidget->setCurrentIndex(0);
+    ui->widget_2->hide();
+}
+
+void Client::whisperOnClick(QListWidgetItem* user)
+{
+    QString section = user->text();
+    if (section == "Profile")
+        ui->stackedWidget->setCurrentIndex(0);
+    else if(section=="Interface")
+        ui->stackedWidget->setCurrentIndex(1);
+    else if (section == "Chat options")
+        ui->stackedWidget->setCurrentIndex(2);
+    else
+        ui->stackedWidget->setCurrentIndex(3);
+
 }
 
 Client::~Client()
 {
     delete ui;
 }
-
-void Client::on_close_setting_button_clicked()
-{
-    ui->userList_3->clearFocus();
-    ui->widget_2->hide();
-}
-
