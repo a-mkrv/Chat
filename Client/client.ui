@@ -94,7 +94,7 @@
        <x>40</x>
        <y>30</y>
        <width>601</width>
-       <height>51</height>
+       <height>53</height>
       </rect>
      </property>
      <property name="styleSheet">
@@ -117,16 +117,11 @@
       </rect>
      </property>
      <property name="styleSheet">
-      <string notr="true">color: rgb(127, 0, 63);
-    background-color: rgb(255, 255, 255);
-    selection-color: white;
-    selection-background-color: rgb(191, 31, 127);
-    border: 2px groove gray;
-    border-radius: 10px;
-    padding: 2px 4px;</string>
+      <string notr="true">
+ </string>
      </property>
      <property name="text">
-      <string>-&gt;</string>
+      <string/>
      </property>
      <property name="checkable">
       <bool>false</bool>
@@ -138,7 +133,7 @@
       <bool>false</bool>
      </property>
      <property name="flat">
-      <bool>false</bool>
+      <bool>true</bool>
      </property>
     </widget>
    </widget>
@@ -205,7 +200,7 @@
      </property>
      <property name="icon">
       <iconset resource="image.qrc">
-       <normaloff>:/new/prefix1/bg3.jpg</normaloff>:/new/prefix1/bg3.jpg</iconset>
+       <normaloff>:/new/prefix1/Resource/users53.png</normaloff>:/new/prefix1/Resource/users53.png</iconset>
      </property>
     </item>
     <item>
@@ -214,7 +209,7 @@
      </property>
      <property name="icon">
       <iconset resource="image.qrc">
-       <normaloff>:/new/prefix1/bg3.jpg</normaloff>:/new/prefix1/bg3.jpg</iconset>
+       <normaloff>:/new/prefix1/Resource/women16.png</normaloff>:/new/prefix1/Resource/women16.png</iconset>
      </property>
     </item>
     <item>
@@ -223,7 +218,7 @@
      </property>
      <property name="icon">
       <iconset resource="image.qrc">
-       <normaloff>:/new/prefix1/bg3.jpg</normaloff>:/new/prefix1/bg3.jpg</iconset>
+       <normaloff>:/new/prefix1/Resource/users53.png</normaloff>:/new/prefix1/Resource/users53.png</iconset>
      </property>
     </item>
     <item>
@@ -231,9 +226,8 @@
       <string>Санек</string>
      </property>
      <property name="icon">
-      <iconset>
-       <normalon>:/new/prefix1/bg3.jpg</normalon>
-      </iconset>
+      <iconset resource="image.qrc">
+       <normaloff>:/new/prefix1/Resource/users53.png</normaloff>:/new/prefix1/Resource/users53.png</iconset>
      </property>
     </item>
    </widget>
@@ -322,14 +316,10 @@ background-color: rgb(235, 235, 235);</string>
        <property name="styleSheet">
         <string notr="true">color: rgb(127, 0, 63);
     background-color: rgb(255, 255, 255);
-    selection-color: white;
-    selection-background-color: rgb(191, 31, 127);
-    border: 2px groove gray;
-    border-radius: 10px;
-    padding: 4px 8px;</string>
+  </string>
        </property>
        <property name="text">
-        <string>SET</string>
+        <string/>
        </property>
        <property name="flat">
         <bool>true</bool>
@@ -341,14 +331,10 @@ background-color: rgb(235, 235, 235);</string>
        <property name="styleSheet">
         <string notr="true">color: rgb(127, 0, 63);
     background-color: rgb(255, 255, 255);
-    selection-color: white;
-    selection-background-color: rgb(191, 31, 127);
-    border: 2px groove gray;
-    border-radius: 10px;
-    padding: 4px 8px;</string>
+  </string>
        </property>
        <property name="text">
-        <string>ADD</string>
+        <string/>
        </property>
        <property name="flat">
         <bool>true</bool>
@@ -390,18 +376,14 @@ background-color: rgb(235, 235, 235);</string>
        </property>
        <property name="styleSheet">
         <string notr="true">color: rgb(127, 0, 63);
-    background-color: rgb(255, 255, 255);
-    selection-color: white;
-    selection-background-color: rgb(191, 31, 127);
-    border: 2px groove gray;
-    border-radius: 10px;
-    padding: 4px 8px;</string>
+    background-color: rgba(235, 235, 235, 90)
+</string>
        </property>
        <property name="frameShape">
         <enum>QFrame::NoFrame</enum>
        </property>
        <property name="text">
-        <string>S</string>
+        <string/>
        </property>
       </widget>
      </item>
@@ -464,23 +446,23 @@ background-color: rgb(10, 88, 170);</string>
     <widget class="QPushButton" name="close_setting_button_2">
      <property name="geometry">
       <rect>
-       <x>10</x>
-       <y>20</y>
+       <x>17</x>
+       <y>16</y>
        <width>51</width>
        <height>41</height>
       </rect>
      </property>
      <property name="styleSheet">
       <string notr="true">color: rgb(127, 0, 63);
-    background-color: rgb(255, 255, 255);
-    selection-color: white;
-    selection-background-color: rgb(191, 31, 127);
-    border: 2px groove gray;
-    border-radius: 10px;
-    padding: 4px 8px;</string>
+    background-color: rgb(235, 235, 235);
+   
+ </string>
      </property>
      <property name="text">
-      <string>BACK</string>
+      <string/>
+     </property>
+     <property name="flat">
+      <bool>true</bool>
      </property>
     </widget>
     <widget class="QListWidget" name="userList_3">
@@ -809,9 +791,9 @@ background-color: rgb(10, 88, 170);</string>
     <zorder>line_7</zorder>
     <zorder>line_8</zorder>
     <zorder>line_9</zorder>
-    <zorder>close_setting_button_2</zorder>
     <zorder>stackedWidget</zorder>
     <zorder>background_under_chat_4</zorder>
+    <zorder>close_setting_button_2</zorder>
    </widget>
    <zorder>line</zorder>
    <zorder>widget</zorder>

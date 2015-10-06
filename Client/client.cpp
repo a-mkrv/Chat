@@ -2,10 +2,44 @@
 #include "ui_client.h"
 #include <QDebug>
 #include <QPixmap>
-
+#include <QIcon>
 Client::Client(QWidget *parent) : QMainWindow(parent), ui(new Ui::Client)
 {
     ui->setupUi(this);
+
+    //Создание отдельного класса под Списки пользователей и настройки! (Сделать)
+
+
+    QPixmap back_to_menu(":/new/prefix1/Resource/double78.png");
+    QIcon ButtonIcon(back_to_menu);
+
+    QPixmap setting(":/new/prefix1/Resource/tool257.png");
+    QIcon ButtonIcon2(setting);
+
+    QPixmap add_contact(":/new/prefix1/Resource/square292.png");
+    QIcon ButtonIcon3(add_contact);
+
+    QPixmap send(":/new/prefix1/Resource/right-arrow6.png");
+    QIcon ButtonIcon4(send);
+
+    QPixmap search_mes(":/new/prefix1/Resource/magnifying glass57.png");
+
+
+    ui->close_setting_button_2->setIcon(ButtonIcon);
+    ui->close_setting_button_2->setIconSize(back_to_menu.rect().size()/2);
+
+    ui->userSetting_button->setIcon(ButtonIcon2);
+    ui->userSetting_button->setIconSize(setting.rect().size());
+
+    ui->newContact_Button->setIcon(ButtonIcon3);
+    ui->newContact_Button->setIconSize(add_contact.rect().size()/2);
+
+    ui->sendMessage->setIcon(ButtonIcon4);
+    ui->sendMessage->setIconSize(send.rect().size());
+
+    ui->search_label->setPixmap(search_mes);
+
+
     personDates = false;
     ui->widget_2->hide();
     tcpSocket = new QTcpSocket(this);
@@ -55,6 +89,7 @@ void Client::on_connect_button_clicked()
     tcpSocket->abort();
     tcpSocket->connectToHost(hostname, port);
 }
+
 
 void Client::getMessage()
 {
