@@ -25,6 +25,9 @@ private slots:
     void onDisconnect();
     void sendUserList();
 
+signals:
+    void SEND_UserList();
+
 public:
     explicit Server(QWidget *parent = 0);
     ~Server();

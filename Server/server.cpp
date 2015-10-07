@@ -18,8 +18,8 @@ Server::Server(QWidget *parent) :
     }
 
     QTimer *timer = new QTimer(this);
-    connect(timer, SIGNAL(timeout()), this, SLOT(SEND_UserList));
-    timer->start(6000);
+    connect(timer, SIGNAL(timeout()), this, SIGNAL(SEND_UserList()));
+    timer->start(1000);
 
     connect(tcpServer, SIGNAL(newConnection()), this, SLOT(newConnection()));
     connect(this, SIGNAL(newConnection()), this, SLOT(getMessage()));
@@ -283,7 +283,9 @@ void Server::sendUserList()
     QDataStream out(&block, QIODevice::WriteOnly);
     out.setVersion(QDataStream::Qt_5_4);
 
-    QString userlist = "_LST_";
+    QString userlist;
+
+    userlist = "_LST_";
 
     for (auto i : userList)
     {
@@ -292,7 +294,7 @@ void Server::sendUserList()
     }
 
     out << userlist;
-
+    qDebug() << userlist;
     for (auto i : clientConnections)
     {
         i->write(block);

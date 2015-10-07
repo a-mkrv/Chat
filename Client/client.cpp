@@ -8,7 +8,7 @@ Client::Client(QWidget *parent) : QMainWindow(parent), ui(new Ui::Client)
     ui->setupUi(this);
 
     //Создание отдельного класса под Списки пользователей и настройки! (Сделать)
-
+    //Завтра военка, черт(
 
     QPixmap back_to_menu(":/new/prefix1/Resource/double78.png");
     QIcon ButtonIcon(back_to_menu);
@@ -23,7 +23,6 @@ Client::Client(QWidget *parent) : QMainWindow(parent), ui(new Ui::Client)
     QIcon ButtonIcon4(send);
 
     QPixmap search_mes(":/new/prefix1/Resource/magnifying glass57.png");
-
 
     ui->close_setting_button_2->setIcon(ButtonIcon);
     ui->close_setting_button_2->setIconSize(back_to_menu.rect().size()/2);
@@ -43,6 +42,7 @@ Client::Client(QWidget *parent) : QMainWindow(parent), ui(new Ui::Client)
     personDates = false;
     ui->widget_2->hide();
     tcpSocket = new QTcpSocket(this);
+
     connect(tcpSocket, SIGNAL(readyRead()), this, SLOT(getMessage()));
     connect(tcpSocket, SIGNAL(error(QAbstractSocket::SocketError)), this, SLOT(show_Error(QAbstractSocket::SocketError)));
     connect(tcpSocket, SIGNAL(connected()), this, SLOT(send_personal_data()));
@@ -98,7 +98,7 @@ void Client::getMessage()
 
     QString message;
     in >> message;
-
+    qDebug() << message;
     enum class COMMAND { NONE, USERLIST};
     COMMAND cmd = COMMAND::NONE;
 
@@ -106,12 +106,15 @@ void Client::getMessage()
     if (checkCmd == "_LST_")
         cmd = COMMAND::USERLIST;
 
+    QPixmap setting(":/new/prefix1/Resource/tool257.png");
+    QIcon ButtonIcon2(setting);
+
     QStringList commandList;
     QIcon pic(":/new/prefix1/bg3.jpg");
     switch (cmd)
     {
     case COMMAND::USERLIST:
-          qDebug() << "LOL";
+
         commandList = message.split(" ", QString::SkipEmptyParts);
         commandList.removeFirst();
         ui->userList->clear();
@@ -119,12 +122,11 @@ void Client::getMessage()
          QListWidgetItem *q;
         for (auto i : commandList)
         {
-
             q = new QListWidgetItem(i, ui->userList);
+            q->setIcon(ButtonIcon2);
             q->setSizeHint(QSize(0,65));
             q->setTextAlignment(10);
             q->setIcon(pic);
-
         }
         break;
     default:
