@@ -3,10 +3,12 @@
 #include <QDebug>
 #include <QPixmap>
 #include <QIcon>
+
+
 Client::Client(QWidget *parent) : QMainWindow(parent), ui(new Ui::Client)
 {
     ui->setupUi(this);
-
+    frameEmoji = new EmojiFrame();
     //Создание отдельного класса под Списки пользователей и настройки! (Сделать)
     //Завтра военка, черт(
 
@@ -238,4 +240,16 @@ void Client::whisperOnClick(QListWidgetItem* user)
 Client::~Client()
 {
     delete ui;
+}
+
+void Client::on_pushButton_clicked()
+{
+     showEmoji();
+}
+
+void Client::showEmoji()
+{
+    QPoint p = QCursor::pos();
+    frameEmoji->setGeometry(p.x()-250, p.y() -300, 300, 250);
+    frameEmoji->show();
 }

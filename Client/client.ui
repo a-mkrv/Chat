@@ -93,8 +93,8 @@
       <rect>
        <x>40</x>
        <y>30</y>
-       <width>601</width>
-       <height>53</height>
+       <width>561</width>
+       <height>51</height>
       </rect>
      </property>
      <property name="styleSheet">
@@ -110,15 +110,14 @@
     <widget class="QPushButton" name="sendMessage">
      <property name="geometry">
       <rect>
-       <x>580</x>
-       <y>40</y>
+       <x>540</x>
+       <y>38</y>
        <width>41</width>
-       <height>31</height>
+       <height>38</height>
       </rect>
      </property>
      <property name="styleSheet">
-      <string notr="true">
- </string>
+      <string notr="true"/>
      </property>
      <property name="text">
       <string/>
@@ -134,6 +133,19 @@
      </property>
      <property name="flat">
       <bool>true</bool>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="pushButton">
+     <property name="geometry">
+      <rect>
+       <x>610</x>
+       <y>40</y>
+       <width>31</width>
+       <height>28</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>PushButton</string>
      </property>
     </widget>
    </widget>
@@ -194,15 +206,6 @@
     <property name="sortingEnabled">
      <bool>true</bool>
     </property>
-    <item>
-     <property name="text">
-      <string>Антон</string>
-     </property>
-     <property name="icon">
-      <iconset resource="image.qrc">
-       <normaloff>:/new/prefix1/Resource/users53.png</normaloff>:/new/prefix1/Resource/users53.png</iconset>
-     </property>
-    </item>
     <item>
      <property name="text">
       <string>Машка</string>
@@ -795,6 +798,7 @@ background-color: rgb(10, 88, 170);</string>
     <zorder>background_under_chat_4</zorder>
     <zorder>close_setting_button_2</zorder>
    </widget>
+   <zorder>widget_2</zorder>
    <zorder>line</zorder>
    <zorder>widget</zorder>
    <zorder>userList</zorder>
@@ -804,7 +808,6 @@ background-color: rgb(10, 88, 170);</string>
    <zorder>about_user_button</zorder>
    <zorder>connect_button</zorder>
    <zorder>chatDialog</zorder>
-   <zorder>widget_2</zorder>
   </widget>
  </widget>
  <layoutdefault spacing="6" margin="11"/>

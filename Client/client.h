@@ -7,7 +7,7 @@
 #include <QHostAddress>
 #include <QStackedLayout>
 #include <QListWidgetItem>
-
+#include "emojiframe.h"
 
 namespace Ui {
 class Client;
@@ -32,6 +32,9 @@ private slots:
     void on_userSetting_clicked();      //Настройки (-)
     void on_close_setting_button_clicked();
     void whisperOnClick(QListWidgetItem* user);
+    void showEmoji();
+
+    void on_pushButton_clicked();
 
 private:
     QStackedLayout *layout;
@@ -41,6 +44,7 @@ private:
     QString getIP();
     bool personDates;
     bool sethide;
+    EmojiFrame *frameEmoji;
 
 };
 

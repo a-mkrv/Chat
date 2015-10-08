@@ -13,11 +13,16 @@ TEMPLATE = app
 
 
 SOURCES += main.cpp\
-        client.cpp
+        client.cpp \
+    emojiframe.cpp \
+    setting.cpp
 
-HEADERS  += client.h
+HEADERS  += client.h \
+    emojiframe.h \
+    setting.h
 
-FORMS    += client.ui
+FORMS    += client.ui \
+    emojiframe.ui
 
 RESOURCES += \
     image.qrc
