@@ -15,14 +15,17 @@ TEMPLATE = app
 SOURCES += main.cpp\
         client.cpp \
     emojiframe.cpp \
-    setting.cpp
+    setting.cpp \
+    findcontacts.cpp
 
 HEADERS  += client.h \
     emojiframe.h \
-    setting.h
+    setting.h \
+    findcontacts.h
 
 FORMS    += client.ui \
-    emojiframe.ui
+    emojiframe.ui \
+    findcontacts.ui
 
 RESOURCES += \
     image.qrc

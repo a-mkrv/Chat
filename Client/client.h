@@ -8,6 +8,7 @@
 #include <QStackedLayout>
 #include <QListWidgetItem>
 #include "emojiframe.h"
+#include "findcontacts.h"
 
 namespace Ui {
 class Client;
@@ -33,8 +34,9 @@ private slots:
     void on_close_setting_button_clicked();
     void whisperOnClick(QListWidgetItem* user);
     void showEmoji();
-
+    void showFindCont();
     void on_pushButton_clicked();
+    void on_newContact_Button_clicked();
 
 private:
     QStackedLayout *layout;
@@ -45,6 +47,7 @@ private:
     bool personDates;
     bool sethide;
     EmojiFrame *frameEmoji;
+    findcontacts *findcont;
 
 };
 
