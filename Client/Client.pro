@@ -16,12 +16,14 @@ SOURCES += main.cpp\
         client.cpp \
     emojiframe.cpp \
     setting.cpp \
-    findcontacts.cpp
+    findcontacts.cpp \
+    trayicon.cpp
 
 HEADERS  += client.h \
     emojiframe.h \
     setting.h \
-    findcontacts.h
+    findcontacts.h \
+    trayicon.h
 
 FORMS    += client.ui \
     emojiframe.ui \

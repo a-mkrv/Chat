@@ -7,8 +7,13 @@
 #include <QHostAddress>
 #include <QStackedLayout>
 #include <QListWidgetItem>
+#include <QMenu>
+#include <QCloseEvent>
+
 #include "emojiframe.h"
 #include "findcontacts.h"
+#include "trayicon.h"
+
 
 namespace Ui {
 class Client;
@@ -21,6 +26,9 @@ class Client : public QMainWindow
 public:
     explicit Client(QWidget *parent = 0);
     ~Client();
+
+protected:
+    void closeEvent(QCloseEvent *event);
 
 private slots:
     void getMessage();                  //Получение сообщений
@@ -37,17 +45,25 @@ private slots:
     void showFindCont();
     void on_pushButton_clicked();
     void on_newContact_Button_clicked();
+    void iconActivated(QSystemTrayIcon::ActivationReason reason);
+    void showHideWindow();
+    void on_actionShowHideWindow_triggered();
+    void on_actionExit_triggered();
 
 private:
-    QStackedLayout *layout;
     Ui::Client *ui;
+
+    TrayIcon *trayIcon;
+    QMenu *trayIconMenu;
+    QStackedLayout *layout;
     QTcpSocket *tcpSocket;
     quint16 blockSize;
     QString getIP();
-    bool personDates;
-    bool sethide;
     EmojiFrame *frameEmoji;
     findcontacts *findcont;
+
+    bool personDates;
+    bool sethide;
 
 };
 

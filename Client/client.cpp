@@ -9,9 +9,17 @@ Client::Client(QWidget *parent) : QMainWindow(parent), ui(new Ui::Client)
 {
     ui->setupUi(this);
     frameEmoji = new EmojiFrame();
+    trayIcon = new TrayIcon(this);
 
-    //Создание отдельного класса под Списки пользователей и настройки! (Сделать)
-    //Завтра военка, черт(
+    trayIconMenu = new QMenu(this);
+    trayIconMenu->addAction(ui->actionShowHideWindow);
+    trayIconMenu->addSeparator();
+    trayIconMenu->addAction(ui->actionExit);
+
+    trayIcon->setContextMenu(trayIconMenu);
+
+    ui->chatDialog->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding);
+
 
     QPixmap back_to_menu(":/new/prefix1/Resource/double78.png");
     QIcon ButtonIcon(back_to_menu);
@@ -41,7 +49,6 @@ Client::Client(QWidget *parent) : QMainWindow(parent), ui(new Ui::Client)
 
     ui->search_label->setPixmap(search_mes);
 
-
     personDates = false;
     ui->widget_2->hide();
     tcpSocket = new QTcpSocket(this);
@@ -53,6 +60,8 @@ Client::Client(QWidget *parent) : QMainWindow(parent), ui(new Ui::Client)
     connect(ui->userSetting_button, SIGNAL(clicked()), this, SLOT(on_userSetting_clicked()));
     connect(ui->close_setting_button_2, SIGNAL(clicked()), this, SLOT(on_close_setting_button_clicked()));
     connect(ui->userList_3, SIGNAL(itemActivated(QListWidgetItem*)), SLOT(whisperOnClick(QListWidgetItem*)));
+    connect(ui->actionExit, SIGNAL(triggered()), this, SLOT(close()));
+    connect(trayIcon, SIGNAL(activated(QSystemTrayIcon::ActivationReason)), this, SLOT(iconActivated(QSystemTrayIcon::ActivationReason)));
 
 }
 
@@ -94,7 +103,6 @@ void Client::on_connect_button_clicked()
     tcpSocket->connectToHost(hostname, port);
 }
 
-
 void Client::getMessage()
 {
     QDataStream in(tcpSocket);
@@ -117,7 +125,6 @@ void Client::getMessage()
     {
     case COMMAND::USERLIST:
     {
-
         commandList = message.split(" ", QString::SkipEmptyParts);
         commandList.removeFirst();
         ui->userList->clear();
@@ -132,26 +139,17 @@ void Client::getMessage()
         // w->setLayout(vbl);
          //ui->userList->setLayout(vbl);
 
-
         for (auto i : commandList)
         {
-
             q = new QListWidgetItem(i, ui->userList);
             q->setSizeHint(QSize(0,65));
             q->setIcon(pic);
-
-           // ui->userList->setItemWidget(q, w);
         }
         break;
 }
     default:
-
-        qDebug() << "LOL(((";
-        //in >> message;
        new QListWidgetItem(message, ui->chatDialog);
-
-        ui->chatDialog->scrollToBottom();
-
+       ui->chatDialog->scrollToBottom();
     }
 }
 
@@ -225,7 +223,6 @@ void Client::sendUserCommand(QString command)
 void Client::on_userSetting_clicked()
 {
    ui->widget_2->show();
-   //qDebug() << ui->userList_3->item(1)->text();
 }
 
 void Client::on_close_setting_button_clicked()
@@ -247,18 +244,11 @@ void Client::whisperOnClick(QListWidgetItem* user)
         ui->stackedWidget->setCurrentIndex(2);
     else
         ui->stackedWidget->setCurrentIndex(3);
-
-}
-
-Client::~Client()
-{
-    delete ui;
 }
 
 void Client::on_pushButton_clicked()
 {
      showEmoji();
-
 }
 
 void Client::showEmoji()
@@ -266,7 +256,6 @@ void Client::showEmoji()
     QPoint p = QCursor::pos();
     frameEmoji->setGeometry(p.x()-250, p.y() -300, 300, 250);
     frameEmoji->show();
-
 }
 
 void Client::showFindCont()
@@ -281,4 +270,56 @@ void Client::on_newContact_Button_clicked()
 {
     findcont = new findcontacts();
     showFindCont();
+}
+
+void Client::on_actionShowHideWindow_triggered()
+{
+     showHideWindow();
+}
+
+void Client::on_actionExit_triggered()
+{
+    QApplication::exit();
+}
+
+void Client::iconActivated(QSystemTrayIcon::ActivationReason reason)
+{
+    switch (reason) {
+    case QSystemTrayIcon::Trigger:
+        showHideWindow();
+        break;
+    case QSystemTrayIcon::Unknown:
+        break;
+    case QSystemTrayIcon::Context:
+        break;
+    case QSystemTrayIcon::DoubleClick:
+        break;
+    case QSystemTrayIcon::MiddleClick:
+        break;
+    default:
+        break;
+    }
+}
+
+void Client::showHideWindow()
+{
+    if (this->isVisible()) {
+        hide();
+        ui->actionShowHideWindow->setText(tr("Restore"));
+    }
+    else {
+        show();
+        ui->actionShowHideWindow->setText(tr("Hide"));
+    }
+}
+
+void Client::closeEvent(QCloseEvent *event)
+{
+    showHideWindow();
+    event->ignore();
+}
+
+Client::~Client()
+{
+    delete ui;
 }

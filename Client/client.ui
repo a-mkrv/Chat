@@ -932,6 +932,7 @@ background-color: rgb(10, 88, 170);</string>
     <zorder>background_under_chat_4</zorder>
     <zorder>close_setting_button_2</zorder>
    </widget>
+   <zorder>widget_2</zorder>
    <zorder>line</zorder>
    <zorder>widget</zorder>
    <zorder>userList</zorder>
@@ -941,8 +942,17 @@ background-color: rgb(10, 88, 170);</string>
    <zorder>about_user_button</zorder>
    <zorder>connect_button</zorder>
    <zorder>chatDialog</zorder>
-   <zorder>widget_2</zorder>
   </widget>
+  <action name="actionExit">
+   <property name="text">
+    <string>&amp;Exit</string>
+   </property>
+  </action>
+  <action name="actionShowHideWindow">
+   <property name="text">
+    <string>Hide</string>
+   </property>
+  </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <resources>
