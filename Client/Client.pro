@@ -5,6 +5,7 @@
 #-------------------------------------------------
 
 QT       += core gui network
+QT += multimedia
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -17,17 +18,20 @@ SOURCES += main.cpp\
     emojiframe.cpp \
     setting.cpp \
     findcontacts.cpp \
-    trayicon.cpp
+    trayicon.cpp \
+    registration.cpp
 
 HEADERS  += client.h \
     emojiframe.h \
     setting.h \
     findcontacts.h \
-    trayicon.h
+    trayicon.h \
+    registration.h
 
 FORMS    += client.ui \
     emojiframe.ui \
-    findcontacts.ui
+    findcontacts.ui \
+    registration.ui
 
 RESOURCES += \
     image.qrc

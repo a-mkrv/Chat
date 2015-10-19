@@ -5,6 +5,7 @@ int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
     Client w;
+    if(w.t)
     w.show();
 
     return a.exec();

@@ -185,6 +185,7 @@ void Server::getMessage()
 
     QString message;
     in >> message;
+    qDebug() << message;
 
     QStringList messageTokens;
     messageTokens = message.split(" ", QString::SkipEmptyParts);

@@ -1,6 +1,7 @@
 #include "findcontacts.h"
 #include "ui_findcontacts.h"
 #include <QPropertyAnimation>
+#include <QDebug>
 
 findcontacts::findcontacts(QWidget *parent) :
     QFrame(parent),
@@ -21,8 +22,13 @@ findcontacts::findcontacts(QWidget *parent) :
 
 }
 
-
 findcontacts::~findcontacts()
 {
     delete ui;
+}
+
+void findcontacts::on_invite_cont_button_clicked()
+{
+    username = ui->username_lineedit->text();
+
 }

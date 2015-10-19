@@ -9,11 +9,11 @@
 #include <QListWidgetItem>
 #include <QMenu>
 #include <QCloseEvent>
-
+#include <QtMultimedia/QSound>
 #include "emojiframe.h"
 #include "findcontacts.h"
 #include "trayicon.h"
-
+#include "registration.h"
 
 namespace Ui {
 class Client;
@@ -26,6 +26,10 @@ class Client : public QMainWindow
 public:
     explicit Client(QWidget *parent = 0);
     ~Client();
+    bool t;
+
+public slots:
+    void recieveData(QString str);
 
 protected:
     void closeEvent(QCloseEvent *event);
@@ -61,7 +65,10 @@ private:
     QString getIP();
     EmojiFrame *frameEmoji;
     findcontacts *findcont;
-
+    registration *reg_window;
+    QSound *soundFrom;
+    QSound *soundTo;
+    QString name;
     bool personDates;
     bool sethide;
 

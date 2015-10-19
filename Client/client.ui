@@ -156,7 +156,7 @@
       <string/>
      </property>
      <property name="icon">
-      <iconset resource="image.qrc">
+      <iconset>
        <normaloff>:/new/prefix1/Resource/smiling36.png</normaloff>:/new/prefix1/Resource/smiling36.png</iconset>
      </property>
      <property name="iconSize">
@@ -232,7 +232,7 @@
       <string>Машка</string>
      </property>
      <property name="icon">
-      <iconset resource="image.qrc">
+      <iconset>
        <normaloff>:/new/prefix1/Resource/women16.png</normaloff>:/new/prefix1/Resource/women16.png</iconset>
      </property>
     </item>
@@ -241,7 +241,7 @@
       <string>Петрович</string>
      </property>
      <property name="icon">
-      <iconset resource="image.qrc">
+      <iconset>
        <normaloff>:/new/prefix1/Resource/users53.png</normaloff>:/new/prefix1/Resource/users53.png</iconset>
      </property>
     </item>
@@ -250,7 +250,7 @@
       <string>Санек</string>
      </property>
      <property name="icon">
-      <iconset resource="image.qrc">
+      <iconset>
        <normaloff>:/new/prefix1/Resource/users53.png</normaloff>:/new/prefix1/Resource/users53.png</iconset>
      </property>
     </item>
@@ -480,7 +480,7 @@ background-color: rgb(10, 88, 170);</string>
      <property name="styleSheet">
       <string notr="true">color: rgb(127, 0, 63);
     background-color: rgb(235, 235, 235);
-   
+
  </string>
      </property>
      <property name="text">
@@ -511,17 +511,8 @@ background-color: rgb(10, 88, 170);</string>
      <property name="frameShape">
       <enum>QFrame::NoFrame</enum>
      </property>
-     <property name="lineWidth">
-      <number>1</number>
-     </property>
      <property name="autoScrollMargin">
       <number>16</number>
-     </property>
-     <property name="tabKeyNavigation">
-      <bool>false</bool>
-     </property>
-     <property name="dragEnabled">
-      <bool>false</bool>
      </property>
      <property name="iconSize">
       <size>
@@ -576,7 +567,7 @@ background-color: rgb(10, 88, 170);</string>
        </brush>
       </property>
       <property name="icon">
-       <iconset resource="image.qrc">
+       <iconset>
         <normaloff>:/new/prefix1/Resource/profile5.png</normaloff>:/new/prefix1/Resource/profile5.png</iconset>
       </property>
      </item>
@@ -591,7 +582,7 @@ background-color: rgb(10, 88, 170);</string>
        </font>
       </property>
       <property name="icon">
-       <iconset resource="image.qrc">
+       <iconset>
         <normaloff>:/new/prefix1/Resource/squares110.png</normaloff>:/new/prefix1/Resource/squares110.png</iconset>
       </property>
      </item>
@@ -606,7 +597,7 @@ background-color: rgb(10, 88, 170);</string>
        </font>
       </property>
       <property name="icon">
-       <iconset resource="image.qrc">
+       <iconset>
         <normaloff>:/new/prefix1/Resource/write50.png</normaloff>:/new/prefix1/Resource/write50.png</iconset>
       </property>
      </item>
@@ -621,7 +612,7 @@ background-color: rgb(10, 88, 170);</string>
        </font>
       </property>
       <property name="icon">
-       <iconset resource="image.qrc">
+       <iconset>
         <normaloff>:/new/prefix1/Resource/globe grid.png</normaloff>:/new/prefix1/Resource/globe grid.png</iconset>
       </property>
      </item>
@@ -767,7 +758,7 @@ background-color: rgb(10, 88, 170);</string>
       <rect>
        <x>285</x>
        <y>70</y>
-       <width>771</width>
+       <width>781</width>
        <height>521</height>
       </rect>
      </property>
@@ -932,7 +923,6 @@ background-color: rgb(10, 88, 170);</string>
     <zorder>background_under_chat_4</zorder>
     <zorder>close_setting_button_2</zorder>
    </widget>
-   <zorder>widget_2</zorder>
    <zorder>line</zorder>
    <zorder>widget</zorder>
    <zorder>userList</zorder>
@@ -942,21 +932,20 @@ background-color: rgb(10, 88, 170);</string>
    <zorder>about_user_button</zorder>
    <zorder>connect_button</zorder>
    <zorder>chatDialog</zorder>
+   <zorder>widget_2</zorder>
   </widget>
-  <action name="actionExit">
-   <property name="text">
-    <string>&amp;Exit</string>
-   </property>
-  </action>
   <action name="actionShowHideWindow">
    <property name="text">
     <string>Hide</string>
    </property>
   </action>
+  <action name="actionExit">
+   <property name="text">
+    <string>&amp;Exit</string>
+   </property>
+  </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
- <resources>
-  <include location="image.qrc"/>
- </resources>
+ <resources/>
  <connections/>
 </ui>

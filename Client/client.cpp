@@ -10,6 +10,11 @@ Client::Client(QWidget *parent) : QMainWindow(parent), ui(new Ui::Client)
     ui->setupUi(this);
     frameEmoji = new EmojiFrame();
     trayIcon = new TrayIcon(this);
+    reg_window = new registration();
+
+    t = false;
+    reg_window->show();
+
 
     trayIconMenu = new QMenu(this);
     trayIconMenu->addAction(ui->actionShowHideWindow);
@@ -17,9 +22,13 @@ Client::Client(QWidget *parent) : QMainWindow(parent), ui(new Ui::Client)
     trayIconMenu->addAction(ui->actionExit);
 
     trayIcon->setContextMenu(trayIconMenu);
+    ui->chatDialog->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Maximum);
 
-    ui->chatDialog->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding);
-
+    name = reg_window->on_pushButton_clicked();;
+if(name>0)
+    reg_window->hide();
+    soundFrom = new QSound(":/new/prefix1/Resource/eminem.wav");
+    soundTo = new QSound(":/new/prefix1/Resource/eminem.wav");
 
     QPixmap back_to_menu(":/new/prefix1/Resource/double78.png");
     QIcon ButtonIcon(back_to_menu);
@@ -65,6 +74,11 @@ Client::Client(QWidget *parent) : QMainWindow(parent), ui(new Ui::Client)
 
 }
 
+void Client::recieveData(QString str)
+{
+    name = str;
+}
+
 void Client::on_sendMessage_clicked()
 {
     QString message = ui->editText->text();
@@ -72,14 +86,16 @@ void Client::on_sendMessage_clicked()
 
     blockSize = 0;
 
-    if (!message.isEmpty())
+    if (!message.isEmpty())              //Отправка сообщений
     {
-        if (message.at(0) == '/')
+        if (message.at(0) == '/')        //Личное сообщение / команда
         {
             sendUserCommand(message);
         }
-        else
+        else                            //Сообщение на сервер
         {
+            qDebug() << "toServer";
+
             QByteArray msg;
             QDataStream out(&msg, QIODevice::WriteOnly);
             out.setVersion(QDataStream::Qt_5_4);
@@ -131,14 +147,6 @@ void Client::getMessage()
 
          QListWidgetItem *q;
 
-         //QWidget* w = new QWidget();
-         //QHBoxLayout* vbl = new QHBoxLayout;
-         //QLabel* lab_01 = new QLabel;
-         //lab_01->setText("444");
-         //vbl->addWidget(lab_01);
-        // w->setLayout(vbl);
-         //ui->userList->setLayout(vbl);
-
         for (auto i : commandList)
         {
             q = new QListWidgetItem(i, ui->userList);
@@ -148,6 +156,7 @@ void Client::getMessage()
         break;
 }
     default:
+       soundFrom->play();
        new QListWidgetItem(message, ui->chatDialog);
        ui->chatDialog->scrollToBottom();
     }
@@ -193,7 +202,7 @@ void Client::send_personal_data()
         out.setVersion(QDataStream::Qt_5_4);
 
         QString command = "_USR_";
-        QString username = "Anton";
+        QString username = name;
         out << command;
         out << username;
         tcpSocket->write(block);
@@ -216,7 +225,7 @@ void Client::sendUserCommand(QString command)
 
     command = "_UCD_ " + command;
     out << command;
-
+    soundTo->play();
     tcpSocket->write(msg);
 }
 
@@ -260,7 +269,6 @@ void Client::showEmoji()
 
 void Client::showFindCont()
 {
-
     QPoint p = QCursor::pos();
     findcont->setGeometry(p.x() +380, p.y() +70, 320, 350);
     findcont->show();
@@ -318,6 +326,7 @@ void Client::closeEvent(QCloseEvent *event)
     showHideWindow();
     event->ignore();
 }
+
 
 Client::~Client()
 {
