@@ -16,5 +16,14 @@
         <file>Resource/women16.png</file>
         <file>Resource/smiling36.png</file>
         <file>Resource/eminem.wav</file>
+        <file>Resource/bg3.jpg</file>
+        <file>Resource/bumaga.jpg</file>
+        <file>Resource/NrSUEa1npvk.jpg</file>
+        <file>Resource/sound_from.wav</file>
+        <file>Resource/sound_to.wav</file>
+        <file>Resource/ICQ.mp3</file>
+    </qresource>
+    <qresource prefix="/">
+        <file>Button.qml</file>
     </qresource>
 </RCC>

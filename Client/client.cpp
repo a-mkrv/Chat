@@ -3,32 +3,31 @@
 #include <QDebug>
 #include <QPixmap>
 #include <QIcon>
-
+#include <QFileDialog>
 
 Client::Client(QWidget *parent) : QMainWindow(parent), ui(new Ui::Client)
 {
     ui->setupUi(this);
     frameEmoji = new EmojiFrame();
-    trayIcon = new TrayIcon(this);
+
     reg_window = new registration();
+    connect(reg_window, SIGNAL(sendData(QString)), this, SLOT(recieveData(QString)));
 
-    t = false;
-    reg_window->show();
+    stackchat = new QStackedWidget;
 
-
+    trayIcon = new TrayIcon(this);
     trayIconMenu = new QMenu(this);
     trayIconMenu->addAction(ui->actionShowHideWindow);
     trayIconMenu->addSeparator();
     trayIconMenu->addAction(ui->actionExit);
-
     trayIcon->setContextMenu(trayIconMenu);
+    connect(trayIcon, SIGNAL(activated(QSystemTrayIcon::ActivationReason)), this, SLOT(iconActivated(QSystemTrayIcon::ActivationReason)));
+    trayIcon->hide();
+
     ui->chatDialog->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Maximum);
 
-    name = reg_window->on_pushButton_clicked();;
-if(name>0)
-    reg_window->hide();
-    soundFrom = new QSound(":/new/prefix1/Resource/eminem.wav");
-    soundTo = new QSound(":/new/prefix1/Resource/eminem.wav");
+    soundFrom = new QSound(":/new/prefix1/Resource/sound_from.wav");
+    soundTo = new QSound(":/new/prefix1/Resource/sound_to.wav");
 
     QPixmap back_to_menu(":/new/prefix1/Resource/double78.png");
     QIcon ButtonIcon(back_to_menu);
@@ -43,6 +42,9 @@ if(name>0)
     QIcon ButtonIcon4(send);
 
     QPixmap search_mes(":/new/prefix1/Resource/magnifying glass57.png");
+
+    ui->chatDialog->setAlternatingRowColors(true);
+    ui->chatDialog->setStyleSheet(""" color: white; background-image: url(:/new/prefix1/Resource/bumaga.jpg);background-attachment: scroll;""");
 
     ui->close_setting_button_2->setIcon(ButtonIcon);
     ui->close_setting_button_2->setIconSize(back_to_menu.rect().size()/2);
@@ -68,16 +70,23 @@ if(name>0)
     connect(tcpSocket, SIGNAL(disconnected()), this, SLOT(onDisconnect()));
     connect(ui->userSetting_button, SIGNAL(clicked()), this, SLOT(on_userSetting_clicked()));
     connect(ui->close_setting_button_2, SIGNAL(clicked()), this, SLOT(on_close_setting_button_clicked()));
-    connect(ui->userList_3, SIGNAL(itemActivated(QListWidgetItem*)), SLOT(whisperOnClick(QListWidgetItem*)));
+    connect(ui->userList_3, SIGNAL(itemClicked(QListWidgetItem*)), SLOT(whisperOnClick(QListWidgetItem*)));
     connect(ui->actionExit, SIGNAL(triggered()), this, SLOT(close()));
-    connect(trayIcon, SIGNAL(activated(QSystemTrayIcon::ActivationReason)), this, SLOT(iconActivated(QSystemTrayIcon::ActivationReason)));
-
 }
+
 
 void Client::recieveData(QString str)
 {
-    name = str;
+   if(str!="")
+   {
+
+        name = str;
+        name.replace(" ", "_");
+        this->show();
+        trayIcon->show();
+   }
 }
+
 
 void Client::on_sendMessage_clicked()
 {
@@ -134,7 +143,7 @@ void Client::getMessage()
     if (checkCmd == "_LST_")
         cmd = COMMAND::USERLIST;
 
-
+    static int i=1;
     QStringList commandList;
     QIcon pic(":/new/prefix1/Resource/profile5.png");
     switch (cmd)
@@ -145,10 +154,11 @@ void Client::getMessage()
         commandList.removeFirst();
         ui->userList->clear();
 
-         QListWidgetItem *q;
+        QListWidgetItem *q;
 
         for (auto i : commandList)
         {
+
             q = new QListWidgetItem(i, ui->userList);
             q->setSizeHint(QSize(0,65));
             q->setIcon(pic);
@@ -160,6 +170,7 @@ void Client::getMessage()
        new QListWidgetItem(message, ui->chatDialog);
        ui->chatDialog->scrollToBottom();
     }
+    i++;
 }
 
 
@@ -194,8 +205,8 @@ void Client::send_personal_data()
     {
         personDates = true;
 
-        new QListWidgetItem("Sending personal dates...", ui->chatDialog);
-        ui->chatDialog->scrollToBottom();
+       new QListWidgetItem("Sending personal dates...", ui->chatDialog);
+       ui->chatDialog->scrollToBottom();
 
         QByteArray block;
         QDataStream out(&block, QIODevice::WriteOnly);
@@ -206,6 +217,7 @@ void Client::send_personal_data()
         out << command;
         out << username;
         tcpSocket->write(block);
+        reg_window->hide();
     }
 }
 
@@ -247,7 +259,7 @@ void Client::whisperOnClick(QListWidgetItem* user)
     QString section = user->text();
     if (section == "Profile")
         ui->stackedWidget->setCurrentIndex(0);
-    else if(section=="Interface")
+    else if(section=="General")
         ui->stackedWidget->setCurrentIndex(1);
     else if (section == "Chat options")
         ui->stackedWidget->setCurrentIndex(2);
@@ -332,3 +344,22 @@ Client::~Client()
 {
     delete ui;
 }
+
+void Client::on_pushButton_3_clicked()
+{
+
+}
+
+void Client::on_pushButton_4_clicked()
+{
+    QStringList files = QFileDialog::getOpenFileNames
+            (
+                this,
+                tr("Select Images"),
+                QStandardPaths::writableLocation(QStandardPaths::PicturesLocation),
+                "*.jpg *.png"
+             );
+
+     ui->imageLabel->setFixedSize(100,100);
+}
+

@@ -112,6 +112,12 @@
      <height>31</height>
     </rect>
    </property>
+   <property name="sizePolicy">
+    <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+     <horstretch>0</horstretch>
+     <verstretch>0</verstretch>
+    </sizepolicy>
+   </property>
    <property name="font">
     <font>
      <family>Sitka Heading</family>
@@ -120,6 +126,15 @@
    </property>
    <property name="layoutDirection">
     <enum>Qt::RightToLeft</enum>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">QPushButton:enabled {
+    border:none;
+}
+ 
+QPushButton:disabled{
+border:none;
+ }</string>
    </property>
    <property name="text">
     <string>     Login</string>
@@ -135,7 +150,7 @@
     </size>
    </property>
    <property name="flat">
-    <bool>true</bool>
+    <bool>false</bool>
    </property>
   </widget>
  </widget>

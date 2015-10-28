@@ -120,7 +120,8 @@
       </rect>
      </property>
      <property name="styleSheet">
-      <string notr="true"/>
+      <string notr="true">border:none;
+background-color: rgb(255, 255, 255);</string>
      </property>
      <property name="text">
       <string/>
@@ -148,15 +149,15 @@
       </rect>
      </property>
      <property name="styleSheet">
-      <string notr="true">color: rgb(127, 0, 63);
-    background-color: rgb(255, 255, 255);
-  </string>
+      <string notr="true">
+  border:none;
+</string>
      </property>
      <property name="text">
       <string/>
      </property>
      <property name="icon">
-      <iconset>
+      <iconset resource="image.qrc">
        <normaloff>:/new/prefix1/Resource/smiling36.png</normaloff>:/new/prefix1/Resource/smiling36.png</iconset>
      </property>
      <property name="iconSize">
@@ -227,33 +228,6 @@
     <property name="sortingEnabled">
      <bool>true</bool>
     </property>
-    <item>
-     <property name="text">
-      <string>Машка</string>
-     </property>
-     <property name="icon">
-      <iconset>
-       <normaloff>:/new/prefix1/Resource/women16.png</normaloff>:/new/prefix1/Resource/women16.png</iconset>
-     </property>
-    </item>
-    <item>
-     <property name="text">
-      <string>Петрович</string>
-     </property>
-     <property name="icon">
-      <iconset>
-       <normaloff>:/new/prefix1/Resource/users53.png</normaloff>:/new/prefix1/Resource/users53.png</iconset>
-     </property>
-    </item>
-    <item>
-     <property name="text">
-      <string>Санек</string>
-     </property>
-     <property name="icon">
-      <iconset>
-       <normaloff>:/new/prefix1/Resource/users53.png</normaloff>:/new/prefix1/Resource/users53.png</iconset>
-     </property>
-    </item>
    </widget>
    <widget class="QListWidget" name="chatDialog">
     <property name="geometry">
@@ -308,131 +282,6 @@ background-color: rgb(235, 235, 235);</string>
      <string/>
     </property>
    </widget>
-   <widget class="QWidget" name="horizontalLayoutWidget">
-    <property name="geometry">
-     <rect>
-      <x>0</x>
-      <y>0</y>
-      <width>381</width>
-      <height>61</height>
-     </rect>
-    </property>
-    <layout class="QHBoxLayout" name="horizontalLayout" stretch="0,0,0,0,1">
-     <property name="spacing">
-      <number>15</number>
-     </property>
-     <property name="sizeConstraint">
-      <enum>QLayout::SetDefaultConstraint</enum>
-     </property>
-     <property name="leftMargin">
-      <number>8</number>
-     </property>
-     <property name="topMargin">
-      <number>5</number>
-     </property>
-     <property name="rightMargin">
-      <number>9</number>
-     </property>
-     <property name="bottomMargin">
-      <number>0</number>
-     </property>
-     <item>
-      <widget class="QPushButton" name="userSetting_button">
-       <property name="styleSheet">
-        <string notr="true">color: rgb(127, 0, 63);
-    background-color: rgb(255, 255, 255);
-  </string>
-       </property>
-       <property name="text">
-        <string/>
-       </property>
-       <property name="flat">
-        <bool>true</bool>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="newContact_Button">
-       <property name="styleSheet">
-        <string notr="true">color: rgb(127, 0, 63);
-    background-color: rgb(255, 255, 255);
-  </string>
-       </property>
-       <property name="text">
-        <string/>
-       </property>
-       <property name="flat">
-        <bool>true</bool>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <spacer name="horizontalSpacer_3">
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
-       </property>
-       <property name="sizeHint" stdset="0">
-        <size>
-         <width>26</width>
-         <height>20</height>
-        </size>
-       </property>
-      </spacer>
-     </item>
-     <item>
-      <widget class="QLabel" name="search_label">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="sizeIncrement">
-        <size>
-         <width>0</width>
-         <height>0</height>
-        </size>
-       </property>
-       <property name="baseSize">
-        <size>
-         <width>0</width>
-         <height>0</height>
-        </size>
-       </property>
-       <property name="styleSheet">
-        <string notr="true">color: rgb(127, 0, 63);
-    background-color: rgba(235, 235, 235, 90)
-</string>
-       </property>
-       <property name="frameShape">
-        <enum>QFrame::NoFrame</enum>
-       </property>
-       <property name="text">
-        <string/>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QLineEdit" name="search_line_edit">
-       <property name="styleSheet">
-        <string notr="true">
-    background-color: rgb(255, 255, 255);
-    selection-color: white;
-    selection-background-color: rgb(191, 31, 127);
-    border: 2px groove gray;
-    border-radius: 10px;
-    padding: 2px 4px;</string>
-       </property>
-       <property name="placeholderText">
-        <string>Search</string>
-       </property>
-       <property name="cursorMoveStyle">
-        <enum>Qt::LogicalMoveStyle</enum>
-       </property>
-      </widget>
-     </item>
-    </layout>
-   </widget>
    <widget class="QPushButton" name="about_user_button">
     <property name="geometry">
      <rect>
@@ -477,17 +326,27 @@ background-color: rgb(10, 88, 170);</string>
        <height>41</height>
       </rect>
      </property>
+     <property name="focusPolicy">
+      <enum>Qt::StrongFocus</enum>
+     </property>
+     <property name="acceptDrops">
+      <bool>true</bool>
+     </property>
+     <property name="whatsThis">
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+     </property>
      <property name="styleSheet">
       <string notr="true">color: rgb(127, 0, 63);
-    background-color: rgb(235, 235, 235);
+background-color: rgb(235, 235, 235);
 
- </string>
+
+    border:none;
+
+ 
+</string>
      </property>
      <property name="text">
       <string/>
-     </property>
-     <property name="flat">
-      <bool>true</bool>
      </property>
     </widget>
     <widget class="QListWidget" name="userList_3">
@@ -506,7 +365,10 @@ background-color: rgb(10, 88, 170);</string>
       </sizepolicy>
      </property>
      <property name="styleSheet">
-      <string notr="true">background-color: rgb(255, 255, 255);</string>
+      <string notr="true">background-color: rgb(255, 255, 255);
+
+  border:none;
+</string>
      </property>
      <property name="frameShape">
       <enum>QFrame::NoFrame</enum>
@@ -567,13 +429,13 @@ background-color: rgb(10, 88, 170);</string>
        </brush>
       </property>
       <property name="icon">
-       <iconset>
+       <iconset resource="image.qrc">
         <normaloff>:/new/prefix1/Resource/profile5.png</normaloff>:/new/prefix1/Resource/profile5.png</iconset>
       </property>
      </item>
      <item>
       <property name="text">
-       <string>Interface</string>
+       <string>General</string>
       </property>
       <property name="font">
        <font>
@@ -582,7 +444,7 @@ background-color: rgb(10, 88, 170);</string>
        </font>
       </property>
       <property name="icon">
-       <iconset>
+       <iconset resource="image.qrc">
         <normaloff>:/new/prefix1/Resource/squares110.png</normaloff>:/new/prefix1/Resource/squares110.png</iconset>
       </property>
      </item>
@@ -597,7 +459,7 @@ background-color: rgb(10, 88, 170);</string>
        </font>
       </property>
       <property name="icon">
-       <iconset>
+       <iconset resource="image.qrc">
         <normaloff>:/new/prefix1/Resource/write50.png</normaloff>:/new/prefix1/Resource/write50.png</iconset>
       </property>
      </item>
@@ -612,7 +474,7 @@ background-color: rgb(10, 88, 170);</string>
        </font>
       </property>
       <property name="icon">
-       <iconset>
+       <iconset resource="image.qrc">
         <normaloff>:/new/prefix1/Resource/globe grid.png</normaloff>:/new/prefix1/Resource/globe grid.png</iconset>
       </property>
      </item>
@@ -769,7 +631,7 @@ background-color: rgb(10, 88, 170);</string>
       <number>0</number>
      </property>
      <widget class="QWidget" name="page">
-      <widget class="QLabel" name="label">
+      <widget class="QLabel" name="username_label">
        <property name="geometry">
         <rect>
          <x>40</x>
@@ -781,7 +643,7 @@ background-color: rgb(10, 88, 170);</string>
        <property name="font">
         <font>
          <family>Sitka Small</family>
-         <pointsize>14</pointsize>
+         <pointsize>12</pointsize>
         </font>
        </property>
        <property name="text">
@@ -793,7 +655,7 @@ background-color: rgb(10, 88, 170);</string>
         <rect>
          <x>40</x>
          <y>110</y>
-         <width>201</width>
+         <width>311</width>
          <height>131</height>
         </rect>
        </property>
@@ -874,14 +736,36 @@ background-color: rgb(10, 88, 170);</string>
          <pixmap>:/Client/build-Chat-Desktop_Qt_5_4_1_MSVC2013_64bit-Debug/Client/ava.jpg</pixmap>
         </property>
        </widget>
+       <widget class="QLabel" name="avatar_label">
+        <property name="geometry">
+         <rect>
+          <x>180</x>
+          <y>20</y>
+          <width>121</width>
+          <height>101</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+        <property name="pixmap">
+         <pixmap resource="image.qrc">:/new/prefix1/Resource/users53.png</pixmap>
+        </property>
+        <property name="scaledContents">
+         <bool>false</bool>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignCenter</set>
+        </property>
+       </widget>
       </widget>
       <widget class="QLineEdit" name="usernameEdit">
        <property name="geometry">
         <rect>
-         <x>210</x>
+         <x>180</x>
          <y>41</y>
-         <width>121</width>
-         <height>41</height>
+         <width>151</width>
+         <height>31</height>
         </rect>
        </property>
        <property name="font">
@@ -890,27 +774,264 @@ background-color: rgb(10, 88, 170);</string>
          <pointsize>10</pointsize>
         </font>
        </property>
+       <property name="styleSheet">
+        <string notr="true"/>
+       </property>
        <property name="text">
         <string>NoName</string>
+       </property>
+       <property name="clearButtonEnabled">
+        <bool>false</bool>
        </property>
       </widget>
      </widget>
      <widget class="QWidget" name="page_3">
-      <widget class="QLabel" name="label_2">
+      <widget class="QCheckBox" name="checkBox_3">
        <property name="geometry">
         <rect>
-         <x>30</x>
-         <y>30</y>
-         <width>55</width>
-         <height>16</height>
+         <x>40</x>
+         <y>90</y>
+         <width>251</width>
+         <height>20</height>
         </rect>
        </property>
+       <property name="font">
+        <font>
+         <pointsize>10</pointsize>
+        </font>
+       </property>
        <property name="text">
-        <string>Interface</string>
+        <string>Launch when system starts</string>
        </property>
       </widget>
+      <widget class="QWidget" name="layoutWidget">
+       <property name="geometry">
+        <rect>
+         <x>40</x>
+         <y>150</y>
+         <width>681</width>
+         <height>30</height>
+        </rect>
+       </property>
+       <layout class="QHBoxLayout" name="horizontalLayout_2">
+        <item>
+         <widget class="QLabel" name="label_3">
+          <property name="font">
+           <font>
+            <pointsize>10</pointsize>
+           </font>
+          </property>
+          <property name="text">
+           <string>Download path:</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="pushButton_2">
+          <property name="text">
+           <string>PushButton</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <spacer name="horizontalSpacer_2">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>40</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+        <item>
+         <widget class="QLabel" name="label_6">
+          <property name="font">
+           <font>
+            <pointsize>10</pointsize>
+           </font>
+          </property>
+          <property name="text">
+           <string>Path.</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <spacer name="horizontalSpacer">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeType">
+           <enum>QSizePolicy::Expanding</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>30</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+       </layout>
+      </widget>
      </widget>
-     <widget class="QWidget" name="page_2"/>
+     <widget class="QWidget" name="page_2">
+      <widget class="QWidget" name="verticalLayoutWidget">
+       <property name="geometry">
+        <rect>
+         <x>40</x>
+         <y>40</y>
+         <width>291</width>
+         <height>291</height>
+        </rect>
+       </property>
+       <layout class="QVBoxLayout" name="verticalLayout">
+        <item>
+         <widget class="QCheckBox" name="checkBox_6">
+          <property name="font">
+           <font>
+            <pointsize>10</pointsize>
+           </font>
+          </property>
+          <property name="text">
+           <string>Notification</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QCheckBox" name="checkBox_7">
+          <property name="font">
+           <font>
+            <pointsize>10</pointsize>
+           </font>
+          </property>
+          <property name="text">
+           <string>Play Sound</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QCheckBox" name="checkBox_4">
+          <property name="font">
+           <font>
+            <pointsize>10</pointsize>
+           </font>
+          </property>
+          <property name="text">
+           <string>Send by Enter</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QCheckBox" name="checkBox_5">
+          <property name="font">
+           <font>
+            <pointsize>10</pointsize>
+           </font>
+          </property>
+          <property name="text">
+           <string>Send by Ctrl + Enter</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="layoutWidget">
+       <property name="geometry">
+        <rect>
+         <x>40</x>
+         <y>340</y>
+         <width>281</width>
+         <height>161</height>
+        </rect>
+       </property>
+       <layout class="QVBoxLayout" name="verticalLayout_3" stretch="0,1">
+        <property name="spacing">
+         <number>0</number>
+        </property>
+        <property name="leftMargin">
+         <number>0</number>
+        </property>
+        <property name="topMargin">
+         <number>0</number>
+        </property>
+        <item>
+         <widget class="QLabel" name="label_7">
+          <property name="font">
+           <font>
+            <pointsize>10</pointsize>
+           </font>
+          </property>
+          <property name="text">
+           <string>Chat background:</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <layout class="QHBoxLayout" name="horizontalLayout_3">
+          <item>
+           <layout class="QVBoxLayout" name="verticalLayout_2">
+            <item>
+             <widget class="QPushButton" name="pushButton_3">
+              <property name="font">
+               <font>
+                <pointsize>10</pointsize>
+               </font>
+              </property>
+              <property name="layoutDirection">
+               <enum>Qt::LeftToRight</enum>
+              </property>
+              <property name="text">
+               <string>Default color:</string>
+              </property>
+              <property name="flat">
+               <bool>true</bool>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPushButton" name="pushButton_4">
+              <property name="font">
+               <font>
+                <pointsize>10</pointsize>
+               </font>
+              </property>
+              <property name="text">
+               <string> Load from file:</string>
+              </property>
+              <property name="flat">
+               <bool>true</bool>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+          <item>
+           <widget class="QLabel" name="imageLabel">
+            <property name="maximumSize">
+             <size>
+              <width>120</width>
+              <height>120</height>
+             </size>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+            <property name="pixmap">
+             <pixmap resource="image.qrc">:/new/prefix1/Resource/NrSUEa1npvk.jpg</pixmap>
+            </property>
+            <property name="scaledContents">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+       </layout>
+      </widget>
+     </widget>
     </widget>
     <zorder>userList_3</zorder>
     <zorder>chatDialog_3</zorder>
@@ -923,6 +1044,118 @@ background-color: rgb(10, 88, 170);</string>
     <zorder>background_under_chat_4</zorder>
     <zorder>close_setting_button_2</zorder>
    </widget>
+   <widget class="QLineEdit" name="search_line_edit">
+    <property name="geometry">
+     <rect>
+      <x>220</x>
+      <y>20</y>
+      <width>151</width>
+      <height>26</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">
+    background-color: rgb(255, 255, 255);
+    selection-color: white;
+    selection-background-color: rgb(191, 31, 127);
+    border: 2px groove gray;
+    border-radius: 10px;
+    padding: 2px 4px;</string>
+    </property>
+    <property name="placeholderText">
+     <string>Search</string>
+    </property>
+    <property name="cursorMoveStyle">
+     <enum>Qt::LogicalMoveStyle</enum>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="newContact_Button">
+    <property name="geometry">
+     <rect>
+      <x>65</x>
+      <y>8</y>
+      <width>51</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">
+  border:none;
+</string>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+    <property name="iconSize">
+     <size>
+      <width>23</width>
+      <height>23</height>
+     </size>
+    </property>
+    <property name="flat">
+     <bool>true</bool>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="userSetting_button">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>10</y>
+      <width>51</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">
+  border:none;
+</string>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+    <property name="flat">
+     <bool>true</bool>
+    </property>
+   </widget>
+   <widget class="QLabel" name="search_label">
+    <property name="geometry">
+     <rect>
+      <x>170</x>
+      <y>10</y>
+      <width>51</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="sizePolicy">
+     <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+      <horstretch>0</horstretch>
+      <verstretch>0</verstretch>
+     </sizepolicy>
+    </property>
+    <property name="sizeIncrement">
+     <size>
+      <width>0</width>
+      <height>0</height>
+     </size>
+    </property>
+    <property name="baseSize">
+     <size>
+      <width>0</width>
+      <height>0</height>
+     </size>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">color: rgb(127, 0, 63);
+    background-color: rgba(235, 235, 235, 90)
+</string>
+    </property>
+    <property name="frameShape">
+     <enum>QFrame::NoFrame</enum>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+   </widget>
    <zorder>line</zorder>
    <zorder>widget</zorder>
    <zorder>userList</zorder>
@@ -932,6 +1165,10 @@ background-color: rgb(10, 88, 170);</string>
    <zorder>about_user_button</zorder>
    <zorder>connect_button</zorder>
    <zorder>chatDialog</zorder>
+   <zorder>userSetting_button</zorder>
+   <zorder>newContact_Button</zorder>
+   <zorder>search_label</zorder>
+   <zorder>search_line_edit</zorder>
    <zorder>widget_2</zorder>
   </widget>
   <action name="actionShowHideWindow">
@@ -946,6 +1183,8 @@ background-color: rgb(10, 88, 170);</string>
   </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
- <resources/>
+ <resources>
+  <include location="image.qrc"/>
+ </resources>
  <connections/>
 </ui>

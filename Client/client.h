@@ -14,6 +14,8 @@
 #include "findcontacts.h"
 #include "trayicon.h"
 #include "registration.h"
+#include <QtConcurrent/QtConcurrent>
+#include <QStackedWidget>
 
 namespace Ui {
 class Client;
@@ -27,9 +29,6 @@ public:
     explicit Client(QWidget *parent = 0);
     ~Client();
     bool t;
-
-public slots:
-    void recieveData(QString str);
 
 protected:
     void closeEvent(QCloseEvent *event);
@@ -54,6 +53,13 @@ private slots:
     void on_actionShowHideWindow_triggered();
     void on_actionExit_triggered();
 
+    void on_pushButton_3_clicked();
+    void on_pushButton_4_clicked();
+
+
+public slots:
+    void recieveData(QString str);
+
 private:
     Ui::Client *ui;
 
@@ -66,11 +72,12 @@ private:
     EmojiFrame *frameEmoji;
     findcontacts *findcont;
     registration *reg_window;
+
+    QStackedWidget *stackchat;
     QSound *soundFrom;
     QSound *soundTo;
     QString name;
     bool personDates;
-    bool sethide;
 
 };
 

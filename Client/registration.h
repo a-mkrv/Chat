@@ -1,7 +1,7 @@
 #ifndef REGISTRATION_H
 #define REGISTRATION_H
 
-#include <QWidget>
+#include <QDialog>
 
 namespace Ui {
 class registration;
@@ -16,8 +16,16 @@ public:
     ~registration();
     bool ok;
     Ui::registration *ui;
-    QString on_pushButton_clicked();
 
+
+signals:
+    void sendData(QString str);
+
+private slots:
+    void onButtonSend();
+
+private slots:
+    void on_pushButton_clicked();
 };
 
 #endif // REGISTRATION_H
