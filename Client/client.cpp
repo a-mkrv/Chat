@@ -9,9 +9,11 @@ Client::Client(QWidget *parent) : QMainWindow(parent), ui(new Ui::Client)
 {
     ui->setupUi(this);
     frameEmoji = new EmojiFrame();
+    emojiMan = new EmojiManager();
 
     reg_window = new registration();
     connect(reg_window, SIGNAL(sendData(QString)), this, SLOT(recieveData(QString)));
+    connect(reg_window, SIGNAL(sendFindContact(QString)), this, SLOT(recieveUser(QString)));
 
     stackchat = new QStackedWidget;
 
@@ -44,7 +46,7 @@ Client::Client(QWidget *parent) : QMainWindow(parent), ui(new Ui::Client)
     QPixmap search_mes(":/new/prefix1/Resource/magnifying glass57.png");
 
     ui->chatDialog->setAlternatingRowColors(true);
-    ui->chatDialog->setStyleSheet(""" color: white; background-image: url(:/new/prefix1/Resource/bumaga.jpg);background-attachment: scroll;""");
+    ui->chatDialog->setStyleSheet(""" color: white; background-image: url(:/new/prefix1/Resource/bg3.jpg);background-attachment: scroll;""");
 
     ui->close_setting_button_2->setIcon(ButtonIcon);
     ui->close_setting_button_2->setIconSize(back_to_menu.rect().size()/2);
@@ -64,6 +66,7 @@ Client::Client(QWidget *parent) : QMainWindow(parent), ui(new Ui::Client)
     ui->widget_2->hide();
     tcpSocket = new QTcpSocket(this);
 
+    connect(frameEmoji, SIGNAL(sendEmoji(QString)), this, SLOT(insertEmoticon(QString)));
     connect(tcpSocket, SIGNAL(readyRead()), this, SLOT(getMessage()));
     connect(tcpSocket, SIGNAL(error(QAbstractSocket::SocketError)), this, SLOT(show_Error(QAbstractSocket::SocketError)));
     connect(tcpSocket, SIGNAL(connected()), this, SLOT(send_personal_data()));
@@ -79,7 +82,6 @@ void Client::recieveData(QString str)
 {
    if(str!="")
    {
-
         name = str;
         name.replace(" ", "_");
         this->show();
@@ -87,10 +89,46 @@ void Client::recieveData(QString str)
    }
 }
 
+void Client::recieveUser(QString str)
+{
+
+    if(str!="")
+    {
+        ui->editText->setText("123");
+    }
+}
 
 void Client::on_sendMessage_clicked()
 {
-    QString message = ui->editText->text();
+    QRegExp rx("<a [^>]*name=\"([^\"]+)\"[^>]*>");
+
+    QString str = ui->editText->text();
+
+    QStringList list;
+    list.clear();
+    int pos = 0;
+
+    while ((pos = rx.indexIn(str, pos)) != -1) {
+        list << rx.cap(1);
+        pos += rx.matchedLength();
+    }
+
+    for (int i = 0; i < list.count(); i++) {
+        QString emojiNumber = list.at(i);
+
+        QString searchTag = QString("<a name=\"%1\"></a>")
+                .arg(emojiNumber);
+
+        QString replTag = emojiMan->getEmojiSymbolFromNumber(emojiNumber);
+
+        str = str.replace(searchTag, replTag);
+    }
+
+    QTextDocument doc;
+    doc.setHtml(str);
+
+    //return doc.toPlainText();
+    QString message = doc.toPlainText();
     ui->editText->clear();
 
     blockSize = 0;
@@ -115,6 +153,39 @@ void Client::on_sendMessage_clicked()
     }
 }
 
+void Client::insertEmoticon(QString symbol)
+{
+    QTextCursor cursor(ui->textEdit->textCursor());
+
+    if (!cursor.isNull()) {
+        cursor.insertHtml(symbol);
+    }
+
+    QTextCursor cursor2(ui->textEdit->document()->find(symbol));
+
+    QString emojiNumber = emojiMan->getEmojiNumberFromSymbol(symbol);
+
+
+    QString binDir = QCoreApplication::applicationDirPath();
+    QString dataDir = binDir;
+    dataDir = QDir::cleanPath(dataDir + "/");
+
+    QDir iconsLocation(dataDir + "/data/icons");
+
+
+    QString s = QString("%1/x-%2.png")
+            .arg(iconsLocation.absolutePath())
+            .arg(emojiNumber);
+
+    if (!cursor2.isNull()) {
+        QString imgTag = QString("<img src=\"%1\" id=\"%2\" />")
+                .arg(s)
+                .arg(emojiNumber);
+
+        cursor2.insertHtml(imgTag);
+    }
+}
+
 void Client::on_connect_button_clicked()
 {
     QString hostname = "127.0.0.1";
@@ -136,7 +207,7 @@ void Client::getMessage()
     QString message;
     in >> message;
     qDebug() << message;
-    enum class COMMAND { NONE, USERLIST};
+    enum class COMMAND { NONE, USERLIST, FINDUSER};
     COMMAND cmd = COMMAND::NONE;
 
     QStringRef checkCmd(&message, 0, 5);
@@ -158,13 +229,18 @@ void Client::getMessage()
 
         for (auto i : commandList)
         {
-
             q = new QListWidgetItem(i, ui->userList);
             q->setSizeHint(QSize(0,65));
             q->setIcon(pic);
         }
         break;
-}
+    }
+    case COMMAND::FINDUSER:
+    {
+        QString find_user;
+
+        break;
+    }
     default:
        soundFrom->play();
        new QListWidgetItem(message, ui->chatDialog);

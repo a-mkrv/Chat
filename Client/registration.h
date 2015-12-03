@@ -20,9 +20,12 @@ public:
 
 signals:
     void sendData(QString str);
+    void sendFindContact(QString str);
+
 
 private slots:
     void onButtonSend();
+    void onButtonSendUser();
 
 private slots:
     void on_pushButton_clicked();

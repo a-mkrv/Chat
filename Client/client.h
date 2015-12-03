@@ -16,6 +16,9 @@
 #include "registration.h"
 #include <QtConcurrent/QtConcurrent>
 #include <QStackedWidget>
+#include "listwidgetemoji.h"
+#include <QDir>
+#include <QCoreApplication>
 
 namespace Ui {
 class Client;
@@ -52,13 +55,14 @@ private slots:
     void showHideWindow();
     void on_actionShowHideWindow_triggered();
     void on_actionExit_triggered();
-
+    void insertEmoticon(QString symbol);
     void on_pushButton_3_clicked();
     void on_pushButton_4_clicked();
 
 
 public slots:
     void recieveData(QString str);
+    void recieveUser(QString str);
 
 private:
     Ui::Client *ui;
@@ -69,6 +73,7 @@ private:
     QTcpSocket *tcpSocket;
     quint16 blockSize;
     QString getIP();
+    EmojiManager *emojiMan;
     EmojiFrame *frameEmoji;
     findcontacts *findcont;
     registration *reg_window;

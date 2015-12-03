@@ -8,6 +8,7 @@ registration::registration(QWidget *parent) :
     ui->setupUi(this);
 
     connect(ui->pushButton, SIGNAL(clicked()), this, SLOT(onButtonSend()));
+    connect(ui->pushButton, SIGNAL(clicked()), this, SLOT(onButtonSendUser()));
 
     ui->pass_label->setBuddy(ui->pass_enter);
     ui->pass_enter->setEchoMode(QLineEdit::Password);
@@ -17,6 +18,11 @@ registration::registration(QWidget *parent) :
 void registration::onButtonSend()
 {
     emit sendData(ui->username_enter->text().simplified());
+}
+
+void registration::onButtonSendUser()
+{
+    emit sendFindContact(ui->username_enter->text().simplified());
 }
 
 void registration::on_pushButton_clicked()
