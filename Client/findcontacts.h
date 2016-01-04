@@ -21,6 +21,9 @@ public:
 private:
     Ui::findcontacts *ui;
 
+signals:
+    void findUsers(QString str);
+
 private slots:
     void on_invite_cont_button_clicked();
 };

@@ -13,6 +13,7 @@ findcontacts::findcontacts(QWidget *parent) :
 
     show();
 
+    connect(ui->invite_cont_button, SIGNAL(clicked()), this, SLOT(on_invite_cont_button_clicked()));
     QPropertyAnimation* animation = new QPropertyAnimation(this, "windowOpacity");
 
     animation->setDuration(2000);
@@ -29,6 +30,7 @@ findcontacts::~findcontacts()
 
 void findcontacts::on_invite_cont_button_clicked()
 {
+    emit findUsers(ui->username_lineedit->text().simplified());
     username = ui->username_lineedit->text();
 
 }

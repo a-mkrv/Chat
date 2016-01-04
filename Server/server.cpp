@@ -190,6 +190,24 @@ void Server::getMessage()
     QStringList messageTokens;
     messageTokens = message.split(" ", QString::SkipEmptyParts);
 
+    QString user_name;
+    int k = message.size();
+    //if(message[0]=='U' && message[1]=='F' && message[2]==':')
+   // {
+
+      //  for(int i=0; i<k-1; i++)
+      //  {
+       //     user_name[i]=message[i+2];
+       // i++;}
+
+       // qDebug() << user_name + "USER";
+
+       // for (auto i : userList)
+        //{
+        //    qDebug() << i.second;
+
+        //}
+   // }
     int command = 0; //0 - пусто, 1 - имя пользователя, 2 - команда
 
     if (message == "_USR_")
@@ -198,6 +216,17 @@ void Server::getMessage()
     if (messageTokens.at(0) == "_UCD_")
     {
         command = 2;
+    }
+    else
+    {
+         for (auto i : userList)
+         {
+             QString qw = i.second;
+             if (message == qw){
+                 qDebug() << "URA";
+                 break;
+             }
+         }
     }
 
     switch (command)

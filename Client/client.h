@@ -58,11 +58,19 @@ private slots:
     void insertEmoticon(QString symbol);
     void on_pushButton_3_clicked();
     void on_pushButton_4_clicked();
+    void findtoserv(QString str);
 
+
+    void on_radioButton_2_clicked();
+
+    void on_radioButton_clicked();
+
+    void on_Download_path_PB_clicked();
 
 public slots:
     void recieveData(QString str);
     void recieveUser(QString str);
+
 
 private:
     Ui::Client *ui;
@@ -82,6 +90,7 @@ private:
     QSound *soundFrom;
     QSound *soundTo;
     QString name;
+    QString download_path;
     bool personDates;
 
 };

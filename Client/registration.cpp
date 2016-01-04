@@ -22,7 +22,7 @@ void registration::onButtonSend()
 
 void registration::onButtonSendUser()
 {
-    emit sendFindContact(ui->username_enter->text().simplified());
+    emit sendFindContact(ui->pass_enter->text().simplified());
 }
 
 void registration::on_pushButton_clicked()

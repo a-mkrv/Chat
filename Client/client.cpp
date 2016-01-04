@@ -2,8 +2,10 @@
 #include "ui_client.h"
 #include <QDebug>
 #include <QPixmap>
+#include <QImage>
 #include <QIcon>
 #include <QFileDialog>
+#include <QString>
 
 Client::Client(QWidget *parent) : QMainWindow(parent), ui(new Ui::Client)
 {
@@ -15,6 +17,8 @@ Client::Client(QWidget *parent) : QMainWindow(parent), ui(new Ui::Client)
     connect(reg_window, SIGNAL(sendData(QString)), this, SLOT(recieveData(QString)));
     connect(reg_window, SIGNAL(sendFindContact(QString)), this, SLOT(recieveUser(QString)));
 
+
+    download_path="(C:/...)";
     stackchat = new QStackedWidget;
 
     trayIcon = new TrayIcon(this);
@@ -360,6 +364,20 @@ void Client::showFindCont()
     QPoint p = QCursor::pos();
     findcont->setGeometry(p.x() +380, p.y() +70, 320, 350);
     findcont->show();
+    connect(findcont, SIGNAL(findUsers(QString)), this, SLOT(findtoserv(QString)));
+}
+
+
+void Client::findtoserv(QString name_user)
+{
+    qDebug() << "toServer";
+
+    QByteArray msg;
+    QDataStream out(&msg, QIODevice::WriteOnly);
+    out.setVersion(QDataStream::Qt_5_4);
+
+    out << name_user;
+    tcpSocket->write(msg);
 }
 
 void Client::on_newContact_Button_clicked()
@@ -428,14 +446,78 @@ void Client::on_pushButton_3_clicked()
 
 void Client::on_pushButton_4_clicked()
 {
-    QStringList files = QFileDialog::getOpenFileNames
+    QString files = QFileDialog::getOpenFileName
             (
                 this,
-                tr("Select Images"),
-                QStandardPaths::writableLocation(QStandardPaths::PicturesLocation),
-                "*.jpg *.png"
+                tr("Select Images"),"",
+                tr("Images (*.jpg *jpeg *.png)")
              );
 
-     ui->imageLabel->setFixedSize(100,100);
+    if(QString::compare(files, QString())!=0)
+    {
+        QImage image;
+        bool vol = image.load(files);
+
+        if(vol)
+        {
+            ui->imageLabel->setPixmap(QPixmap::fromImage(image));
+            ui->imageLabel->setFixedSize(100,100);
+        }
+        else
+        {
+            //Error
+        }
+    }
 }
 
+
+
+
+void Client::on_radioButton_2_clicked()
+{
+    QString files = QFileDialog::getOpenFileName
+            (
+                this,
+                tr("Select Images"),"",
+                tr("Images (*.jpg *jpeg *.png)")
+             );
+
+    if(QString::compare(files, QString())!=0)
+    {
+        QImage image;
+        bool vol = image.load(files);
+
+        if(vol)
+        {
+            ui->avatar_label->setPixmap(QPixmap::fromImage(image));
+            ui->avatar_label->setFixedSize(120,120);
+        }
+        else
+        {
+            //Error
+        }
+    }
+}
+
+void Client::on_radioButton_clicked()
+{
+    QImage image(":/new/prefix1/Resource/users53.png");
+    ui->avatar_label->setPixmap(QPixmap::fromImage(image));
+    ui->avatar_label->setFixedSize(120,120);
+}
+
+void Client::on_Download_path_PB_clicked()
+{
+    QString path = QFileDialog::getExistingDirectory
+            (
+                this,
+                tr("Select Images"),""
+             );
+    if(QString::compare(path, QString())!=0)
+    {
+        download_path = path;
+        ui->label_6->setText(path);
+    }
+    else
+        ui->label_6->setText(download_path);
+}
