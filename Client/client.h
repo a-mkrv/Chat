@@ -91,8 +91,7 @@ private:
     registration *reg_window;
 
     QStackedWidget *stackchat;
-    QSound *soundFrom;
-    QSound *soundTo;
+
     QString name;
     QString download_path;
     bool personDates;

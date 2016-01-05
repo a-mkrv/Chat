@@ -644,7 +644,7 @@ background-color: rgb(235, 235, 235);
       <string notr="true">background-color: rgb(255, 255, 255);</string>
      </property>
      <property name="currentIndex">
-      <number>2</number>
+      <number>0</number>
      </property>
      <widget class="QWidget" name="page">
       <widget class="QLabel" name="username_label">
@@ -783,9 +783,9 @@ background-color: rgb(235, 235, 235);
       <widget class="QLineEdit" name="usernameEdit">
        <property name="geometry">
         <rect>
-         <x>170</x>
+         <x>150</x>
          <y>41</y>
-         <width>181</width>
+         <width>211</width>
          <height>31</height>
         </rect>
        </property>

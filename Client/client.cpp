@@ -34,8 +34,7 @@ Client::Client(QWidget *parent) : QMainWindow(parent), ui(new Ui::Client)
 
     ui->chatDialog->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Maximum);
     ui->chatDialog->clearSelection();
-    soundFrom = new QSound(":/new/prefix1/Resource/sound_from.wav");
-    soundTo = new QSound(":/new/prefix1/Resource/sound_to.wav");
+
 
     QPixmap back_to_menu(":/new/prefix1/Resource/double78.png");
     QIcon ButtonIcon(back_to_menu);
@@ -124,6 +123,7 @@ void Client::recieveData(QString str, QString pas)
    {
         name = str;
         name.replace(" ", "_");
+        ui->usernameEdit->setText(name);
         this->show();
         trayIcon->show();
    }
@@ -131,10 +131,10 @@ void Client::recieveData(QString str, QString pas)
 
 void Client::recieveUser(QString str)
 {
-    if(str!="")
-    {
-        ui->editText->setText("123");
-    }
+    //if(str!="")
+    //{
+    //    ui->editText->setText("123");
+    //}
 }
 
 void Client::on_sendMessage_clicked()
@@ -163,7 +163,7 @@ void Client::on_sendMessage_clicked()
         str = str.replace(searchTag, replTag);
     }
 
-   // QTextDocument doc;
+    // QTextDocument doc;
     //doc.setHtml(str);
 
     //return doc.toPlainText();
@@ -183,7 +183,7 @@ void Client::on_sendMessage_clicked()
             QDataStream out(&msg, QIODevice::WriteOnly);
             out.setVersion(QDataStream::Qt_5_4);
             new QListWidgetItem(name + ": " +  message, ui->chatDialog);
-           // ui->chatDialog->scrollToBottom();
+            QSound::play(":/new/prefix1/Resource/to.wav");
 
             out << message;
             tcpSocket->write(msg);
@@ -229,8 +229,6 @@ void Client::on_connect_button_clicked()
     QString status = tr("-> Connecting to 127.0.0.1 on port 55155.");
 
     new QListWidgetItem(status, ui->chatDialog);
-   // ui->chatDialog->scrollToBottom();
-
     tcpSocket->abort();
     tcpSocket->connectToHost(hostname, port);
 }
@@ -278,7 +276,7 @@ void Client::getMessage()
         break;
     }
     default:
-       soundFrom->play();
+       QSound::play(":/new/prefix1/Resource/from.wav");
        new QListWidgetItem(message, ui->chatDialog);
        ui->chatDialog->scrollToBottom();
     }
@@ -324,7 +322,7 @@ void Client::send_personal_data()
         out.setVersion(QDataStream::Qt_5_4);
 
         QString command = "_USR_";
-        QString username = name;
+        QString username = ui->usernameEdit->text();
         out << command;
         out << username;
         tcpSocket->write(block);
@@ -335,7 +333,6 @@ void Client::send_personal_data()
 void Client::onDisconnect()
 {
     new QListWidgetItem("Disconnected..", ui->chatDialog);
-   // ui->chatDialog->scrollToBottom();
     ui->userList->clear();
     personDates = false;
 }
@@ -348,7 +345,6 @@ void Client::sendUserCommand(QString command)
 
     command = "_UCD_ " + command;
     out << command;
-    soundTo->play();
     tcpSocket->write(msg);
 }
 
@@ -401,8 +397,6 @@ void Client::showFindCont()
 
 void Client::findtoserv(QString name_user)
 {
-    qDebug() << "toServer";
-
     QByteArray msg;
     QDataStream out(&msg, QIODevice::WriteOnly);
     out.setVersion(QDataStream::Qt_5_4);
