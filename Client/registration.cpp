@@ -17,7 +17,7 @@ registration::registration(QWidget *parent) :
 
 void registration::onButtonSend()
 {
-    emit sendData(ui->username_enter->text().simplified());
+    emit sendData(ui->username_enter->text().simplified(), ui->pass_enter->text().simplified());
 }
 
 void registration::onButtonSendUser()
@@ -28,8 +28,21 @@ void registration::onButtonSendUser()
 void registration::on_pushButton_clicked()
 {
     QString str = ui->username_enter->text().simplified();
-    if(str!="")
+    if(str!="" && ui->pass_enter->text().simplified()!="")
     this->hide();
+}
+
+void registration::keyReleaseEvent(QKeyEvent *event)
+{
+   switch(event->key()) {
+   case Qt::Key_Return:
+       if(ui->username_enter->text().simplified()!="" && ui->pass_enter->text().simplified()!="")
+       {
+           emit sendData(ui->username_enter->text().simplified(), ui->pass_enter->text().simplified());
+           this->hide();
+       }
+      break;
+   }
 }
 
 registration::~registration()

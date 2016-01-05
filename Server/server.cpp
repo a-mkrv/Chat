@@ -179,7 +179,9 @@ void Server::sendToID(QString message, int ID)
 
 void Server::getMessage()
 {
+
     QTcpSocket *client = qobject_cast<QTcpSocket*>(sender());
+
     QDataStream in(client);
     in.setVersion(QDataStream::Qt_5_4);
 

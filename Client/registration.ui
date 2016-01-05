@@ -149,6 +149,12 @@ border:none;
      <height>30</height>
     </size>
    </property>
+   <property name="autoDefault">
+    <bool>false</bool>
+   </property>
+   <property name="default">
+    <bool>false</bool>
+   </property>
    <property name="flat">
     <bool>false</bool>
    </property>

@@ -8,7 +8,7 @@
 #include <QTimer>
 #include <QDateTime>
 #include <QList>
-
+#include <QFile>
 
 namespace Ui {
 class Server;
@@ -44,6 +44,7 @@ private:
     QString getUsername(int ID);                //Получить ник пользователя
     QString timeconnect();                      //Время соединения
     void doCommand(QString command, int ID);
+    quint64 nextBlockSize;
 };
 
 #endif // SERVER_H

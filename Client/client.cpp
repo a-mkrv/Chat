@@ -6,6 +6,8 @@
 #include <QIcon>
 #include <QFileDialog>
 #include <QString>
+#include <QPainter>
+
 
 Client::Client(QWidget *parent) : QMainWindow(parent), ui(new Ui::Client)
 {
@@ -14,10 +16,10 @@ Client::Client(QWidget *parent) : QMainWindow(parent), ui(new Ui::Client)
     emojiMan = new EmojiManager();
 
     reg_window = new registration();
-    connect(reg_window, SIGNAL(sendData(QString)), this, SLOT(recieveData(QString)));
+    connect(reg_window, SIGNAL(sendData(QString, QString)), this, SLOT(recieveData(QString, QString)));
     connect(reg_window, SIGNAL(sendFindContact(QString)), this, SLOT(recieveUser(QString)));
 
-
+    ui->RB_sendEnter->setChecked(true);
     download_path="(C:/...)";
     stackchat = new QStackedWidget;
 
@@ -31,7 +33,7 @@ Client::Client(QWidget *parent) : QMainWindow(parent), ui(new Ui::Client)
     trayIcon->hide();
 
     ui->chatDialog->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Maximum);
-
+    ui->chatDialog->clearSelection();
     soundFrom = new QSound(":/new/prefix1/Resource/sound_from.wav");
     soundTo = new QSound(":/new/prefix1/Resource/sound_to.wav");
 
@@ -49,7 +51,9 @@ Client::Client(QWidget *parent) : QMainWindow(parent), ui(new Ui::Client)
 
     QPixmap search_mes(":/new/prefix1/Resource/magnifying glass57.png");
 
-    ui->chatDialog->setAlternatingRowColors(true);
+    QImage image(":/new/prefix1/Resource/bumaga.jpg");
+    ui->chat_back_lab->setPixmap(QPixmap::fromImage(image));
+
     ui->chatDialog->setStyleSheet(""" color: white; background-image: url(:/new/prefix1/Resource/bg3.jpg);background-attachment: scroll;""");
 
     ui->close_setting_button_2->setIcon(ButtonIcon);
@@ -68,6 +72,7 @@ Client::Client(QWidget *parent) : QMainWindow(parent), ui(new Ui::Client)
 
     personDates = false;
     ui->widget_2->hide();
+
     tcpSocket = new QTcpSocket(this);
 
     connect(frameEmoji, SIGNAL(sendEmoji(QString)), this, SLOT(insertEmoticon(QString)));
@@ -79,12 +84,43 @@ Client::Client(QWidget *parent) : QMainWindow(parent), ui(new Ui::Client)
     connect(ui->close_setting_button_2, SIGNAL(clicked()), this, SLOT(on_close_setting_button_clicked()));
     connect(ui->userList_3, SIGNAL(itemClicked(QListWidgetItem*)), SLOT(whisperOnClick(QListWidgetItem*)));
     connect(ui->actionExit, SIGNAL(triggered()), this, SLOT(close()));
+    ui->chatDialog->setStyleSheet("background: transparent;");
+
 }
 
-
-void Client::recieveData(QString str)
+ void Client::keyReleaseEvent(QKeyEvent *event)
 {
-   if(str!="")
+     if(ui->RB_sendEnter->isChecked())
+     {
+    switch(event->key()) {
+    case Qt::Key_Escape:
+       // Обработка нажатия Esc
+       break;
+    case Qt::Key_Enter:
+    case Qt::Key_Return:
+        if(ui->widget_2->isHidden() && ui->RB_sendEnter->isChecked())
+       on_sendMessage_clicked();
+       break;
+     // Обработчики других клавиш
+    }
+    }
+
+     if(ui->RB_send_CEnter->isChecked())
+     {
+        if(event->modifiers()==Qt::ControlModifier)
+        {
+            if(event->key() == Qt::Key_Return)
+            {
+                if(ui->widget_2->isHidden() && ui->RB_send_CEnter->isChecked())
+                    on_sendMessage_clicked();
+       }
+     }
+   }
+}
+
+void Client::recieveData(QString str, QString pas)
+{
+   if(str!="" && pas!="")
    {
         name = str;
         name.replace(" ", "_");
@@ -95,7 +131,6 @@ void Client::recieveData(QString str)
 
 void Client::recieveUser(QString str)
 {
-
     if(str!="")
     {
         ui->editText->setText("123");
@@ -105,10 +140,10 @@ void Client::recieveUser(QString str)
 void Client::on_sendMessage_clicked()
 {
     QRegExp rx("<a [^>]*name=\"([^\"]+)\"[^>]*>");
-
     QString str = ui->editText->text();
-
+    QString message = str;
     QStringList list;
+
     list.clear();
     int pos = 0;
 
@@ -128,11 +163,10 @@ void Client::on_sendMessage_clicked()
         str = str.replace(searchTag, replTag);
     }
 
-    QTextDocument doc;
-    doc.setHtml(str);
+   // QTextDocument doc;
+    //doc.setHtml(str);
 
     //return doc.toPlainText();
-    QString message = doc.toPlainText();
     ui->editText->clear();
 
     blockSize = 0;
@@ -145,11 +179,11 @@ void Client::on_sendMessage_clicked()
         }
         else                            //Сообщение на сервер
         {
-            qDebug() << "toServer";
-
             QByteArray msg;
             QDataStream out(&msg, QIODevice::WriteOnly);
             out.setVersion(QDataStream::Qt_5_4);
+            new QListWidgetItem(name + ": " +  message, ui->chatDialog);
+           // ui->chatDialog->scrollToBottom();
 
             out << message;
             tcpSocket->write(msg);
@@ -168,8 +202,6 @@ void Client::insertEmoticon(QString symbol)
     QTextCursor cursor2(ui->textEdit->document()->find(symbol));
 
     QString emojiNumber = emojiMan->getEmojiNumberFromSymbol(symbol);
-
-
     QString binDir = QCoreApplication::applicationDirPath();
     QString dataDir = binDir;
     dataDir = QDir::cleanPath(dataDir + "/");
@@ -197,7 +229,7 @@ void Client::on_connect_button_clicked()
     QString status = tr("-> Connecting to 127.0.0.1 on port 55155.");
 
     new QListWidgetItem(status, ui->chatDialog);
-    ui->chatDialog->scrollToBottom();
+   // ui->chatDialog->scrollToBottom();
 
     tcpSocket->abort();
     tcpSocket->connectToHost(hostname, port);
@@ -210,7 +242,8 @@ void Client::getMessage()
 
     QString message;
     in >> message;
-    qDebug() << message;
+
+
     enum class COMMAND { NONE, USERLIST, FINDUSER};
     COMMAND cmd = COMMAND::NONE;
 
@@ -218,7 +251,6 @@ void Client::getMessage()
     if (checkCmd == "_LST_")
         cmd = COMMAND::USERLIST;
 
-    static int i=1;
     QStringList commandList;
     QIcon pic(":/new/prefix1/Resource/profile5.png");
     switch (cmd)
@@ -250,7 +282,6 @@ void Client::getMessage()
        new QListWidgetItem(message, ui->chatDialog);
        ui->chatDialog->scrollToBottom();
     }
-    i++;
 }
 
 
@@ -286,7 +317,7 @@ void Client::send_personal_data()
         personDates = true;
 
        new QListWidgetItem("Sending personal dates...", ui->chatDialog);
-       ui->chatDialog->scrollToBottom();
+      // ui->chatDialog->scrollToBottom();
 
         QByteArray block;
         QDataStream out(&block, QIODevice::WriteOnly);
@@ -304,7 +335,7 @@ void Client::send_personal_data()
 void Client::onDisconnect()
 {
     new QListWidgetItem("Disconnected..", ui->chatDialog);
-    ui->chatDialog->scrollToBottom();
+   // ui->chatDialog->scrollToBottom();
     ui->userList->clear();
     personDates = false;
 }
@@ -439,12 +470,26 @@ Client::~Client()
     delete ui;
 }
 
-void Client::on_pushButton_3_clicked()
+void Client::on_PB_SelColor_clicked()
 {
+    QColor color = QColorDialog::getColor(Qt::black, this, "Text Color",  QColorDialog::DontUseNativeDialog);
+    QString textColorName = color.name();
+
+    QPixmap pixmap(16,16);
+        QPainter painter;
+        painter.begin(&pixmap);
+        painter.drawRect(0,0,16,16);
+        painter.fillRect(0,0,16,16,QBrush(QColor(color)));
+        painter.end();
+        ui->imageLabel->setPixmap(pixmap);
+        ui->chat_back_lab->setPixmap(pixmap);
+
+        // ui->imageLabel->setStyleSheet("background-color: " + textColorName);
+        // ui->chatDialog->setStyleSheet("background-color: " + textColorName);
 
 }
 
-void Client::on_pushButton_4_clicked()
+void Client::on_PB_LoadFileBackground_clicked()
 {
     QString files = QFileDialog::getOpenFileName
             (
@@ -460,8 +505,16 @@ void Client::on_pushButton_4_clicked()
 
         if(vol)
         {
+            ui->chat_back_lab->setPixmap(QPixmap::fromImage(image));
             ui->imageLabel->setPixmap(QPixmap::fromImage(image));
-            ui->imageLabel->setFixedSize(100,100);
+
+            // Стиль для QListWidget, установка фона.
+            //ui->chatDialog->setStyleSheet(
+            //            "background-image: url(" + files  + "); "
+            //            "max-width:677px;"
+            //            "max-height:421px; "
+            //             "background-position: center;");
+
         }
         else
         {
@@ -469,9 +522,6 @@ void Client::on_pushButton_4_clicked()
         }
     }
 }
-
-
-
 
 void Client::on_radioButton_2_clicked()
 {
@@ -520,4 +570,19 @@ void Client::on_Download_path_PB_clicked()
     }
     else
         ui->label_6->setText(download_path);
+}
+
+
+void Client::on_pushButton_2_clicked()
+{
+    QByteArray block;
+    QDataStream stream(&block, QIODevice::WriteOnly);
+    stream.setVersion(QDataStream::Qt_5_4);
+    QFile file("C:\\test.jpg");
+    file.open(QIODevice::ReadOnly);
+    QByteArray buf = file.readAll();
+    stream << quint64(file.size());
+    stream << buf;
+    tcpSocket->write(block);
+    tcpSocket->flush();
 }

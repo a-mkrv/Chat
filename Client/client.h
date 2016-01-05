@@ -19,6 +19,8 @@
 #include "listwidgetemoji.h"
 #include <QDir>
 #include <QCoreApplication>
+#include <QColorDialog>
+#include <QKeyEvent>
 
 namespace Ui {
 class Client;
@@ -30,8 +32,11 @@ class Client : public QMainWindow
 
 public:
     explicit Client(QWidget *parent = 0);
+    virtual void keyPressEvent(QKeyEvent* event) { key = event->key(); }
+    virtual void keyReleaseEvent(QKeyEvent* event);
+
     ~Client();
-    bool t;
+
 
 protected:
     void closeEvent(QCloseEvent *event);
@@ -56,25 +61,24 @@ private slots:
     void on_actionShowHideWindow_triggered();
     void on_actionExit_triggered();
     void insertEmoticon(QString symbol);
-    void on_pushButton_3_clicked();
-    void on_pushButton_4_clicked();
+    void on_PB_SelColor_clicked();
+    void on_PB_LoadFileBackground_clicked();
     void findtoserv(QString str);
 
-
-    void on_radioButton_2_clicked();
-
+   void on_radioButton_2_clicked();
     void on_radioButton_clicked();
-
     void on_Download_path_PB_clicked();
+    void on_pushButton_2_clicked();
 
 public slots:
-    void recieveData(QString str);
+    void recieveData(QString str, QString pas);
     void recieveUser(QString str);
 
 
 private:
     Ui::Client *ui;
 
+    int key;
     TrayIcon *trayIcon;
     QMenu *trayIconMenu;
     QStackedLayout *layout;

@@ -2,6 +2,8 @@
 #define REGISTRATION_H
 
 #include <QDialog>
+#include <QKeyEvent>
+
 
 namespace Ui {
 class registration;
@@ -13,13 +15,17 @@ class registration : public QWidget
 
 public:
     explicit registration(QWidget *parent = 0);
+    virtual void keyPressEvent(QKeyEvent* event) { key = event->key(); }
+    virtual void keyReleaseEvent(QKeyEvent* event);
+
     ~registration();
     bool ok;
     Ui::registration *ui;
 
-
+private:
+     int key;
 signals:
-    void sendData(QString str);
+    void sendData(QString str, QString pas);
     void sendFindContact(QString str);
 
 
