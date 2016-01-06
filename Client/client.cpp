@@ -84,6 +84,7 @@ Client::Client(QWidget *parent) : QMainWindow(parent), ui(new Ui::Client)
     connect(ui->actionExit, SIGNAL(triggered()), this, SLOT(close()));
     ui->chatDialog->setStyleSheet("background: transparent;");
 
+   // ui->userList->setItemDelegate(new ListDelegate(ui->userList));
 }
 
  void Client::keyReleaseEvent(QKeyEvent *event)
@@ -138,8 +139,8 @@ void Client::recieveUser(QString str)
 
 void Client::on_sendMessage_clicked()
 {
-    QRegExp rx("<a [^>]*name=\"([^\"]+)\"[^>]*>");
-    QString str = ui->editText->text();
+    QRegExp rx("<a [^>]*name=\"([^\"]+)\"[^>]*>");      // Регулярные выражения для парсинга смайликов в сообщении
+    QString str = ui->editText->text();                 // Получение сообщения для отправки
     QString message = str;
     QStringList list;
 
@@ -153,21 +154,16 @@ void Client::on_sendMessage_clicked()
 
     for (int i = 0; i < list.count(); i++) {
         QString emojiNumber = list.at(i);
-
-        QString searchTag = QString("<a name=\"%1\"></a>")
-                .arg(emojiNumber);
-
+        QString searchTag = QString("<a name=\"%1\"></a>").arg(emojiNumber);
         QString replTag = emojiMan->getEmojiSymbolFromNumber(emojiNumber);
-
         str = str.replace(searchTag, replTag);
     }
 
     // QTextDocument doc;
     //doc.setHtml(str);
-
     //return doc.toPlainText();
-    ui->editText->clear();
 
+    ui->editText->clear();
     blockSize = 0;
 
     if (!message.isEmpty())              //Отправка сообщений
@@ -181,7 +177,12 @@ void Client::on_sendMessage_clicked()
             QByteArray msg;
             QDataStream out(&msg, QIODevice::WriteOnly);
             out.setVersion(QDataStream::Qt_5_4);
-            new QListWidgetItem(name + ": " +  message, ui->chatDialog);
+
+
+            QDateTime dt = QDateTime::currentDateTime();
+            new QListWidgetItem(name + ": " +  message + "\n"+ QDateTime::currentDateTime().toString("dd.MM.yy hh:mm"), ui->chatDialog);
+            ui->chatDialog->setItemDelegate(new ListDelegate(ui->chatDialog, "To"));
+
             QSound::play(":/new/prefix1/Resource/to.wav");
 
             out << message;
@@ -244,23 +245,24 @@ void Client::getMessage()
     enum class COMMAND { NONE, USERLIST, FINDUSER};
     COMMAND cmd = COMMAND::NONE;
 
-    QStringRef checkCmd(&message, 0, 5);
+    QStringRef checkCmd(&message, 0, 5);        //Создание строки из заданного диапозона пришедшего сообщения
     if (checkCmd == "_LST_")
         cmd = COMMAND::USERLIST;
 
     QStringList commandList;
     QIcon pic(":/new/prefix1/Resource/profile5.png");
+
     switch (cmd)
     {
     case COMMAND::USERLIST:
     {
-        commandList = message.split(" ", QString::SkipEmptyParts);
-        commandList.removeFirst();
-        ui->userList->clear();
+        commandList = message.split(" ", QString::SkipEmptyParts);          // получение списка пользователей
+        commandList.removeFirst();                                          // Удаление первого слова (обозначение команды)
+        ui->userList->clear();                                              // Очищение(обновление) текущего списка пользователей
 
         QListWidgetItem *q;
 
-        for (auto i : commandList)
+        for (auto i : commandList)                      // Перезапись обновленного списка в сети
         {
             q = new QListWidgetItem(i, ui->userList);
             q->setSizeHint(QSize(0,65));
@@ -268,19 +270,20 @@ void Client::getMessage()
         }
         break;
     }
+
     case COMMAND::FINDUSER:
     {
         QString find_user;
-
         break;
     }
-    default:
+
+    default:                                                // Получение обычного текстового сообщения. Звук и добавление в ЧатЛист
        QSound::play(":/new/prefix1/Resource/from.wav");
        new QListWidgetItem(message, ui->chatDialog);
+       ui->chatDialog->setItemDelegate(new ListDelegate(ui->chatDialog, "From"));
        ui->chatDialog->scrollToBottom();
     }
 }
-
 
 void Client::show_Error(QAbstractSocket::SocketError errorSocket)
 {
@@ -313,8 +316,7 @@ void Client::send_personal_data()
     {
         personDates = true;
 
-       new QListWidgetItem("Sending personal dates...", ui->chatDialog);
-      // ui->chatDialog->scrollToBottom();
+        new QListWidgetItem("Sending personal dates...", ui->chatDialog);
 
         QByteArray block;
         QDataStream out(&block, QIODevice::WriteOnly);
@@ -331,6 +333,7 @@ void Client::send_personal_data()
 
 void Client::onDisconnect()
 {
+    ui->chatDialog->setItemDelegate(new ListDelegate(ui->chatDialog, "To"));
     new QListWidgetItem("Disconnected..", ui->chatDialog);
     ui->userList->clear();
     personDates = false;
@@ -392,7 +395,6 @@ void Client::showFindCont()
     findcont->show();
     connect(findcont, SIGNAL(findUsers(QString)), this, SLOT(findtoserv(QString)));
 }
-
 
 void Client::findtoserv(QString name_user)
 {

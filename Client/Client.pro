@@ -22,7 +22,8 @@ SOURCES += main.cpp\
     registration.cpp \
     tcpconnect.cpp \
     emojimanager.cpp \
-    listwidgetemoji.cpp
+    listwidgetemoji.cpp \
+    listdelegate.cpp
 
 HEADERS  += client.h \
     emojiframe.h \
@@ -32,7 +33,8 @@ HEADERS  += client.h \
     registration.h \
     tcpconnect.h \
     emojimanager.h \
-    listwidgetemoji.h
+    listwidgetemoji.h \
+    listdelegate.h
 
 FORMS    += client.ui \
     emojiframe.ui \

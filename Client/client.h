@@ -21,6 +21,8 @@
 #include <QCoreApplication>
 #include <QColorDialog>
 #include <QKeyEvent>
+#include "listdelegate.h"
+#include <QTime>
 
 namespace Ui {
 class Client;
