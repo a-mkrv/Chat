@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>339</width>
-    <height>562</height>
+    <width>722</width>
+    <height>493</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -45,71 +45,13 @@
     <string/>
    </property>
   </widget>
-  <widget class="QLabel" name="label">
-   <property name="geometry">
-    <rect>
-     <x>120</x>
-     <y>160</y>
-     <width>91</width>
-     <height>91</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string/>
-   </property>
-   <property name="textFormat">
-    <enum>Qt::PlainText</enum>
-   </property>
-   <property name="pixmap">
-    <pixmap resource="image.qrc">:/new/prefix1/Resource/profile5.png</pixmap>
-   </property>
-   <property name="scaledContents">
-    <bool>true</bool>
-   </property>
-  </widget>
-  <widget class="QWidget" name="layoutWidget">
-   <property name="geometry">
-    <rect>
-     <x>40</x>
-     <y>310</y>
-     <width>251</width>
-     <height>121</height>
-    </rect>
-   </property>
-   <layout class="QGridLayout" name="gridLayout">
-    <item row="0" column="0">
-     <widget class="QLabel" name="login_label">
-      <property name="text">
-       <string>Username: </string>
-      </property>
-     </widget>
-    </item>
-    <item row="0" column="1">
-     <widget class="QLineEdit" name="username_enter"/>
-    </item>
-    <item row="1" column="0">
-     <widget class="QLabel" name="pass_label">
-      <property name="text">
-       <string>Password:</string>
-      </property>
-     </widget>
-    </item>
-    <item row="1" column="1">
-     <widget class="QLineEdit" name="pass_enter">
-      <property name="inputMask">
-       <string/>
-      </property>
-     </widget>
-    </item>
-   </layout>
-  </widget>
   <widget class="QPushButton" name="pushButton">
    <property name="geometry">
     <rect>
-     <x>100</x>
-     <y>460</y>
-     <width>151</width>
-     <height>31</height>
+     <x>220</x>
+     <y>350</y>
+     <width>171</width>
+     <height>41</height>
     </rect>
    </property>
    <property name="sizePolicy">
@@ -120,28 +62,18 @@
    </property>
    <property name="font">
     <font>
-     <family>Sitka Heading</family>
      <pointsize>10</pointsize>
     </font>
    </property>
-   <property name="layoutDirection">
-    <enum>Qt::RightToLeft</enum>
-   </property>
    <property name="styleSheet">
-    <string notr="true">QPushButton:enabled {
-    border:none;
-}
- 
-QPushButton:disabled{
-border:none;
- }</string>
+    <string notr="true">border-radius: 5px;
+background-color: rgb(255,255, 200,80);
+border-width: 1px;
+     border-style: solid;
+     border-color:  rgb(255, 255, 255, 200);</string>
    </property>
    <property name="text">
-    <string>     Login</string>
-   </property>
-   <property name="icon">
-    <iconset resource="image.qrc">
-     <normaloff>:/new/prefix1/Resource/right-arrow6.png</normaloff>:/new/prefix1/Resource/right-arrow6.png</iconset>
+    <string>LOG IN</string>
    </property>
    <property name="iconSize">
     <size>
@@ -159,6 +91,247 @@ border:none;
     <bool>false</bool>
    </property>
   </widget>
+  <widget class="QLabel" name="label_3">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>721</width>
+     <height>491</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+   <property name="pixmap">
+    <pixmap resource="image.qrc">:/new/prefix1/Resource/jins-reg.jpg</pixmap>
+   </property>
+   <property name="scaledContents">
+    <bool>true</bool>
+   </property>
+   <property name="wordWrap">
+    <bool>false</bool>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_4">
+   <property name="geometry">
+    <rect>
+     <x>200</x>
+     <y>110</y>
+     <width>301</width>
+     <height>221</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">background-color: rgba(255, 255, 255,140);
+border-radius: 8px;
+</string>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+  </widget>
+  <widget class="QLineEdit" name="username_enter">
+   <property name="geometry">
+    <rect>
+     <x>301</x>
+     <y>162</y>
+     <width>161</width>
+     <height>41</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>10</pointsize>
+    </font>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">border-radius: 5px;
+background-color: rgb(0, 0, 200,10);
+border-width: 1px;
+     border-style: solid;
+     border-color:  rgb(255, 255, 255, 200);</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
+   </property>
+   <property name="placeholderText">
+    <string>Username</string>
+   </property>
+  </widget>
+  <widget class="QLineEdit" name="pass_enter">
+   <property name="geometry">
+    <rect>
+     <x>301</x>
+     <y>240</y>
+     <width>161</width>
+     <height>41</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>10</pointsize>
+    </font>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">border-radius: 5px;
+background-color: rgb(22, 0, 200,10);
+border-width: 1px;
+     border-style: solid;
+     border-color:  rgb(255, 255, 255, 200);</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
+   </property>
+   <property name="placeholderText">
+    <string>Password</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label">
+   <property name="geometry">
+    <rect>
+     <x>200</x>
+     <y>60</y>
+     <width>301</width>
+     <height>41</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <family>AR DESTINE</family>
+     <pointsize>16</pointsize>
+     <weight>50</weight>
+     <italic>false</italic>
+     <bold>false</bold>
+    </font>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">border-radius: 5px;
+background-color: rgb(255, 255, 255,0);
+</string>
+   </property>
+   <property name="text">
+    <string>LOG IN</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
+   </property>
+  </widget>
+  <widget class="QCheckBox" name="checkBox">
+   <property name="geometry">
+    <rect>
+     <x>400</x>
+     <y>350</y>
+     <width>91</width>
+     <height>41</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">border-radius: 5px;
+background-color: rgb(204, 224, 251, 50);
+</string>
+   </property>
+   <property name="text">
+    <string>Remember</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_6">
+   <property name="geometry">
+    <rect>
+     <x>200</x>
+     <y>50</y>
+     <width>301</width>
+     <height>61</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">
+background-color: rgb(32, 101, 144);
+border-radius: 8px;
+</string>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_5">
+   <property name="geometry">
+    <rect>
+     <x>240</x>
+     <y>165</y>
+     <width>44</width>
+     <height>37</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">background-color: rgb(255,255, 255,0);</string>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+   <property name="pixmap">
+    <pixmap resource="image.qrc">:/new/prefix1/Resource/userreg.png</pixmap>
+   </property>
+   <property name="scaledContents">
+    <bool>true</bool>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_7">
+   <property name="geometry">
+    <rect>
+     <x>240</x>
+     <y>242</y>
+     <width>44</width>
+     <height>37</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">background-color: rgb(255,255, 255,0);</string>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+   <property name="pixmap">
+    <pixmap resource="image.qrc">:/new/prefix1/Resource/lockreg.png</pixmap>
+   </property>
+   <property name="scaledContents">
+    <bool>true</bool>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_8">
+   <property name="geometry">
+    <rect>
+     <x>200</x>
+     <y>330</y>
+     <width>301</width>
+     <height>81</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">border-radius: 68px;</string>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+   <property name="pixmap">
+    <pixmap resource="image.qrc">:/new/prefix1/Resource/down_reg.jpg</pixmap>
+   </property>
+   <property name="scaledContents">
+    <bool>true</bool>
+   </property>
+  </widget>
+  <zorder>label_2</zorder>
+  <zorder>label_3</zorder>
+  <zorder>label_4</zorder>
+  <zorder>username_enter</zorder>
+  <zorder>pass_enter</zorder>
+  <zorder>label_6</zorder>
+  <zorder>label</zorder>
+  <zorder>label_7</zorder>
+  <zorder>label_5</zorder>
+  <zorder>label_8</zorder>
+  <zorder>pushButton</zorder>
+  <zorder>checkBox</zorder>
  </widget>
  <resources>
   <include location="image.qrc"/>

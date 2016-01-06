@@ -86,13 +86,16 @@
      </rect>
     </property>
     <property name="styleSheet">
-     <string notr="true">background-color: rgb(235, 235, 235);</string>
+     <string notr="true">
+background-color: rgb(185, 211, 238);
+background-color: rgb(106, 163, 220);
+background-color: rgb(74, 107, 142);</string>
     </property>
     <widget class="QPushButton" name="pushButton">
      <property name="geometry">
       <rect>
        <x>602</x>
-       <y>34</y>
+       <y>33</y>
        <width>41</width>
        <height>41</height>
       </rect>
@@ -111,8 +114,8 @@
      </property>
      <property name="iconSize">
       <size>
-       <width>28</width>
-       <height>28</height>
+       <width>32</width>
+       <height>32</height>
       </size>
      </property>
      <property name="flat">
@@ -274,7 +277,7 @@
      </size>
     </property>
     <property name="styleSheet">
-     <string notr="true">background-color: rgb(218, 228, 235);
+     <string notr="true">background-color: rgb(255, 255, 235);
 </string>
     </property>
     <property name="frameShape">
@@ -298,7 +301,10 @@
     </property>
     <property name="styleSheet">
      <string notr="true">
-background-color: rgb(235, 235, 235);</string>
+background-color: rgb(235, 235, 235);
+background-color: rgb(185, 211, 238);
+background-color: rgb(106, 163, 220);
+background-color: rgb(99, 137, 168);</string>
     </property>
     <property name="text">
      <string/>
@@ -314,7 +320,10 @@ background-color: rgb(235, 235, 235);</string>
      </rect>
     </property>
     <property name="styleSheet">
-     <string notr="true">background-color: rgb(235, 235, 235);</string>
+     <string notr="true">background-color: rgb(235, 235, 235);
+background-color: rgb(185, 211, 238);
+background-color: rgb(106, 163, 220);
+background-color: rgb(99, 137, 168);</string>
     </property>
     <property name="text">
      <string/>
@@ -353,7 +362,7 @@ background-color: rgb(10, 88, 170);</string>
      </property>
      <property name="styleSheet">
       <string notr="true">color: rgb(127, 0, 63);
-background-color: rgb(235, 235, 235);
+background-color: rgb(99, 137, 168);
 
 
     border:none;
@@ -505,7 +514,8 @@ background-color: rgb(235, 235, 235);
       </rect>
      </property>
      <property name="styleSheet">
-      <string notr="true">background-color: rgb(235, 235, 235);</string>
+      <string notr="true">background-color: rgb(235, 235, 235);
+background-color: rgb(99, 137, 168);</string>
      </property>
      <property name="text">
       <string/>
@@ -577,7 +587,8 @@ background-color: rgb(235, 235, 235);
       </rect>
      </property>
      <property name="styleSheet">
-      <string notr="true">background-color: rgb(235, 235, 235);</string>
+      <string notr="true">background-color: rgb(235, 235, 235);
+background-color: rgb(99, 137, 168);</string>
      </property>
      <property name="text">
       <string/>
@@ -644,7 +655,7 @@ background-color: rgb(235, 235, 235);
       <string notr="true">background-color: rgb(255, 255, 255);</string>
      </property>
      <property name="currentIndex">
-      <number>0</number>
+      <number>2</number>
      </property>
      <widget class="QWidget" name="page">
       <widget class="QLabel" name="username_label">
@@ -972,13 +983,10 @@ border:none;</string>
              </size>
             </property>
             <property name="styleSheet">
-             <string notr="true"/>
+             <string notr="true">background-color: rgb(255, 255, 235)</string>
             </property>
             <property name="text">
              <string/>
-            </property>
-            <property name="pixmap">
-             <pixmap resource="image.qrc">:/new/prefix1/Resource/bumaga.jpg</pixmap>
             </property>
             <property name="scaledContents">
              <bool>true</bool>
@@ -1078,9 +1086,9 @@ border:none;</string>
     <property name="geometry">
      <rect>
       <x>220</x>
-      <y>20</y>
+      <y>17</y>
       <width>151</width>
-      <height>26</height>
+      <height>29</height>
      </rect>
     </property>
     <property name="styleSheet">
@@ -1175,9 +1183,7 @@ border:none;</string>
      </size>
     </property>
     <property name="styleSheet">
-     <string notr="true">color: rgb(127, 0, 63);
-    background-color: rgba(235, 235, 235, 90)
-</string>
+     <string notr="true"/>
     </property>
     <property name="frameShape">
      <enum>QFrame::NoFrame</enum>
@@ -1218,7 +1224,7 @@ border:none;</string>
      <string notr="true">background-color: rgb(0, 255, 0);</string>
     </property>
     <property name="text">
-     <string>TextLabel</string>
+     <string> </string>
     </property>
     <property name="scaledContents">
      <bool>true</bool>

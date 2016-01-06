@@ -2,23 +2,25 @@
     <qresource prefix="/new/prefix1">
         <file>Resource/globe grid.png</file>
         <file>Resource/profile5.png</file>
-        <file>Resource/squares110.png</file>
-        <file>Resource/write50.png</file>
         <file>Resource/back.png</file>
         <file>Resource/fast42 (1).png</file>
         <file>Resource/double78.png</file>
         <file>Resource/tool257.png</file>
         <file>Resource/square292.png</file>
-        <file>Resource/tool258.png</file>
         <file>Resource/magnifying glass57.png</file>
         <file>Resource/right-arrow6.png</file>
         <file>Resource/users53.png</file>
-        <file>Resource/women16.png</file>
         <file>Resource/smiling36.png</file>
-        <file>Resource/bg3.jpg</file>
         <file>Resource/bumaga.jpg</file>
         <file>Resource/to.wav</file>
         <file>Resource/from.wav</file>
+        <file>Resource/1833522.jpg</file>
+        <file>Resource/lockreg.png</file>
+        <file>Resource/userreg.png</file>
+        <file>Resource/down_reg.jpg</file>
+        <file>Resource/jins-reg.jpg</file>
+        <file>Resource/squares110.png</file>
+        <file>Resource/write50.png</file>
     </qresource>
     <qresource prefix="/">
         <file>Button.qml</file>

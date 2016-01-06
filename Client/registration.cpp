@@ -10,7 +10,7 @@ registration::registration(QWidget *parent) :
     connect(ui->pushButton, SIGNAL(clicked()), this, SLOT(onButtonSend()));
     connect(ui->pushButton, SIGNAL(clicked()), this, SLOT(onButtonSendUser()));
 
-    ui->pass_label->setBuddy(ui->pass_enter);
+    //ui->pass_label->setBuddy(ui->pass_enter);
     ui->pass_enter->setEchoMode(QLineEdit::Password);
     this->show();
 }

@@ -50,9 +50,8 @@ Client::Client(QWidget *parent) : QMainWindow(parent), ui(new Ui::Client)
 
     QPixmap search_mes(":/new/prefix1/Resource/magnifying glass57.png");
 
-    QImage image(":/new/prefix1/Resource/bumaga.jpg");
-    ui->chat_back_lab->setPixmap(QPixmap::fromImage(image));
-
+    //QImage image(":/new/prefix1/Resource/bumaga.jpg");
+    ui->chat_back_lab->setStyleSheet("background-color: rgb(255, 255, 235)");
     ui->chatDialog->setStyleSheet(""" color: white; background-image: url(:/new/prefix1/Resource/bg3.jpg);background-attachment: scroll;""");
 
     ui->close_setting_button_2->setIcon(ButtonIcon);
