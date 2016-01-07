@@ -18,13 +18,14 @@ public:
     ~findcontacts();
      QString username;
 
-private:
+
     Ui::findcontacts *ui;
 
 signals:
     void findUsers(QString str);
 
 private slots:
+    void recieveData(QString str);
     void on_invite_cont_button_clicked();
 };
 

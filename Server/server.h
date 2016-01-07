@@ -45,6 +45,7 @@ private:
     QString timeconnect();                      //Время соединения
     void doCommand(QString command, int ID);
     quint64 nextBlockSize;
+    QString find_User;
 };
 
 #endif // SERVER_H

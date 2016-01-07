@@ -1224,7 +1224,7 @@ border:none;</string>
      <string notr="true">background-color: rgb(0, 255, 0);</string>
     </property>
     <property name="text">
-     <string> </string>
+     <string/>
     </property>
     <property name="scaledContents">
      <bool>true</bool>

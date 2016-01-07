@@ -67,7 +67,9 @@ private slots:
     void on_PB_LoadFileBackground_clicked();
     void findtoserv(QString str);
 
-   void on_radioButton_2_clicked();
+    void whisperOnClickUsers(QListWidgetItem* user);
+
+    void on_radioButton_2_clicked();
     void on_radioButton_clicked();
     void on_Download_path_PB_clicked();
     void on_pushButton_2_clicked();
@@ -76,6 +78,8 @@ public slots:
     void recieveData(QString str, QString pas);
     void recieveUser(QString str);
 
+signals:
+    void find_user_Serv(QString str);
 
 private:
     Ui::Client *ui;

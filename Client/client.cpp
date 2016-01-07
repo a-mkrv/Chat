@@ -81,10 +81,9 @@ Client::Client(QWidget *parent) : QMainWindow(parent), ui(new Ui::Client)
     connect(ui->userSetting_button, SIGNAL(clicked()), this, SLOT(on_userSetting_clicked()));
     connect(ui->close_setting_button_2, SIGNAL(clicked()), this, SLOT(on_close_setting_button_clicked()));
     connect(ui->userList_3, SIGNAL(itemClicked(QListWidgetItem*)), SLOT(whisperOnClick(QListWidgetItem*)));
+    connect(ui->userList, SIGNAL(itemDoubleClicked(QListWidgetItem*)), SLOT(whisperOnClickUsers(QListWidgetItem*)));
     connect(ui->actionExit, SIGNAL(triggered()), this, SLOT(close()));
     ui->chatDialog->setStyleSheet("background: transparent;");
-
-   // ui->userList->setItemDelegate(new ListDelegate(ui->userList));
 }
 
  void Client::keyReleaseEvent(QKeyEvent *event)
@@ -229,6 +228,7 @@ void Client::on_connect_button_clicked()
     QString status = tr("-> Connecting to 127.0.0.1 on port 55155.");
 
     new QListWidgetItem(status, ui->chatDialog);
+    ui->chatDialog->setItemDelegate(new ListDelegate(ui->chatDialog, "To"));
     tcpSocket->abort();
     tcpSocket->connectToHost(hostname, port);
 }
@@ -248,6 +248,8 @@ void Client::getMessage()
     QStringRef checkCmd(&message, 0, 5);        //Создание строки из заданного диапозона пришедшего сообщения
     if (checkCmd == "_LST_")
         cmd = COMMAND::USERLIST;
+    if (checkCmd == "_FIN_")
+        cmd = COMMAND::FINDUSER;
 
     QStringList commandList;
     QIcon pic(":/new/prefix1/Resource/profile5.png");
@@ -273,7 +275,11 @@ void Client::getMessage()
 
     case COMMAND::FINDUSER:
     {
-        QString find_user;
+        commandList = message.split(" ", QString::SkipEmptyParts);
+        QString find_user = commandList.at(1);
+        if(find_user=="OKFIN")
+            findcont->~findcontacts();
+        qDebug() << find_user;
         break;
     }
 
@@ -283,6 +289,15 @@ void Client::getMessage()
        ui->chatDialog->setItemDelegate(new ListDelegate(ui->chatDialog, "From"));
        ui->chatDialog->scrollToBottom();
     }
+}
+
+
+void Client::whisperOnClickUsers(QListWidgetItem* user)
+{
+    ui->editText->clear();
+    QString insert = "/msg " + user->text() + " ";
+    ui->editText->setText(insert);
+    ui->editText->setFocus();
 }
 
 void Client::show_Error(QAbstractSocket::SocketError errorSocket)
@@ -333,8 +348,10 @@ void Client::send_personal_data()
 
 void Client::onDisconnect()
 {
-    ui->chatDialog->setItemDelegate(new ListDelegate(ui->chatDialog, "To"));
+
     new QListWidgetItem("Disconnected..", ui->chatDialog);
+    ui->chatDialog->setItemDelegate(new ListDelegate(ui->chatDialog, "To"));
+    ui->chatDialog->scrollToBottom();
     ui->userList->clear();
     personDates = false;
 }
@@ -398,12 +415,22 @@ void Client::showFindCont()
 
 void Client::findtoserv(QString name_user)
 {
-    QByteArray msg;
-    QDataStream out(&msg, QIODevice::WriteOnly);
-    out.setVersion(QDataStream::Qt_5_4);
+    static bool tmp = true;
+    if(tmp)
+        {
+            QString find = "_FND_ ";
+            QString find_us = name_user;
+            QByteArray msg;
+            QDataStream out(&msg, QIODevice::WriteOnly);
+            out.setVersion(QDataStream::Qt_5_4);
 
-    out << name_user;
-    tcpSocket->write(msg);
+            out << find + find_us;
+
+            tcpSocket->write(msg);
+            tmp=false;
+        }
+    else    // Костылек :)
+            tmp=true;
 }
 
 void Client::on_newContact_Button_clicked()

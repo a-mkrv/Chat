@@ -29,7 +29,7 @@ Server::Server(QWidget *parent) :
 
 void Server::newConnection()
 {
-    QTcpSocket *newSocket = tcpServer->nextPendingConnection();
+    QTcpSocket *newSocket = tcpServer->nextPendingConnection();                 // Подключение нового клиента
     connect(newSocket, SIGNAL(disconnected()), this, SLOT(onDisconnect()));
     connect(newSocket, SIGNAL(disconnected()), this, SLOT(sendUserList()));
     connect(newSocket, SIGNAL(readyRead()), this, SLOT(getMessage()));
@@ -47,29 +47,25 @@ void Server::newConnection()
 void Server::onDisconnect()
 {
     QTcpSocket *socket = qobject_cast<QTcpSocket*>(sender());
-
     if (socket != 0)
     {
         std::vector<int> currentSockets;
-
         int socketID = 0;
+
         for (auto i : clientConnections)
-        {
             currentSockets.push_back(i->socketDescriptor());
-        }
+
 
         for (auto i : userList)
         {
             bool found = true;
             for (auto ii : currentSockets)
-            {
                 if (i.first == ii)
                     found = false;
-            }
+
             if (found == true)
-            {
                 socketID = i.first;
-            }
+
         }
 
         QString username = getUsername(socketID);
@@ -80,9 +76,8 @@ void Server::onDisconnect()
 
         ui->userList->clear();
         for (auto i : userList)
-        {
             new QListWidgetItem(i.second, ui->userList);
-        }
+
 
         clientConnections.removeAll(socket);
         socket->deleteLater();
@@ -105,10 +100,8 @@ void Server::doCommand(QString command, int ID)
             int rID = 0;
 
             for (auto i : userList)
-            {
                 if (i.second == recipient)
                     rID = i.first;
-            }
 
             if (rID == 0)
                 message += tr("User \"%1\" not found").arg(recipient);
@@ -135,18 +128,12 @@ void Server::doCommand(QString command, int ID)
             }
         }
         else
-        {
-            message = "*** Error: Incorrect " + command + " syntax.\n"
-                + "*** Use: " + command + "[username] [message]";
-        }
+            message = "*** Error: Incorrect " + command + " syntax.\n" + "*** Use: " + command + "[username] [message]";
     }
 
     else
-    {
-        message += "Invalid command";
-    }
+           message += "Invalid command";
 
-    // return to sender
     sendToID(message, ID);
 }
 
@@ -171,10 +158,8 @@ void Server::sendToID(QString message, int ID)
     out << message;
 
     for (auto i : clientConnections)
-    {
         if (i->socketDescriptor() == ID)
             i->write(msg);
-    }
 }
 
 void Server::getMessage()
@@ -192,44 +177,20 @@ void Server::getMessage()
     QStringList messageTokens;
     messageTokens = message.split(" ", QString::SkipEmptyParts);
 
-    QString user_name;
-    int k = message.size();
-    //if(message[0]=='U' && message[1]=='F' && message[2]==':')
-   // {
 
-      //  for(int i=0; i<k-1; i++)
-      //  {
-       //     user_name[i]=message[i+2];
-       // i++;}
 
-       // qDebug() << user_name + "USER";
-
-       // for (auto i : userList)
-        //{
-        //    qDebug() << i.second;
-
-        //}
-   // }
-    int command = 0; //0 - пусто, 1 - имя пользователя, 2 - команда
+    int command = 0; //0 - пусто, 1 - имя пользователя, 2 - команда, 3 - поиск
 
     if (message == "_USR_")
         command = 1;
+    if (messageTokens.at(0) == "_FND_")
+    {
+        find_User=messageTokens.at(1);
+        command = 3;
+    }
 
     if (messageTokens.at(0) == "_UCD_")
-    {
         command = 2;
-    }
-    else
-    {
-         for (auto i : userList)
-         {
-             QString qw = i.second;
-             if (message == qw){
-                 qDebug() << "URA";
-                 break;
-             }
-         }
-    }
 
     switch (command)
     {
@@ -249,18 +210,14 @@ void Server::getMessage()
         {
             isTaken = false;
             for (auto i : userList)
-            {
                 if (i.second == tempname)
                 {
                     isTaken = true;
                     ++numInc;
                 }
-            }
 
             if (isTaken)
-            {
                 tempname = username + "(" + QString::number(numInc) + ")";
-            }
         }
 
         username = tempname;
@@ -289,6 +246,20 @@ void Server::getMessage()
         }
         doCommand(message, client->socketDescriptor());
         break;
+    }
+     case 3:
+    {   QString dat;
+        for (auto i : userList)
+        {
+            dat = i.second;
+            if (find_User==dat)
+            {
+                sendToID("_FIN_ OKFIN", client->socketDescriptor() );
+                break;
+            }
+        }
+        if(find_User!=dat)
+             sendToID("_FIN_ NOFIN", client->socketDescriptor() );
     }
 
     default:
@@ -326,11 +297,9 @@ void Server::sendUserList()
     }
 
     out << userlist;
-    qDebug() << userlist;
+    //qDebug() << userlist;
     for (auto i : clientConnections)
-    {
         i->write(block);
-    }
 }
 
 QTcpSocket* Server::getSocket(int ID)
@@ -338,10 +307,8 @@ QTcpSocket* Server::getSocket(int ID)
     QTcpSocket* socket;
 
     for (auto i : clientConnections)
-    {
         if (i->socketDescriptor() == ID)
             socket = i;
-    }
 
     return socket;
 }

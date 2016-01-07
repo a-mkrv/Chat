@@ -2,6 +2,7 @@
 #include "ui_findcontacts.h"
 #include <QPropertyAnimation>
 #include <QDebug>
+#include <client.h>
 
 findcontacts::findcontacts(QWidget *parent) :
     QFrame(parent),
@@ -12,8 +13,9 @@ findcontacts::findcontacts(QWidget *parent) :
     setWindowOpacity(0);
 
     show();
-
     connect(ui->invite_cont_button, SIGNAL(clicked()), this, SLOT(on_invite_cont_button_clicked()));
+   // connect(sender()->, SIGNAL(find_user_Serv(QString)), this, SLOT(recieveData(QString)));
+
     QPropertyAnimation* animation = new QPropertyAnimation(this, "windowOpacity");
 
     animation->setDuration(2000);
@@ -28,9 +30,13 @@ findcontacts::~findcontacts()
     delete ui;
 }
 
+void findcontacts::recieveData(QString str)
+{
+    ui->label_3->setText("Heh");
+}
+
 void findcontacts::on_invite_cont_button_clicked()
 {
-    emit findUsers(ui->username_lineedit->text().simplified());
     username = ui->username_lineedit->text();
-
+    emit findUsers(username);
 }
