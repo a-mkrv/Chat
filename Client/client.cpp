@@ -232,6 +232,7 @@ void Client::on_connect_button_clicked()
     tcpSocket->abort();
     tcpSocket->connectToHost(hostname, port);
 }
+QString gl_fname;
 
 void Client::getMessage()
 {
@@ -240,9 +241,9 @@ void Client::getMessage()
 
     QString message;
     in >> message;
+    qDebug() << message;
 
-
-    enum class COMMAND { NONE, USERLIST, FINDUSER};
+    enum class COMMAND { NONE, USERLIST, FINDUSER, INVITE};
     COMMAND cmd = COMMAND::NONE;
 
     QStringRef checkCmd(&message, 0, 5);        //Создание строки из заданного диапозона пришедшего сообщения
@@ -250,6 +251,8 @@ void Client::getMessage()
         cmd = COMMAND::USERLIST;
     if (checkCmd == "_FIN_")
         cmd = COMMAND::FINDUSER;
+    if (checkCmd == "_INV_")
+        cmd = COMMAND::INVITE;
 
     QStringList commandList;
     QIcon pic(":/new/prefix1/Resource/profile5.png");
@@ -258,18 +261,18 @@ void Client::getMessage()
     {
     case COMMAND::USERLIST:
     {
-        commandList = message.split(" ", QString::SkipEmptyParts);          // получение списка пользователей
-        commandList.removeFirst();                                          // Удаление первого слова (обозначение команды)
-        ui->userList->clear();                                              // Очищение(обновление) текущего списка пользователей
+//        commandList = message.split(" ", QString::SkipEmptyParts);          // получение списка пользователей
+//        commandList.removeFirst();                                          // Удаление первого слова (обозначение команды)
+//        ui->userList->clear();                                              // Очищение(обновление) текущего списка пользователей
 
-        QListWidgetItem *q;
+//        QListWidgetItem *q;
 
-        for (auto i : commandList)                      // Перезапись обновленного списка в сети
-        {
-            q = new QListWidgetItem(i, ui->userList);
-            q->setSizeHint(QSize(0,65));
-            q->setIcon(pic);
-        }
+//        for (auto i : commandList)                      // Перезапись обновленного списка в сети
+//        {
+//            q = new QListWidgetItem(i, ui->userList);
+//            q->setSizeHint(QSize(0,65));
+//            q->setIcon(pic);
+//        }
         break;
     }
 
@@ -278,11 +281,27 @@ void Client::getMessage()
         commandList = message.split(" ", QString::SkipEmptyParts);
         QString find_user = commandList.at(1);
         if(find_user=="OKFIN")
+           {
+            QListWidgetItem *q;
+            q = new QListWidgetItem(gl_fname, ui->userList);
+            q->setSizeHint(QSize(0,65));
+            q->setIcon(pic);
             findcont->~findcontacts();
+        }
         qDebug() << find_user;
         break;
     }
+    case COMMAND::INVITE:
+    {
+        commandList = message.split(" ", QString::SkipEmptyParts);
+        QString find_user = commandList.at(1);
 
+        QListWidgetItem *q;
+        q = new QListWidgetItem(find_user, ui->userList);
+        q->setSizeHint(QSize(0,65));
+        q->setIcon(pic);
+
+    }
     default:                                                // Получение обычного текстового сообщения. Звук и добавление в ЧатЛист
        QSound::play(":/new/prefix1/Resource/from.wav");
        new QListWidgetItem(message, ui->chatDialog);
@@ -420,6 +439,7 @@ void Client::findtoserv(QString name_user)
         {
             QString find = "_FND_ ";
             QString find_us = name_user;
+            gl_fname=name_user;
             QByteArray msg;
             QDataStream out(&msg, QIODevice::WriteOnly);
             out.setVersion(QDataStream::Qt_5_4);
@@ -597,14 +617,29 @@ void Client::on_Download_path_PB_clicked()
 
 void Client::on_pushButton_2_clicked()
 {
-    QByteArray block;
-    QDataStream stream(&block, QIODevice::WriteOnly);
-    stream.setVersion(QDataStream::Qt_5_4);
-    QFile file("C:\\test.jpg");
-    file.open(QIODevice::ReadOnly);
-    QByteArray buf = file.readAll();
-    stream << quint64(file.size());
-    stream << buf;
-    tcpSocket->write(block);
-    tcpSocket->flush();
+        long int lBytes = 0;
+
+        QFile file(":/new/prefix1/Resource/globe grid.png");
+        file.open(QFile::ReadOnly);
+            QDataStream read(&file);
+            lBytes = 0;
+            char * ch;
+            ch = (char*)malloc(sizeof(char) * 1024);
+            ch[1023] = '\0';
+            while(!read.atEnd()){
+              int l = read.readRawData(ch, sizeof(char)*1023);
+              QByteArray ba(ch, sizeof(char)*l);
+
+              lBytes += tcpSocket->write(ba, sizeof(char)*l);
+              tcpSocket->flush();
+              if (-1 == lBytes){
+                qWarning() << "Error";
+                tcpSocket->close(); //Закрываем устройство сокета
+                return;
+              }
+              float procentage = ((float)lBytes / file.size()) * 100;
+              emit setProcentage((int)procentage);
+            }//while(!readEnd())
+            free((void*)ch);
+
 }

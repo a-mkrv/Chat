@@ -66,7 +66,6 @@ private slots:
     void on_PB_SelColor_clicked();
     void on_PB_LoadFileBackground_clicked();
     void findtoserv(QString str);
-
     void whisperOnClickUsers(QListWidgetItem* user);
 
     void on_radioButton_2_clicked();
@@ -80,7 +79,7 @@ public slots:
 
 signals:
     void find_user_Serv(QString str);
-
+    void setProcentage(int);
 private:
     Ui::Client *ui;
 

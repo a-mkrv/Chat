@@ -39,6 +39,11 @@ void Server::newConnection()
     QDataStream out(&block, QIODevice::WriteOnly);
     out.setVersion(QDataStream::Qt_5_4);
 
+    QByteArray *buffer = new QByteArray();
+    qint32 *s = new qint32(0);
+    buffers.insert(newSocket, buffer);
+    sizes.insert(newSocket, s);
+
     QString message = "Server: Connected!";
     out << message;
     newSocket->write(block);
@@ -192,6 +197,9 @@ void Server::getMessage()
     if (messageTokens.at(0) == "_UCD_")
         command = 2;
 
+    if(messageTokens.at(0) == "_FILE_")
+        command=4;
+
     switch (command)
     {
     case 1:
@@ -254,6 +262,20 @@ void Server::getMessage()
             dat = i.second;
             if (find_User==dat)
             {
+                QString instruction = find_User;
+                QString command = instruction;
+                QString recipient = instruction;
+                int rID = 0;
+
+                for (auto i : userList)
+                    if (i.second == recipient)
+                       rID = i.first;
+
+                auto user = userList.find(client->socketDescriptor());
+
+                            message = "_INV_ " + user->second;
+                            sendToID(message, rID);
+
                 sendToID("_FIN_ OKFIN", client->socketDescriptor() );
                 break;
             }
@@ -262,6 +284,35 @@ void Server::getMessage()
              sendToID("_FIN_ NOFIN", client->socketDescriptor() );
     }
 
+    case 4:
+    {
+
+        QByteArray *buffer = buffers.value(client);
+           qint32 *s = sizes.value(client);
+           qint32 size = *s;
+           while (client->bytesAvailable() > 0)
+           {
+               buffer->append(client->readAll());
+               qDebug() << buffer;
+               while ((size == 0 && buffer->size() >= 4) || (size > 0 && buffer->size() >= size)) //While can process data, process it
+               {
+                   if (size == 0 && buffer->size() >= 4) //if size of data has received completely, then store it on our global variable
+                   {
+                       size = ArrayToInt(buffer->mid(0, 4));
+                       *s = size;
+                       buffer->remove(0, 4);
+                   }
+                   if (size > 0 && buffer->size() >= size) // If data has received completely, then emit our SIGNAL with the data
+                   {
+                       QByteArray data = buffer->mid(0, size);
+                       buffer->remove(0, size);
+                       size = 0;
+                       *s = size;
+                       //emit dataReceived(data);
+                   }
+               }
+           }
+    }
     default:
         std::map<int, QString>::iterator it;
         it = userList.find(client->socketDescriptor());
@@ -271,6 +322,15 @@ void Server::getMessage()
         QString usr = it->second;
         message = usr + ": " + message;
     }
+}
+
+
+qint32 Server::ArrayToInt(QByteArray source)
+{
+    qint32 temp;
+    QDataStream data(&source, QIODevice::ReadWrite);
+    data >> temp;
+    return temp;
 }
 
 void Server::updateStatus(QString message)

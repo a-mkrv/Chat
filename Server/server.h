@@ -24,7 +24,7 @@ private slots:
     void newConnection();
     void onDisconnect();
     void sendUserList();
-
+    qint32 ArrayToInt(QByteArray source);
 signals:
     void SEND_UserList();
 
@@ -46,6 +46,8 @@ private:
     void doCommand(QString command, int ID);
     quint64 nextBlockSize;
     QString find_User;
+    QHash<QTcpSocket*, QByteArray*> buffers; //We need a buffer to store data until block has completely received
+     QHash<QTcpSocket*, qint32*> sizes; //We need to store the size to verify if a block has received completely
 };
 
 #endif // SERVER_H
