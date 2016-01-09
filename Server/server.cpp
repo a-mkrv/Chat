@@ -1,5 +1,6 @@
 #include "server.h"
 #include "ui_server.h"
+#include <QDir>
 
 Server::Server(QWidget *parent) :
     QMainWindow(parent),
@@ -17,9 +18,9 @@ Server::Server(QWidget *parent) :
         return;
     }
 
-    QTimer *timer = new QTimer(this);
-    connect(timer, SIGNAL(timeout()), this, SIGNAL(SEND_UserList()));
-    timer->start(6000);
+    //QTimer *timer = new QTimer(this);
+    //connect(timer, SIGNAL(timeout()), this, SIGNAL(SEND_UserList()));
+    //timer->start(6000);
 
     connect(tcpServer, SIGNAL(newConnection()), this, SLOT(newConnection()));
     connect(this, SIGNAL(newConnection()), this, SLOT(getMessage()));
@@ -176,11 +177,13 @@ void Server::getMessage()
     in.setVersion(QDataStream::Qt_5_4);
 
     QString message;
+    static int t=0;
+    if (t<1)
     in >> message;
-    qDebug() << message;
+t++;
 
     QStringList messageTokens;
-    messageTokens = message.split(" ", QString::SkipEmptyParts);
+    //messageTokens = message.split(" ", QString::SkipEmptyParts);
 
 
 
@@ -188,17 +191,18 @@ void Server::getMessage()
 
     if (message == "_USR_")
         command = 1;
-    if (messageTokens.at(0) == "_FND_")
-    {
-        find_User=messageTokens.at(1);
-        command = 3;
-    }
+//    if (messageTokens.at(0) == "_FND_")
+//    {
+//        find_User=messageTokens.at(1);
+//        qDebug() << find_User;
+//        command = 3;
+//    }
 
-    if (messageTokens.at(0) == "_UCD_")
-        command = 2;
+//    if (messageTokens.at(0) == "_UCD_")
+//        command = 2;
 
-    if(messageTokens.at(0) == "_FILE_")
-        command=4;
+//    if(messageTokens.at(0) == "_FILE_")
+//        command=4;
 
     switch (command)
     {
@@ -260,11 +264,14 @@ void Server::getMessage()
         for (auto i : userList)
         {
             dat = i.second;
-            if (find_User==dat)
-            {
-                QString instruction = find_User;
-                QString command = instruction;
-                QString recipient = instruction;
+               qDebug() << "i.Second= " << i.second;
+
+               if(find_User!=dat)
+                    sendToID("_FIN_ NOFIN", client->socketDescriptor() );
+
+               else if (find_User==dat)
+             {
+                QString recipient = find_User;
                 int rID = 0;
 
                 for (auto i : userList)
@@ -272,16 +279,15 @@ void Server::getMessage()
                        rID = i.first;
 
                 auto user = userList.find(client->socketDescriptor());
-
                             message = "_INV_ " + user->second;
+                            qDebug() << message << "\n\n";
                             sendToID(message, rID);
 
                 sendToID("_FIN_ OKFIN", client->socketDescriptor() );
-                break;
+                return;
             }
         }
-        if(find_User!=dat)
-             sendToID("_FIN_ NOFIN", client->socketDescriptor() );
+
     }
 
     case 4:
@@ -314,13 +320,57 @@ void Server::getMessage()
            }
     }
     default:
-        std::map<int, QString>::iterator it;
-        it = userList.find(client->socketDescriptor());
-        updateStatus("MSG: (" + it->second + ") " + message);
 
-        it = userList.find(client->socketDescriptor());
-        QString usr = it->second;
-        message = usr + ": " + message;
+        QByteArray buffer;
+        QString fileName;
+        qint64 fileSize;
+
+        QString dirDownloads = QDir::homePath() + "/meraLOL/";
+        QDir(dirDownloads).mkdir(dirDownloads);
+
+        in >> fileName >> fileSize;
+
+        QMessageBox messageBox;
+        messageBox.setInformativeText(QObject::trUtf8("Принять файл ") + fileName +
+                QObject::trUtf8(" от ")  + "?");
+        messageBox.setStandardButtons(QMessageBox::Save | QMessageBox::Cancel);
+        int ret = messageBox.exec();
+
+
+        if (ret == QMessageBox::Save) {
+
+            forever
+            {
+                if (!nextBlockSize) {
+
+                    if (quint16(client->bytesAvailable()) < sizeof(quint16)) {
+                        break;
+                    }
+                    in >> nextBlockSize;
+                }
+
+                in >> buffer;
+
+                //sendToClient(mClientSocket, "SC_FILE_TRANSFER_ASK", fileName);
+
+               // if (mClientSocket->bytesAvailable() < nextBlockSize) {
+                    break;
+                }
+            }
+
+            QFile receiveFile(dirDownloads + fileName);
+            receiveFile.open(QIODevice::ReadWrite);
+            receiveFile.write(buffer);
+            receiveFile.close();
+            buffer.clear();
+
+//        std::map<int, QString>::iterator it;
+//        it = userList.find(client->socketDescriptor());
+//        updateStatus("MSG: (" + it->second + ") " + message);
+
+//        it = userList.find(client->socketDescriptor());
+//        QString usr = it->second;
+//        message = usr + ": " + message;
     }
 }
 

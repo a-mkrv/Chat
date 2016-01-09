@@ -67,7 +67,7 @@ private slots:
     void on_PB_LoadFileBackground_clicked();
     void findtoserv(QString str);
     void whisperOnClickUsers(QListWidgetItem* user);
-
+    void whisperOnClickSelectUsers(QListWidgetItem* user);
     void on_radioButton_2_clicked();
     void on_radioButton_clicked();
     void on_Download_path_PB_clicked();
@@ -96,11 +96,12 @@ private:
     registration *reg_window;
 
     QStackedWidget *stackchat;
-
+    QFile *sendFile;
     QString name;
     QString download_path;
     bool personDates;
-
+    QMap<QString, int> map;
+    int t;
 };
 
 #endif // CLIENT_H

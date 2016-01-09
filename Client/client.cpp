@@ -7,10 +7,14 @@
 #include <QFileDialog>
 #include <QString>
 #include <QPainter>
+#include <time.h>
+
+QString gl_fname; //Поиск человека
 
 
 Client::Client(QWidget *parent) : QMainWindow(parent), ui(new Ui::Client)
 {
+    srand((time(NULL)));
     ui->setupUi(this);
     frameEmoji = new EmojiFrame();
     emojiMan = new EmojiManager();
@@ -22,7 +26,7 @@ Client::Client(QWidget *parent) : QMainWindow(parent), ui(new Ui::Client)
     ui->RB_sendEnter->setChecked(true);
     download_path="(C:/...)";
     stackchat = new QStackedWidget;
-
+    t=0;
     trayIcon = new TrayIcon(this);
     trayIconMenu = new QMenu(this);
     trayIconMenu->addAction(ui->actionShowHideWindow);
@@ -53,7 +57,7 @@ Client::Client(QWidget *parent) : QMainWindow(parent), ui(new Ui::Client)
     //QImage image(":/new/prefix1/Resource/bumaga.jpg");
     ui->chat_back_lab->setStyleSheet("background-color: rgb(255, 255, 235)");
     ui->chatDialog->setStyleSheet(""" color: white; background-image: url(:/new/prefix1/Resource/bg3.jpg);background-attachment: scroll;""");
-
+qDebug() << "FDF";
     ui->close_setting_button_2->setIcon(ButtonIcon);
     ui->close_setting_button_2->setIconSize(back_to_menu.rect().size()/2);
 
@@ -82,7 +86,10 @@ Client::Client(QWidget *parent) : QMainWindow(parent), ui(new Ui::Client)
     connect(ui->close_setting_button_2, SIGNAL(clicked()), this, SLOT(on_close_setting_button_clicked()));
     connect(ui->userList_3, SIGNAL(itemClicked(QListWidgetItem*)), SLOT(whisperOnClick(QListWidgetItem*)));
     connect(ui->userList, SIGNAL(itemDoubleClicked(QListWidgetItem*)), SLOT(whisperOnClickUsers(QListWidgetItem*)));
+    connect(ui->userList, SIGNAL(itemClicked(QListWidgetItem*)), SLOT(whisperOnClickSelectUsers(QListWidgetItem*)));
     connect(ui->actionExit, SIGNAL(triggered()), this, SLOT(close()));
+
+    ui->stackedWidget_2->setStyleSheet("background: transparent;");
     ui->chatDialog->setStyleSheet("background: transparent;");
 }
 
@@ -118,6 +125,7 @@ Client::Client(QWidget *parent) : QMainWindow(parent), ui(new Ui::Client)
 
 void Client::recieveData(QString str, QString pas)
 {
+    qDebug() << str;
    if(str!="" && pas!="")
    {
         name = str;
@@ -138,6 +146,8 @@ void Client::recieveUser(QString str)
 
 void Client::on_sendMessage_clicked()
 {
+
+
     QRegExp rx("<a [^>]*name=\"([^\"]+)\"[^>]*>");      // Регулярные выражения для парсинга смайликов в сообщении
     QString str = ui->editText->text();                 // Получение сообщения для отправки
     QString message = str;
@@ -182,7 +192,8 @@ void Client::on_sendMessage_clicked()
             new QListWidgetItem(name + ": " +  message + "\n"+ QDateTime::currentDateTime().toString("dd.MM.yy hh:mm"), ui->chatDialog);
             ui->chatDialog->setItemDelegate(new ListDelegate(ui->chatDialog, "To"));
 
-            QSound::play(":/new/prefix1/Resource/to.wav");
+            if(ui->ChBox_PSound->isChecked())
+                QSound::play(":/new/prefix1/Resource/to.wav");
 
             out << message;
             tcpSocket->write(msg);
@@ -232,7 +243,6 @@ void Client::on_connect_button_clicked()
     tcpSocket->abort();
     tcpSocket->connectToHost(hostname, port);
 }
-QString gl_fname;
 
 void Client::getMessage()
 {
@@ -242,6 +252,11 @@ void Client::getMessage()
     QString message;
     in >> message;
     qDebug() << message;
+
+    QStringList commandList;
+    commandList = message.split(" ", QString::SkipEmptyParts);
+    if(commandList.at(1)==name)
+        return;
 
     enum class COMMAND { NONE, USERLIST, FINDUSER, INVITE};
     COMMAND cmd = COMMAND::NONE;
@@ -254,8 +269,10 @@ void Client::getMessage()
     if (checkCmd == "_INV_")
         cmd = COMMAND::INVITE;
 
-    QStringList commandList;
-    QIcon pic(":/new/prefix1/Resource/profile5.png");
+    int rand_avatar =  rand()%22+1;
+
+
+    QIcon pic(":/Avatars/Resource/Avatars/"+QString::number(rand_avatar)+".jpg");
 
     switch (cmd)
     {
@@ -278,35 +295,46 @@ void Client::getMessage()
 
     case COMMAND::FINDUSER:
     {
-        commandList = message.split(" ", QString::SkipEmptyParts);
         QString find_user = commandList.at(1);
-        if(find_user=="OKFIN")
+        //qDebug() << "FIND:  Find_Users" << find_user << "  Gl_Fname: " << gl_fname;
+
+        if(gl_fname==name)
+            break;
+        if(find_user=="OKFIN" && gl_fname!=name)
            {
             QListWidgetItem *q;
             q = new QListWidgetItem(gl_fname, ui->userList);
             q->setSizeHint(QSize(0,65));
             q->setIcon(pic);
+            map.insert(gl_fname, t);
+            t++;
             findcont->~findcontacts();
         }
-        qDebug() << find_user;
         break;
     }
+
     case COMMAND::INVITE:
     {
-        commandList = message.split(" ", QString::SkipEmptyParts);
+        if(gl_fname==name)
+            break;
         QString find_user = commandList.at(1);
+        //qDebug() << "INV:  Find_Users" << find_user << "  Gl_Fname: " << gl_fname;
 
         QListWidgetItem *q;
         q = new QListWidgetItem(find_user, ui->userList);
         q->setSizeHint(QSize(0,65));
         q->setIcon(pic);
-
+        map.insert(gl_fname, t);
+        t++;
+        break;
     }
     default:                                                // Получение обычного текстового сообщения. Звук и добавление в ЧатЛист
-       QSound::play(":/new/prefix1/Resource/from.wav");
-       new QListWidgetItem(message, ui->chatDialog);
-       ui->chatDialog->setItemDelegate(new ListDelegate(ui->chatDialog, "From"));
-       ui->chatDialog->scrollToBottom();
+       if(ui->ChBox_PSound->isChecked())
+            QSound::play(":/new/prefix1/Resource/from.wav");
+
+        new QListWidgetItem(message, ui->chatDialog);
+        ui->chatDialog->setItemDelegate(new ListDelegate(ui->chatDialog, "From"));
+        ui->chatDialog->scrollToBottom();
     }
 }
 
@@ -317,6 +345,20 @@ void Client::whisperOnClickUsers(QListWidgetItem* user)
     QString insert = "/msg " + user->text() + " ";
     ui->editText->setText(insert);
     ui->editText->setFocus();
+}
+
+void Client::whisperOnClickSelectUsers(QListWidgetItem* user)
+{
+    QMap<QString,int>::iterator it = map.begin();
+
+    for(;it != map.end(); ++it)
+    {
+       if(user->text()==it.key()){
+           ui->stackedWidget_2->setCurrentIndex(it.value());
+       break;}
+    }
+
+
 }
 
 void Client::show_Error(QAbstractSocket::SocketError errorSocket)
@@ -414,6 +456,7 @@ void Client::whisperOnClick(QListWidgetItem* user)
 
 void Client::on_pushButton_clicked()
 {
+
      showEmoji();
 }
 
@@ -433,19 +476,21 @@ void Client::showFindCont()
 }
 
 void Client::findtoserv(QString name_user)
-{
+{trayIcon->showMessage("Hello", "My name is Anton", QSystemTrayIcon::Information, 1);
+    gl_fname=name_user;
+
     static bool tmp = true;
     if(tmp)
         {
+        qDebug() << "FINDWIND " + gl_fname + " " + name_user;
             QString find = "_FND_ ";
             QString find_us = name_user;
-            gl_fname=name_user;
             QByteArray msg;
             QDataStream out(&msg, QIODevice::WriteOnly);
             out.setVersion(QDataStream::Qt_5_4);
 
             out << find + find_us;
-
+            qDebug() << find << " " << find_us;
             tcpSocket->write(msg);
             tmp=false;
         }
@@ -617,29 +662,34 @@ void Client::on_Download_path_PB_clicked()
 
 void Client::on_pushButton_2_clicked()
 {
-        long int lBytes = 0;
+    QString filePath = QFileDialog::getOpenFileName
+            (
+                this,
+                tr("Select Images"),"",
+                tr("Images (*.jpg *jpeg *.png)")
+             );
 
-        QFile file(":/new/prefix1/Resource/globe grid.png");
-        file.open(QFile::ReadOnly);
-            QDataStream read(&file);
-            lBytes = 0;
-            char * ch;
-            ch = (char*)malloc(sizeof(char) * 1024);
-            ch[1023] = '\0';
-            while(!read.atEnd()){
-              int l = read.readRawData(ch, sizeof(char)*1023);
-              QByteArray ba(ch, sizeof(char)*l);
 
-              lBytes += tcpSocket->write(ba, sizeof(char)*l);
-              tcpSocket->flush();
-              if (-1 == lBytes){
-                qWarning() << "Error";
-                tcpSocket->close(); //Закрываем устройство сокета
-                return;
-              }
-              float procentage = ((float)lBytes / file.size()) * 100;
-              emit setProcentage((int)procentage);
-            }//while(!readEnd())
-            free((void*)ch);
+    QByteArray  arrBlock;
+    qint64 fileSize;
+    QDataStream out(&arrBlock, QIODevice::WriteOnly);
+    out.setVersion(QDataStream::Qt_5_4);
 
+    sendFile = new QFile(filePath);
+    sendFile->open(QFile::ReadOnly);
+
+    QFileInfo fi(filePath);
+    QString fileName = fi.fileName();
+    qDebug() << fileName;
+    fileSize = fi.size();
+    qDebug() << QString::number(fileSize);
+
+    QByteArray buffer = sendFile->readAll();
+
+    out << quint16(0) << fileName << fileSize << buffer;
+
+    out.device()->seek(0);
+    out << quint16(arrBlock.size() - sizeof(quint16));
+
+    tcpSocket->write(arrBlock);
 }

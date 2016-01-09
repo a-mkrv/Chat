@@ -24,5 +24,50 @@
     </qresource>
     <qresource prefix="/">
         <file>Button.qml</file>
+        <file>client.cpp</file>
+        <file>client.h</file>
+        <file>emojiframe.cpp</file>
+        <file>emojiframe.h</file>
+        <file>emojimanager.cpp</file>
+        <file>emojimanager.h</file>
+        <file>findcontacts.cpp</file>
+        <file>findcontacts.h</file>
+        <file>listdelegate.cpp</file>
+        <file>listdelegate.h</file>
+        <file>listwidgetemoji.cpp</file>
+        <file>listwidgetemoji.h</file>
+        <file>main.cpp</file>
+        <file>registration.cpp</file>
+        <file>registration.h</file>
+        <file>setting.cpp</file>
+        <file>setting.h</file>
+        <file>tcpconnect.cpp</file>
+        <file>tcpconnect.h</file>
+        <file>trayicon.cpp</file>
+        <file>trayicon.h</file>
+    </qresource>
+    <qresource prefix="/Avatars">
+        <file>Resource/Avatars/1.jpg</file>
+        <file>Resource/Avatars/2.jpg</file>
+        <file>Resource/Avatars/3.jpg</file>
+        <file>Resource/Avatars/4.jpg</file>
+        <file>Resource/Avatars/5.jpg</file>
+        <file>Resource/Avatars/6.jpg</file>
+        <file>Resource/Avatars/7.jpg</file>
+        <file>Resource/Avatars/8.jpg</file>
+        <file>Resource/Avatars/9.jpg</file>
+        <file>Resource/Avatars/10.jpg</file>
+        <file>Resource/Avatars/11.jpg</file>
+        <file>Resource/Avatars/12.jpg</file>
+        <file>Resource/Avatars/13.jpg</file>
+        <file>Resource/Avatars/14.jpg</file>
+        <file>Resource/Avatars/15.jpg</file>
+        <file>Resource/Avatars/16.jpg</file>
+        <file>Resource/Avatars/17.jpg</file>
+        <file>Resource/Avatars/18.jpg</file>
+        <file>Resource/Avatars/19.jpg</file>
+        <file>Resource/Avatars/20.jpg</file>
+        <file>Resource/Avatars/21.jpg</file>
+        <file>Resource/Avatars/22.jpg</file>
     </qresource>
 </RCC>

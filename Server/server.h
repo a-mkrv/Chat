@@ -44,7 +44,7 @@ private:
     QString getUsername(int ID);                //Получить ник пользователя
     QString timeconnect();                      //Время соединения
     void doCommand(QString command, int ID);
-    quint64 nextBlockSize;
+    quint16 nextBlockSize;
     QString find_User;
     QHash<QTcpSocket*, QByteArray*> buffers; //We need a buffer to store data until block has completely received
      QHash<QTcpSocket*, qint32*> sizes; //We need to store the size to verify if a block has received completely

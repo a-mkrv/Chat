@@ -20,7 +20,7 @@
    <widget class="QPushButton" name="connect_button">
     <property name="geometry">
      <rect>
-      <x>910</x>
+      <x>1000</x>
       <y>10</y>
       <width>51</width>
       <height>41</height>
@@ -258,7 +258,7 @@ background-color: rgb(74, 107, 142);</string>
      <bool>false</bool>
     </property>
     <property name="sortingEnabled">
-     <bool>true</bool>
+     <bool>false</bool>
     </property>
    </widget>
    <widget class="QListWidget" name="chatDialog">
@@ -655,7 +655,7 @@ background-color: rgb(99, 137, 168);</string>
       <string notr="true">background-color: rgb(255, 255, 255);</string>
      </property>
      <property name="currentIndex">
-      <number>2</number>
+      <number>0</number>
      </property>
      <widget class="QWidget" name="page">
       <widget class="QLabel" name="username_label">
@@ -680,8 +680,8 @@ background-color: rgb(99, 137, 168);</string>
       <widget class="QGroupBox" name="groupBox">
        <property name="geometry">
         <rect>
-         <x>40</x>
-         <y>110</y>
+         <x>30</x>
+         <y>150</y>
          <width>311</width>
          <height>151</height>
         </rect>
@@ -816,6 +816,59 @@ color: rgb(96, 125, 139);</string>
        </property>
        <property name="frame">
         <bool>false</bool>
+       </property>
+      </widget>
+      <widget class="QComboBox" name="sex_person">
+       <property name="geometry">
+        <rect>
+         <x>150</x>
+         <y>100</y>
+         <width>91</width>
+         <height>22</height>
+        </rect>
+       </property>
+       <property name="autoFillBackground">
+        <bool>false</bool>
+       </property>
+       <property name="editable">
+        <bool>false</bool>
+       </property>
+       <property name="frame">
+        <bool>false</bool>
+       </property>
+       <item>
+        <property name="text">
+         <string>Unknown</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Man</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Woman</string>
+        </property>
+       </item>
+      </widget>
+      <widget class="QLabel" name="label">
+       <property name="geometry">
+        <rect>
+         <x>40</x>
+         <y>90</y>
+         <width>91</width>
+         <height>31</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <family>Sitka Small</family>
+         <pointsize>10</pointsize>
+        </font>
+       </property>
+       <property name="text">
+        <string>Sex: </string>
        </property>
       </widget>
      </widget>
@@ -1029,6 +1082,9 @@ border:none;</string>
           <property name="text">
            <string>Play Sound</string>
           </property>
+          <property name="checked">
+           <bool>true</bool>
+          </property>
          </widget>
         </item>
         <item>
@@ -1230,6 +1286,156 @@ border:none;</string>
      <bool>true</bool>
     </property>
    </widget>
+   <widget class="QStackedWidget" name="stackedWidget_2">
+    <property name="geometry">
+     <rect>
+      <x>830</x>
+      <y>150</y>
+      <width>201</width>
+      <height>311</height>
+     </rect>
+    </property>
+    <property name="currentIndex">
+     <number>2</number>
+    </property>
+    <widget class="QWidget" name="user0">
+     <widget class="QListWidget" name="list_us_0">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>0</y>
+        <width>511</width>
+        <height>381</height>
+       </rect>
+      </property>
+      <item>
+       <property name="text">
+        <string>0</string>
+       </property>
+      </item>
+     </widget>
+    </widget>
+    <widget class="QWidget" name="user1">
+     <widget class="QListWidget" name="list_us_1">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>0</y>
+        <width>511</width>
+        <height>381</height>
+       </rect>
+      </property>
+      <item>
+       <property name="text">
+        <string>1</string>
+       </property>
+      </item>
+     </widget>
+    </widget>
+    <widget class="QWidget" name="user2">
+     <widget class="QListWidget" name="list_us_2">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>0</y>
+        <width>511</width>
+        <height>381</height>
+       </rect>
+      </property>
+      <item>
+       <property name="text">
+        <string>2</string>
+       </property>
+      </item>
+     </widget>
+    </widget>
+    <widget class="QWidget" name="user3">
+     <widget class="QListWidget" name="list_us_3">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>0</y>
+        <width>511</width>
+        <height>381</height>
+       </rect>
+      </property>
+     </widget>
+    </widget>
+    <widget class="QWidget" name="user4">
+     <widget class="QListWidget" name="list_us_4">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>0</y>
+        <width>511</width>
+        <height>381</height>
+       </rect>
+      </property>
+     </widget>
+    </widget>
+    <widget class="QWidget" name="user5">
+     <widget class="QListWidget" name="list_us_5">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>0</y>
+        <width>511</width>
+        <height>381</height>
+       </rect>
+      </property>
+     </widget>
+    </widget>
+    <widget class="QWidget" name="user6">
+     <widget class="QListWidget" name="list_us_6">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>0</y>
+        <width>511</width>
+        <height>381</height>
+       </rect>
+      </property>
+     </widget>
+    </widget>
+    <widget class="QWidget" name="user7">
+     <widget class="QListWidget" name="list_us_7">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>0</y>
+        <width>511</width>
+        <height>381</height>
+       </rect>
+      </property>
+     </widget>
+    </widget>
+    <widget class="QWidget" name="user8">
+     <widget class="QListWidget" name="list_us_8">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>0</y>
+        <width>511</width>
+        <height>381</height>
+       </rect>
+      </property>
+     </widget>
+    </widget>
+    <widget class="QWidget" name="user9">
+     <widget class="QListWidget" name="list_us_9">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>0</y>
+        <width>511</width>
+        <height>381</height>
+       </rect>
+      </property>
+     </widget>
+    </widget>
+   </widget>
+   <zorder>widget_2</zorder>
+   <zorder>stackedWidget_2</zorder>
    <zorder>line</zorder>
    <zorder>widget</zorder>
    <zorder>userList</zorder>
@@ -1240,10 +1446,9 @@ border:none;</string>
    <zorder>newContact_Button</zorder>
    <zorder>search_label</zorder>
    <zorder>search_line_edit</zorder>
-   <zorder>pushButton_2</zorder>
    <zorder>chat_back_lab</zorder>
    <zorder>chatDialog</zorder>
-   <zorder>widget_2</zorder>
+   <zorder>pushButton_2</zorder>
   </widget>
   <action name="actionShowHideWindow">
    <property name="text">
