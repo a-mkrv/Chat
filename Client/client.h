@@ -75,7 +75,6 @@ private slots:
 
 public slots:
     void recieveData(QString str, QString pas);
-    void recieveUser(QString str);
 
 signals:
     void find_user_Serv(QString str);

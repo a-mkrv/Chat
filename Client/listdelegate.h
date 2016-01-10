@@ -7,10 +7,9 @@
 class ListDelegate : public QAbstractItemDelegate
 {
 public:
-    ListDelegate(QObject *parent = 0, QString _date=0);
+    ListDelegate(QObject *parent = 0);
     void paint ( QPainter * painter, const QStyleOptionViewItem & option, const QModelIndex & index ) const;
     QSize sizeHint ( const QStyleOptionViewItem & option, const QModelIndex & index ) const;
-    QString date;
     virtual ~ListDelegate();
 };
 

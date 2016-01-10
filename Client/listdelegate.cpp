@@ -2,16 +2,13 @@
 #include <QLabel>
 #include <QDebug>
 
-ListDelegate::ListDelegate(QObject *parent, QString _date)
+ListDelegate::ListDelegate(QObject *parent)
     {
-        date=_date;
+
     }
 
 
 void ListDelegate::paint ( QPainter * painter, const QStyleOptionViewItem & option, const QModelIndex & index ) const{
-        QLabel *lol = new QLabel("HELLO");
-        //QIcon pic(":/new/prefix1/Resource/profile5.png");
-       // painter->drawImage(pic);
 
     QRect r = option.rect;
 
@@ -67,32 +64,8 @@ void ListDelegate::paint ( QPainter * painter, const QStyleOptionViewItem & opti
         QString description = index.data(Qt::UserRole + 1).toString();
 
 
-
-//        if(date=="From"){
-
-//            int imageSpace = 14;
-//            if (!ic.isNull()) {
-//                //ICON
-//                r = option.rect.adjusted(5, 10, -10, -10);
-//                ic.paint(painter, r, Qt::AlignVCenter|Qt::AlignRight);
-//                imageSpace = 55;
-//            }
-
-//        //TITLE
-//        r = option.rect.adjusted(r.width()-600, 0, -10, -15);
-//        painter->setFont( QFont( "Lucida Grande", 8, QFont::Normal ) );
-//        painter->drawText(r.left(), r.top(), r.width()-55, r.height(), Qt::AlignBottom|Qt::AlignRight, title, &r);
-
-//        //DESCRIPTION
-//        r = option.rect.adjusted(imageSpace, 30, -10, 0);
-//        painter->setFont( QFont( "Lucida Grande", 5, QFont::Normal ) );
-//        painter->drawText(r.left(), r.top(), r.width(), r.height(), Qt::AlignLeft, description, &r);
-//        }
-//        else if (date=="To")
-//        {
-
-            int imageSpace = 14;
-            if (!ic.isNull()) {
+        int imageSpace = 14;
+        if (!ic.isNull()) {
                 //ICON
                 r = option.rect.adjusted(5, 10, -10, -10);
                 ic.paint(painter, r, Qt::AlignVCenter|Qt::AlignLeft);
@@ -109,13 +82,11 @@ void ListDelegate::paint ( QPainter * painter, const QStyleOptionViewItem & opti
             painter->drawText(r.left(), r.top(), r.width(), r.height(), Qt::AlignLeft, description, &r);
         }
 
-    //}
-
-    QSize ListDelegate::sizeHint ( const QStyleOptionViewItem & option, const QModelIndex & index ) const{
+QSize ListDelegate::sizeHint ( const QStyleOptionViewItem & option, const QModelIndex & index ) const{
         return QSize(200, 60); // very dumb value
     }
 
-    ListDelegate::~ListDelegate()
+ListDelegate::~ListDelegate()
     {
 
     }

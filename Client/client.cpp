@@ -21,7 +21,6 @@ Client::Client(QWidget *parent) : QMainWindow(parent), ui(new Ui::Client)
 
     reg_window = new registration();
     connect(reg_window, SIGNAL(sendData(QString, QString)), this, SLOT(recieveData(QString, QString)));
-    connect(reg_window, SIGNAL(sendFindContact(QString)), this, SLOT(recieveUser(QString)));
 
     ui->RB_sendEnter->setChecked(true);
     download_path="(C:/...)";
@@ -57,7 +56,7 @@ Client::Client(QWidget *parent) : QMainWindow(parent), ui(new Ui::Client)
     //QImage image(":/new/prefix1/Resource/bumaga.jpg");
     ui->chat_back_lab->setStyleSheet("background-color: rgb(255, 255, 235)");
     ui->chatDialog->setStyleSheet(""" color: white; background-image: url(:/new/prefix1/Resource/bg3.jpg);background-attachment: scroll;""");
-qDebug() << "FDF";
+
     ui->close_setting_button_2->setIcon(ButtonIcon);
     ui->close_setting_button_2->setIconSize(back_to_menu.rect().size()/2);
 
@@ -136,14 +135,6 @@ void Client::recieveData(QString str, QString pas)
    }
 }
 
-void Client::recieveUser(QString str)
-{
-    //if(str!="")
-    //{
-    //    ui->editText->setText("123");
-    //}
-}
-
 void Client::on_sendMessage_clicked()
 {
 
@@ -190,12 +181,12 @@ void Client::on_sendMessage_clicked()
 
             QDateTime dt = QDateTime::currentDateTime();
             new QListWidgetItem(name + ": " +  message + "\n"+ QDateTime::currentDateTime().toString("dd.MM.yy hh:mm"), ui->chatDialog);
-            ui->chatDialog->setItemDelegate(new ListDelegate(ui->chatDialog, "To"));
+            ui->chatDialog->setItemDelegate(new ListDelegate(ui->chatDialog));
 
             if(ui->ChBox_PSound->isChecked())
                 QSound::play(":/new/prefix1/Resource/to.wav");
 
-            out << message;
+            out << quint16(0) << QTime::currentTime() << message;
             tcpSocket->write(msg);
         }
     }
@@ -239,7 +230,7 @@ void Client::on_connect_button_clicked()
     QString status = tr("-> Connecting to 127.0.0.1 on port 55155.");
 
     new QListWidgetItem(status, ui->chatDialog);
-    ui->chatDialog->setItemDelegate(new ListDelegate(ui->chatDialog, "To"));
+    ui->chatDialog->setItemDelegate(new ListDelegate(ui->chatDialog));
     tcpSocket->abort();
     tcpSocket->connectToHost(hostname, port);
 }
@@ -269,9 +260,9 @@ void Client::getMessage()
     if (checkCmd == "_INV_")
         cmd = COMMAND::INVITE;
 
+    qDebug() << checkCmd;
+
     int rand_avatar =  rand()%22+1;
-
-
     QIcon pic(":/Avatars/Resource/Avatars/"+QString::number(rand_avatar)+".jpg");
 
     switch (cmd)
@@ -296,7 +287,6 @@ void Client::getMessage()
     case COMMAND::FINDUSER:
     {
         QString find_user = commandList.at(1);
-        //qDebug() << "FIND:  Find_Users" << find_user << "  Gl_Fname: " << gl_fname;
 
         if(gl_fname==name)
             break;
@@ -318,7 +308,6 @@ void Client::getMessage()
         if(gl_fname==name)
             break;
         QString find_user = commandList.at(1);
-        //qDebug() << "INV:  Find_Users" << find_user << "  Gl_Fname: " << gl_fname;
 
         QListWidgetItem *q;
         q = new QListWidgetItem(find_user, ui->userList);
@@ -333,7 +322,7 @@ void Client::getMessage()
             QSound::play(":/new/prefix1/Resource/from.wav");
 
         new QListWidgetItem(message, ui->chatDialog);
-        ui->chatDialog->setItemDelegate(new ListDelegate(ui->chatDialog, "From"));
+        ui->chatDialog->setItemDelegate(new ListDelegate(ui->chatDialog));
         ui->chatDialog->scrollToBottom();
     }
 }
@@ -400,7 +389,7 @@ void Client::send_personal_data()
 
         QString command = "_USR_";
         QString username = ui->usernameEdit->text();
-        out << command;
+        out << quint16(0) << QTime::currentTime() << command;
         out << username;
         tcpSocket->write(block);
         reg_window->hide();
@@ -411,7 +400,7 @@ void Client::onDisconnect()
 {
 
     new QListWidgetItem("Disconnected..", ui->chatDialog);
-    ui->chatDialog->setItemDelegate(new ListDelegate(ui->chatDialog, "To"));
+    ui->chatDialog->setItemDelegate(new ListDelegate(ui->chatDialog));
     ui->chatDialog->scrollToBottom();
     ui->userList->clear();
     personDates = false;
@@ -423,8 +412,7 @@ void Client::sendUserCommand(QString command)
     QDataStream out(&msg, QIODevice::WriteOnly);
     out.setVersion(QDataStream::Qt_5_4);
 
-    command = "_UCD_ " + command;
-    out << command;
+    out << quint16(0) << QTime::currentTime() << QString("_UCD_") << command;
     tcpSocket->write(msg);
 }
 
@@ -482,15 +470,12 @@ void Client::findtoserv(QString name_user)
     static bool tmp = true;
     if(tmp)
         {
-        qDebug() << "FINDWIND " + gl_fname + " " + name_user;
-            QString find = "_FND_ ";
             QString find_us = name_user;
             QByteArray msg;
             QDataStream out(&msg, QIODevice::WriteOnly);
             out.setVersion(QDataStream::Qt_5_4);
 
-            out << find + find_us;
-            qDebug() << find << " " << find_us;
+            out << quint16(0) << QTime::currentTime() << QString("_FND_") <<find_us;
             tcpSocket->write(msg);
             tmp=false;
         }
@@ -662,31 +647,31 @@ void Client::on_Download_path_PB_clicked()
 
 void Client::on_pushButton_2_clicked()
 {
-    QString filePath = QFileDialog::getOpenFileName
-            (
-                this,
-                tr("Select Images"),"",
-                tr("Images (*.jpg *jpeg *.png)")
-             );
 
+    QString filePatch = QFileDialog::getOpenFileName(this,
+            QObject::trUtf8("Выбор файла для отправки"), "",
+            QObject::trUtf8("(*.*)"));
+    if (filePatch.isEmpty()) {
+        return ;
+    }
 
     QByteArray  arrBlock;
     qint64 fileSize;
     QDataStream out(&arrBlock, QIODevice::WriteOnly);
     out.setVersion(QDataStream::Qt_5_4);
 
-    sendFile = new QFile(filePath);
+    sendFile = new QFile(filePatch);
     sendFile->open(QFile::ReadOnly);
 
-    QFileInfo fi(filePath);
+    QFileInfo fi(filePatch);
     QString fileName = fi.fileName();
-    qDebug() << fileName;
+
     fileSize = fi.size();
-    qDebug() << QString::number(fileSize);
 
     QByteArray buffer = sendFile->readAll();
 
-    out << quint16(0) << fileName << fileSize << buffer;
+    out << quint16(0) << QTime::currentTime() << QString("_FILE_")
+            << fileName << fileSize << buffer;
 
     out.device()->seek(0);
     out << quint16(arrBlock.size() - sizeof(quint16));

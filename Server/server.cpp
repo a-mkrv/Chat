@@ -7,7 +7,7 @@ Server::Server(QWidget *parent) :
     ui(new Ui::Server)
 {
     ui->setupUi(this);
-
+    nextBlockSize=0;
     tcpServer = new QTcpServer(this);
 
     if (!tcpServer->listen(QHostAddress::Any, 55155))
@@ -93,6 +93,8 @@ void Server::onDisconnect()
 
 void Server::doCommand(QString command, int ID)
 {
+    qDebug() << command;
+
     QString message = "Server: ";
     QStringList instruction = command.split(" ", QString::SkipEmptyParts);
     command = instruction.takeFirst();
@@ -170,44 +172,53 @@ void Server::sendToID(QString message, int ID)
 
 void Server::getMessage()
 {
-
+    QTime   time;
+    QString typePacket;
     QTcpSocket *client = qobject_cast<QTcpSocket*>(sender());
-
     QDataStream in(client);
     in.setVersion(QDataStream::Qt_5_4);
 
+    if (!nextBlockSize) {
+        if (quint16(client->bytesAvailable()) < sizeof(quint16)) {
+            return;
+        }
+        in >> nextBlockSize;
+    }
+
+    if (client->bytesAvailable() < nextBlockSize) {
+        return;
+    }
+
+    in >> time >> typePacket;
+    qDebug() << typePacket;
+
     QString message;
-    static int t=0;
-    if (t<1)
-    in >> message;
-t++;
+    int command = 0; // 0 - пусто,
+                     // 1 - имя пользователя,
+                     // 2 - команда,
+                     // 3 - поиск
 
-    QStringList messageTokens;
-    //messageTokens = message.split(" ", QString::SkipEmptyParts);
-
-
-
-    int command = 0; //0 - пусто, 1 - имя пользователя, 2 - команда, 3 - поиск
-
-    if (message == "_USR_")
+    if (typePacket == "_USR_")
         command = 1;
-//    if (messageTokens.at(0) == "_FND_")
-//    {
-//        find_User=messageTokens.at(1);
-//        qDebug() << find_User;
-//        command = 3;
-//    }
 
-//    if (messageTokens.at(0) == "_UCD_")
-//        command = 2;
+    if (typePacket == "_UCD_")
+       command = 2;
 
-//    if(messageTokens.at(0) == "_FILE_")
-//        command=4;
+     if (typePacket == "_FND_")
+    {
+         in >> find_User;
+         command = 3;
+    }
+
+     if (typePacket == "_FILE_")
+         command = 4;
+
 
     switch (command)
     {
     case 1:
     {
+        qDebug() << "Case 1";
         in >> message;
 
         QString username = message;
@@ -249,22 +260,29 @@ t++;
 
     case 2:
     {
-        messageTokens.removeFirst();
-        message.clear();
+        qDebug() << "Case 2";
+        QStringList messageTokens;
+        QString command_mes;
+        in >> command_mes;
+
+        messageTokens = command_mes.split(" ", QString::SkipEmptyParts);
+        command_mes.clear();
         for (auto i : messageTokens)
         {
-            message += i;
-            message += " ";
+           command_mes += i;
+           command_mes += " ";
         }
-        doCommand(message, client->socketDescriptor());
+        doCommand(command_mes, client->socketDescriptor());
         break;
     }
      case 3:
-    {   QString dat;
+    {
+        qDebug() << "Case 3";
+
+        QString dat;
         for (auto i : userList)
         {
             dat = i.second;
-               qDebug() << "i.Second= " << i.second;
 
                if(find_User!=dat)
                     sendToID("_FIN_ NOFIN", client->socketDescriptor() );
@@ -287,101 +305,85 @@ t++;
                 return;
             }
         }
-
+        break;
     }
 
     case 4:
     {
+        qDebug() << "Case 4";
 
-        QByteArray *buffer = buffers.value(client);
-           qint32 *s = sizes.value(client);
-           qint32 size = *s;
-           while (client->bytesAvailable() > 0)
-           {
-               buffer->append(client->readAll());
-               qDebug() << buffer;
-               while ((size == 0 && buffer->size() >= 4) || (size > 0 && buffer->size() >= size)) //While can process data, process it
-               {
-                   if (size == 0 && buffer->size() >= 4) //if size of data has received completely, then store it on our global variable
-                   {
-                       size = ArrayToInt(buffer->mid(0, 4));
-                       *s = size;
-                       buffer->remove(0, 4);
-                   }
-                   if (size > 0 && buffer->size() >= size) // If data has received completely, then emit our SIGNAL with the data
-                   {
-                       QByteArray data = buffer->mid(0, size);
-                       buffer->remove(0, size);
-                       size = 0;
-                       *s = size;
-                       //emit dataReceived(data);
-                   }
+               QByteArray buffer;
+               QString fileName;
+               qint64 fileSize;
+
+               QString dirDownloads = QDir::homePath() + "/op/";
+               QDir(dirDownloads).mkdir(dirDownloads);
+
+               in >> fileName >> fileSize;
+                qDebug() << fileName;
+                qDebug() << fileSize;
+               QMessageBox messageBox;
+               messageBox.setInformativeText(QObject::trUtf8("Принять файл ") + fileName +
+               QObject::trUtf8(" от ")  + "?");
+               messageBox.setStandardButtons(QMessageBox::Save | QMessageBox::Cancel);
+               int ret = messageBox.exec();
+
+
+               if (ret == QMessageBox::Save) {
+
+                   forever
+                    {
+                        if (!nextBlockSize) {
+
+                            if (quint16(client->bytesAvailable()) < sizeof(quint16)) {
+                                break;
+                            }
+                            in >> nextBlockSize;
+                        }
+
+                        in >> buffer;
+
+                        //sendToClient(mClientSocket, "SC_FILE_TRANSFER_ASK", fileName);
+
+                        if (client->bytesAvailable() < nextBlockSize) {
+                            break;
+                        }
+                    }
+
+                    QFile receiveFile(dirDownloads + fileName);
+                    receiveFile.open(QIODevice::ReadWrite);
+                    receiveFile.write(buffer);
+                    receiveFile.close();
+                    buffer.clear();
+                    break;
                }
-           }
+               else
+               {
+
+               }
+               nextBlockSize = 0;
+break;
     }
     default:
-
-        QByteArray buffer;
-        QString fileName;
-        qint64 fileSize;
-
-        QString dirDownloads = QDir::homePath() + "/meraLOL/";
-        QDir(dirDownloads).mkdir(dirDownloads);
-
-        in >> fileName >> fileSize;
-
-        QMessageBox messageBox;
-        messageBox.setInformativeText(QObject::trUtf8("Принять файл ") + fileName +
-                QObject::trUtf8(" от ")  + "?");
-        messageBox.setStandardButtons(QMessageBox::Save | QMessageBox::Cancel);
-        int ret = messageBox.exec();
-
-
-        if (ret == QMessageBox::Save) {
-
-            forever
-            {
-                if (!nextBlockSize) {
-
-                    if (quint16(client->bytesAvailable()) < sizeof(quint16)) {
-                        break;
-                    }
-                    in >> nextBlockSize;
-                }
-
-                in >> buffer;
-
-                //sendToClient(mClientSocket, "SC_FILE_TRANSFER_ASK", fileName);
-
-               // if (mClientSocket->bytesAvailable() < nextBlockSize) {
-                    break;
-                }
-            }
-
-            QFile receiveFile(dirDownloads + fileName);
-            receiveFile.open(QIODevice::ReadWrite);
-            receiveFile.write(buffer);
-            receiveFile.close();
-            buffer.clear();
-
-//        std::map<int, QString>::iterator it;
-//        it = userList.find(client->socketDescriptor());
-//        updateStatus("MSG: (" + it->second + ") " + message);
-
-//        it = userList.find(client->socketDescriptor());
-//        QString usr = it->second;
-//        message = usr + ": " + message;
+        std::map<int, QString>::iterator it;
+        it = userList.find(client->socketDescriptor());
+        updateStatus("MSG: (" + it->second + ") " + typePacket);
     }
 }
 
+//void Server::sendToClient(QTcpSocket* mSocket, const QString& typePacket, QString report)
+//{
+//    QByteArray  arrBlock;
+//    QDataStream out(&arrBlock, QIODevice::WriteOnly);
 
-qint32 Server::ArrayToInt(QByteArray source)
-{
-    qint32 temp;
-    QDataStream data(&source, QIODevice::ReadWrite);
-    data >> temp;
-    return temp;
-}
+//    out.setVersion(QDataStream::Qt_4_7);
+//    out << quint16(0) << QTime::currentTime() << typePacket << report;
+
+//    out.device()->seek(0);
+//    out << quint16(arrBlock.size() - sizeof(quint16));
+
+//    mSocket->write(arrBlock);
+//}
 
 void Server::updateStatus(QString message)
 {
@@ -407,7 +409,6 @@ void Server::sendUserList()
     }
 
     out << userlist;
-    //qDebug() << userlist;
     for (auto i : clientConnections)
         i->write(block);
 }

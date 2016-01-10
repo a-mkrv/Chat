@@ -1434,7 +1434,6 @@ border:none;</string>
      </widget>
     </widget>
    </widget>
-   <zorder>widget_2</zorder>
    <zorder>stackedWidget_2</zorder>
    <zorder>line</zorder>
    <zorder>widget</zorder>
@@ -1449,6 +1448,7 @@ border:none;</string>
    <zorder>chat_back_lab</zorder>
    <zorder>chatDialog</zorder>
    <zorder>pushButton_2</zorder>
+   <zorder>widget_2</zorder>
   </widget>
   <action name="actionShowHideWindow">
    <property name="text">
