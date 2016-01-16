@@ -2,18 +2,16 @@
 #include "ui_newcontact.h"
 #include <QTime>
 
-NewContact::NewContact(QWidget *parent) :
+NewContact::NewContact(QWidget *parent, QTcpSocket *client) :
     QWidget(parent),
     ui(new Ui::NewContact)
 {
 
     ui->setupUi(this);
     ui->Error_label->hide();
-    socket = new QTcpSocket();
-    socket->abort();
-    socket->connectToHost("127.0.0.1", 55155);
+    socket = client;
 
-    connect(socket, SIGNAL(readyRead()), this, SLOT(getMessage()));
+    connect(socket, SIGNAL(readyRead()), this, SLOT(getMessagee()));
 }
 
 NewContact::~NewContact()
@@ -21,13 +19,13 @@ NewContact::~NewContact()
     delete ui;
 }
 
-void NewContact::getMessage()
+void NewContact::getMessagee()
 {
         QDataStream in(socket);
         in.setVersion(QDataStream::Qt_5_4);
         QString mes;
         in >> mes;
-        qDebug() << mes;
+        qDebug() << "GetNew" << mes;
         if(mes == "Already")
             ui->Error_label->show();
         if(mes == "Welcome!" && !ui->enter_city->text().isEmpty() \
@@ -36,8 +34,8 @@ void NewContact::getMessage()
                 && !ui->age->text().isEmpty() \
                 && !ui->sex_person->currentText().isEmpty())
         {
-        emit sendData(QString("Show"));
-            this->close();
+            emit sendData(QString("Show"));
+            this->~NewContact();
         }
 }
 

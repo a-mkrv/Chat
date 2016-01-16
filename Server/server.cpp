@@ -220,6 +220,9 @@ void Server::getMessage()
     else if(typePacket == "_REG_")
         command = 5;
 
+    else if(typePacket == "_LOG_IN_")
+        command = 6;
+
     switch (command)
     {
     case 1:
@@ -406,6 +409,37 @@ break;
         }
 
 break;
+    }
+    case 6:
+    {
+        qDebug() << "6";
+        QString Login;
+        QString Password;
+
+        in >> Login;
+        in >> Password;
+           qDebug() << Login << Password;
+
+        QByteArray block;
+        QDataStream out(&block, QIODevice::WriteOnly);
+        out.setVersion(QDataStream::Qt_5_4);
+
+        if(!sqlitedb->CorrectInput(Login, Password))
+        {
+        QString message = "Error_Login_Pass";
+        out << message;
+        client->write(block);
+        }
+        else
+        {
+            QString message = "Welcome!";
+            out << message;
+            client->write(block);
+        }
+
+
+
+        break;
     }
     default:
         qDebug() << "Default";

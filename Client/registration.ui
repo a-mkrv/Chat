@@ -340,6 +340,23 @@ color: rgb(86, 96, 109);</string>
     <string>Registration</string>
    </property>
   </widget>
+  <widget class="QLabel" name="error_label">
+   <property name="geometry">
+    <rect>
+     <x>300</x>
+     <y>250</y>
+     <width>161</width>
+     <height>20</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">background-color: rgb(255, 255, 255, 0);
+color: rgb(214, 71, 0);</string>
+   </property>
+   <property name="text">
+    <string>  Incorrect login/password</string>
+   </property>
+  </widget>
   <zorder>label_3</zorder>
   <zorder>label_4</zorder>
   <zorder>username_enter</zorder>
@@ -353,6 +370,7 @@ color: rgb(86, 96, 109);</string>
   <zorder>checkBox</zorder>
   <zorder>label_2</zorder>
   <zorder>reg_button</zorder>
+  <zorder>error_label</zorder>
  </widget>
  <resources>
   <include location="image.qrc"/>

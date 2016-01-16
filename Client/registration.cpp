@@ -6,9 +6,16 @@ registration::registration(QWidget *parent) :
     ui(new Ui::registration)
 {
     ui->setupUi(this);
-    reg = new NewContact();
+
+    socket = new QTcpSocket;
+    socket->abort();
+    socket->connectToHost("127.0.0.1", 55155);
+
+    ui->error_label->hide();
+    reg = new NewContact(parent, socket);
     connect(ui->pushButton, SIGNAL(clicked()), this, SLOT(onButtonSend()));
     connect(ui->pushButton, SIGNAL(clicked()), this, SLOT(onButtonSendUser()));
+    connect(socket, SIGNAL(readyRead()), this, SLOT(getMessage()));
     connect(reg, SIGNAL(sendData(QString)), this, SLOT(recieveData(QString)));
 
     ui->pass_enter->setEchoMode(QLineEdit::Password);
@@ -17,7 +24,7 @@ registration::registration(QWidget *parent) :
 
 void registration::onButtonSend()
 {
-    emit sendData(ui->username_enter->text().simplified(), ui->pass_enter->text().simplified());
+    //emit sendData(ui->username_enter->text().simplified(), ui->pass_enter->text().simplified());
 }
 
 void registration::onButtonSendUser()
@@ -27,9 +34,41 @@ void registration::onButtonSendUser()
 
 void registration::on_pushButton_clicked()
 {
-    QString str = ui->username_enter->text().simplified();
-    if(str!="" && ui->pass_enter->text().simplified()!="")
-    this->hide();
+    QString login = ui->username_enter->text().simplified();
+    QString password = ui->pass_enter->text().simplified();
+
+    if(login!="" && password!="")
+    {
+        QByteArray block;
+        QDataStream out(&block, QIODevice::WriteOnly);
+        out.setVersion(QDataStream::Qt_5_4);
+
+        out << quint16(0) << QTime::currentTime() << QString("_LOG_IN_") << login << password;
+        socket->write(block);
+    }
+
+//    QString str = ui->username_enter->text().simplified();
+//    if(str!="" && ui->pass_enter->text().simplified()!="")
+//    this->hide();
+}
+
+
+void registration::getMessage()
+{
+        QDataStream in(socket);
+        in.setVersion(QDataStream::Qt_5_4);
+        QString mes;
+        in >> mes;
+        qDebug() << "GetReg" <<mes;
+        if(mes == "Error_Login_Pass")
+            ui->error_label->show();
+        if(mes == "Welcome!" && !ui->username_enter->text().simplified().isEmpty() \
+                && !ui->pass_enter->text().simplified().isEmpty())
+        {
+            emit sendData(ui->username_enter->text().simplified(), ui->pass_enter->text().simplified());
+            this->hide();
+
+        }
 }
 
 void registration::keyReleaseEvent(QKeyEvent *event)

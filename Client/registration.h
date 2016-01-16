@@ -3,7 +3,9 @@
 
 #include <QDialog>
 #include <QKeyEvent>
+#include <QTcpSocket>
 #include "newcontact.h"
+#include <QTime>
 
 namespace Ui {
 class registration;
@@ -25,6 +27,9 @@ public:
 private:
      int key;
 
+protected:
+     QTcpSocket *socket;
+
 signals:
     void sendData(QString str, QString pas);
     void sendFindContact(QString str);
@@ -34,6 +39,7 @@ private slots:
     void onButtonSend();
     void onButtonSendUser();
     void recieveData(QString str);
+    void getMessage();
 
 private slots:
     void on_pushButton_clicked();

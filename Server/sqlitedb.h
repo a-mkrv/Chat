@@ -17,6 +17,7 @@ private:
 public slots:
     void AddContact(QString, QString, int, QString, QString);
     bool FindInDB(QString);
+    bool CorrectInput(QString, QString);
 };
 
 #endif // SQLITEDB_H

@@ -13,12 +13,12 @@ class NewContact : public QWidget
     Q_OBJECT
 
 public:
-    explicit NewContact(QWidget *parent = 0);
+    explicit NewContact(QWidget *parent = 0, QTcpSocket *client=0);
     ~NewContact();
 
 private slots:
     void on_accept_button_clicked();
-    void getMessage();
+    void getMessagee();
 
 signals:
     void sendData(QString str);

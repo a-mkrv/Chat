@@ -62,3 +62,10 @@ bool SQLiteDB::FindInDB(QString UserName)
     query.exec();
     return false;
 }
+
+bool SQLiteDB::CorrectInput(QString _login, QString _password)
+{
+    qDebug() << "CorrectInput";
+    QSqlQuery query(myDB);
+    return true;
+}
