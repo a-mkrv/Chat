@@ -122,11 +122,11 @@ background-color: rgb(74, 107, 142);</string>
       <bool>true</bool>
      </property>
     </widget>
-    <widget class="QTextEdit" name="textEdit">
+    <widget class="QTextEdit" name="textEdit1">
      <property name="geometry">
       <rect>
-       <x>180</x>
-       <y>30</y>
+       <x>10</x>
+       <y>0</y>
        <width>201</width>
        <height>41</height>
       </rect>
@@ -179,9 +179,9 @@ background-color: rgb(74, 107, 142);</string>
     <widget class="QLineEdit" name="editText">
      <property name="geometry">
       <rect>
-       <x>50</x>
+       <x>210</x>
        <y>30</y>
-       <width>481</width>
+       <width>321</width>
        <height>51</height>
       </rect>
      </property>
@@ -198,7 +198,7 @@ background-color: rgb(74, 107, 142);</string>
       <string>Write a message..</string>
      </property>
     </widget>
-    <zorder>textEdit</zorder>
+    <zorder>textEdit1</zorder>
     <zorder>pushButton</zorder>
     <zorder>editText</zorder>
     <zorder>sendMessage</zorder>
@@ -818,59 +818,6 @@ color: rgb(96, 125, 139);</string>
         <bool>false</bool>
        </property>
       </widget>
-      <widget class="QComboBox" name="sex_person">
-       <property name="geometry">
-        <rect>
-         <x>150</x>
-         <y>100</y>
-         <width>91</width>
-         <height>22</height>
-        </rect>
-       </property>
-       <property name="autoFillBackground">
-        <bool>false</bool>
-       </property>
-       <property name="editable">
-        <bool>false</bool>
-       </property>
-       <property name="frame">
-        <bool>false</bool>
-       </property>
-       <item>
-        <property name="text">
-         <string>Unknown</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>Man</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>Woman</string>
-        </property>
-       </item>
-      </widget>
-      <widget class="QLabel" name="label">
-       <property name="geometry">
-        <rect>
-         <x>40</x>
-         <y>90</y>
-         <width>91</width>
-         <height>31</height>
-        </rect>
-       </property>
-       <property name="font">
-        <font>
-         <family>Sitka Small</family>
-         <pointsize>10</pointsize>
-        </font>
-       </property>
-       <property name="text">
-        <string>Sex: </string>
-       </property>
-      </widget>
      </widget>
      <widget class="QWidget" name="page_3">
       <widget class="QCheckBox" name="checkBox_3">
@@ -1434,9 +1381,9 @@ border:none;</string>
      </widget>
     </widget>
    </widget>
+   <zorder>widget_2</zorder>
    <zorder>stackedWidget_2</zorder>
    <zorder>line</zorder>
-   <zorder>widget</zorder>
    <zorder>userList</zorder>
    <zorder>background_inder_list</zorder>
    <zorder>background_under_chat</zorder>
@@ -1448,7 +1395,7 @@ border:none;</string>
    <zorder>chat_back_lab</zorder>
    <zorder>chatDialog</zorder>
    <zorder>pushButton_2</zorder>
-   <zorder>widget_2</zorder>
+   <zorder>widget</zorder>
   </widget>
   <action name="actionShowHideWindow">
    <property name="text">

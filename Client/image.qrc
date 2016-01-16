@@ -21,30 +21,8 @@
         <file>Resource/jins-reg.jpg</file>
         <file>Resource/squares110.png</file>
         <file>Resource/write50.png</file>
-    </qresource>
-    <qresource prefix="/">
-        <file>Button.qml</file>
-        <file>client.cpp</file>
-        <file>client.h</file>
-        <file>emojiframe.cpp</file>
-        <file>emojiframe.h</file>
-        <file>emojimanager.cpp</file>
-        <file>emojimanager.h</file>
-        <file>findcontacts.cpp</file>
-        <file>findcontacts.h</file>
-        <file>listdelegate.cpp</file>
-        <file>listdelegate.h</file>
-        <file>listwidgetemoji.cpp</file>
-        <file>listwidgetemoji.h</file>
-        <file>main.cpp</file>
-        <file>registration.cpp</file>
-        <file>registration.h</file>
-        <file>setting.cpp</file>
-        <file>setting.h</file>
-        <file>tcpconnect.cpp</file>
-        <file>tcpconnect.h</file>
-        <file>trayicon.cpp</file>
-        <file>trayicon.h</file>
+        <file>Resource/reg.png</file>
+        <file>Resource/add_user.png</file>
     </qresource>
     <qresource prefix="/Avatars">
         <file>Resource/Avatars/1.jpg</file>

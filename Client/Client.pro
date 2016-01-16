@@ -19,28 +19,31 @@ SOURCES += main.cpp\
     setting.cpp \
     findcontacts.cpp \
     trayicon.cpp \
-    registration.cpp \
     tcpconnect.cpp \
     emojimanager.cpp \
     listwidgetemoji.cpp \
-    listdelegate.cpp
+    listdelegate.cpp \
+    registration.cpp \
+    newcontact.cpp
 
 HEADERS  += client.h \
     emojiframe.h \
     setting.h \
     findcontacts.h \
     trayicon.h \
-    registration.h \
     tcpconnect.h \
     emojimanager.h \
     listwidgetemoji.h \
-    listdelegate.h
+    listdelegate.h \
+    registration.h \
+    newcontact.h
 
 FORMS    += client.ui \
     emojiframe.ui \
     findcontacts.ui \
     registration.ui \
-    maingui.ui
+    maingui.ui \
+    newcontact.ui
 
 RESOURCES += \
     image.qrc

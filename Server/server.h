@@ -10,6 +10,8 @@
 #include <QList>
 #include <QFile>
 
+#include "sqlitedb.h"
+
 namespace Ui {
 class Server;
 }
@@ -34,7 +36,7 @@ public:
 
 private:
     Ui::Server *ui;
-
+    SQLiteDB *sqlitedb;
     QTcpServer *tcpServer;
     QList<QTcpSocket*> clientConnections;       //Список подключений
     std::map<const int, QString> userList;      //Список пользователей

@@ -10,6 +10,7 @@ ListDelegate::ListDelegate(QObject *parent)
 
 void ListDelegate::paint ( QPainter * painter, const QStyleOptionViewItem & option, const QModelIndex & index ) const{
 
+
     QRect r = option.rect;
 
         //Color: #C4C4C4
@@ -56,7 +57,7 @@ void ListDelegate::paint ( QPainter * painter, const QStyleOptionViewItem & opti
 
             painter->setPen(fontPen);
         }
-
+        QLabel lol("sdfs");
         //GET TITLE, DESCRIPTION AND ICON
         QPixmap back_to_menu(":/new/prefix1/Resource/profile5.png");
         QIcon ic(back_to_menu);

@@ -3,6 +3,7 @@
 #include <QPainter>
 #include <QAbstractItemDelegate>
 #include <QString>
+#include <QTextDocument>
 
 class ListDelegate : public QAbstractItemDelegate
 {

@@ -6,11 +6,11 @@ registration::registration(QWidget *parent) :
     ui(new Ui::registration)
 {
     ui->setupUi(this);
-
+    reg = new NewContact();
     connect(ui->pushButton, SIGNAL(clicked()), this, SLOT(onButtonSend()));
     connect(ui->pushButton, SIGNAL(clicked()), this, SLOT(onButtonSendUser()));
+    connect(reg, SIGNAL(sendData(QString)), this, SLOT(recieveData(QString)));
 
-    //ui->pass_label->setBuddy(ui->pass_enter);
     ui->pass_enter->setEchoMode(QLineEdit::Password);
     this->show();
 }
@@ -47,5 +47,22 @@ void registration::keyReleaseEvent(QKeyEvent *event)
 
 registration::~registration()
 {
+    qDebug() << "Delete Reg";
     delete ui;
+}
+
+void registration::on_reg_button_clicked()
+{
+    reg->show();
+    this->hide();
+}
+
+
+void registration::recieveData(QString str)
+{
+    qDebug() << str;
+   if(str=="Show")
+   {
+        this->show();
+   }
 }

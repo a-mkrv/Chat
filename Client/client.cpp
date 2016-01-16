@@ -159,9 +159,11 @@ void Client::on_sendMessage_clicked()
         str = str.replace(searchTag, replTag);
     }
 
-    // QTextDocument doc;
-    //doc.setHtml(str);
-    //return doc.toPlainText();
+    QTextDocument doc;
+    doc.setHtml(ui->textEdit1->toPlainText());
+    doc.toPlainText();
+    //new QListWidgetItem(doc.toPlainText(), ui->chatDialog);
+    //ui->chatDialog->setItemDelegate(new ListDelegate(ui->chatDialog));
 
     ui->editText->clear();
     blockSize = 0;
@@ -194,13 +196,13 @@ void Client::on_sendMessage_clicked()
 
 void Client::insertEmoticon(QString symbol)
 {
-    QTextCursor cursor(ui->textEdit->textCursor());
+    QTextCursor cursor(ui->textEdit1->textCursor());
 
     if (!cursor.isNull()) {
         cursor.insertHtml(symbol);
     }
 
-    QTextCursor cursor2(ui->textEdit->document()->find(symbol));
+    QTextCursor cursor2(ui->textEdit1->document()->find(symbol));
 
     QString emojiNumber = emojiMan->getEmojiNumberFromSymbol(symbol);
     QString binDir = QCoreApplication::applicationDirPath();
@@ -464,7 +466,8 @@ void Client::showFindCont()
 }
 
 void Client::findtoserv(QString name_user)
-{trayIcon->showMessage("Hello", "My name is Anton", QSystemTrayIcon::Information, 1);
+{
+    trayIcon->showMessage("Hello", "My name is Anton", QSystemTrayIcon::Information, 1);
     gl_fname=name_user;
 
     static bool tmp = true;

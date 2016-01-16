@@ -3,7 +3,7 @@
 
 #include <QDialog>
 #include <QKeyEvent>
-
+#include "newcontact.h"
 
 namespace Ui {
 class registration;
@@ -21,9 +21,10 @@ public:
     ~registration();
     bool ok;
     Ui::registration *ui;
-
+    NewContact *reg;
 private:
      int key;
+
 signals:
     void sendData(QString str, QString pas);
     void sendFindContact(QString str);
@@ -32,9 +33,11 @@ signals:
 private slots:
     void onButtonSend();
     void onButtonSendUser();
+    void recieveData(QString str);
 
 private slots:
     void on_pushButton_clicked();
+    void on_reg_button_clicked();
 };
 
 #endif // REGISTRATION_H

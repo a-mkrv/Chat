@@ -17,7 +17,7 @@ Server::Server(QWidget *parent) :
         close();
         return;
     }
-
+    sqlitedb = new SQLiteDB;
     //QTimer *timer = new QTimer(this);
     //connect(timer, SIGNAL(timeout()), this, SIGNAL(SEND_UserList()));
     //timer->start(6000);
@@ -32,7 +32,7 @@ void Server::newConnection()
 {
     QTcpSocket *newSocket = tcpServer->nextPendingConnection();                 // Подключение нового клиента
     connect(newSocket, SIGNAL(disconnected()), this, SLOT(onDisconnect()));
-    connect(newSocket, SIGNAL(disconnected()), this, SLOT(sendUserList()));
+    //connect(newSocket, SIGNAL(disconnected()), this, SLOT(sendUserList()));
     connect(newSocket, SIGNAL(readyRead()), this, SLOT(getMessage()));
     clientConnections.append(newSocket);
 
@@ -53,6 +53,7 @@ void Server::newConnection()
 void Server::onDisconnect()
 {
     QTcpSocket *socket = qobject_cast<QTcpSocket*>(sender());
+    QString username = 0;
     if (socket != 0)
     {
         std::vector<int> currentSockets;
@@ -61,7 +62,8 @@ void Server::onDisconnect()
         for (auto i : clientConnections)
             currentSockets.push_back(i->socketDescriptor());
 
-
+if(!userList.empty())
+{
         for (auto i : userList)
         {
             bool found = true;
@@ -74,7 +76,7 @@ void Server::onDisconnect()
 
         }
 
-        QString username = getUsername(socketID);
+        username = getUsername(socketID);
 
         auto iter = userList.find(socketID);
         if (iter != userList.end())
@@ -83,7 +85,7 @@ void Server::onDisconnect()
         ui->userList->clear();
         for (auto i : userList)
             new QListWidgetItem(i.second, ui->userList);
-
+}
 
         clientConnections.removeAll(socket);
         socket->deleteLater();
@@ -191,28 +193,32 @@ void Server::getMessage()
 
     in >> time >> typePacket;
     qDebug() << typePacket;
-
+    qDebug() << client->socketDescriptor();
     QString message;
     int command = 0; // 0 - пусто,
                      // 1 - имя пользователя,
                      // 2 - команда,
                      // 3 - поиск
+                     // 4 - Файл
+                     // 5 - Регистрация
 
     if (typePacket == "_USR_")
         command = 1;
 
-    if (typePacket == "_UCD_")
+    else if (typePacket == "_UCD_")
        command = 2;
 
-     if (typePacket == "_FND_")
+    else if (typePacket == "_FND_")
     {
          in >> find_User;
          command = 3;
     }
 
-     if (typePacket == "_FILE_")
+    else if (typePacket == "_FILE_")
          command = 4;
 
+    else if(typePacket == "_REG_")
+        command = 5;
 
     switch (command)
     {
@@ -364,7 +370,45 @@ void Server::getMessage()
                nextBlockSize = 0;
 break;
     }
+    case 5:
+    {
+        qDebug() << "5";
+        QString UserName;
+        QString City;
+        QString Password;
+        QString Age;
+        QString Sex;
+
+        in >> UserName;
+        in >> City;
+        in >> Password;
+        in >> Age;
+        in >> Sex;
+
+        QByteArray block;
+        QDataStream out(&block, QIODevice::WriteOnly);
+        out.setVersion(QDataStream::Qt_5_4);
+
+        if(!sqlitedb->FindInDB(UserName))
+        {
+        sqlitedb->AddContact(UserName, Sex, Age.toInt(), City, Password);
+        qDebug() << "New" << UserName;
+
+        QString message = "Welcome!";
+        out << message;
+        client->write(block);
+        }
+        else
+        {
+            QString message = "Already!";
+            out << message;
+            client->write(block);
+        }
+
+break;
+    }
     default:
+        qDebug() << "Default";
         std::map<int, QString>::iterator it;
         it = userList.find(client->socketDescriptor());
         updateStatus("MSG: (" + it->second + ") " + typePacket);
