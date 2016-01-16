@@ -36,7 +36,6 @@ signals:
 
 
 private slots:
-    void onButtonSend();
     void onButtonSendUser();
     void recieveData(QString str);
     void getMessage();

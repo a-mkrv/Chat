@@ -20,7 +20,7 @@
    <property name="geometry">
     <rect>
      <x>220</x>
-     <y>350</y>
+     <y>348</y>
      <width>171</width>
      <height>41</height>
     </rect>
@@ -192,7 +192,7 @@ background-color: rgb(255, 255, 255,0);
    <property name="geometry">
     <rect>
      <x>400</x>
-     <y>354</y>
+     <y>352</y>
      <width>91</width>
      <height>31</height>
     </rect>
@@ -357,6 +357,23 @@ color: rgb(214, 71, 0);</string>
     <string>  Incorrect login/password</string>
    </property>
   </widget>
+  <widget class="QLabel" name="errorconnect_label">
+   <property name="geometry">
+    <rect>
+     <x>220</x>
+     <y>380</y>
+     <width>171</width>
+     <height>31</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">background-color: rgb(255, 255, 255, 0);
+color: rgb(214, 71, 0);</string>
+   </property>
+   <property name="text">
+    <string>Error connecting...</string>
+   </property>
+  </widget>
   <zorder>label_3</zorder>
   <zorder>label_4</zorder>
   <zorder>username_enter</zorder>
@@ -371,6 +388,7 @@ color: rgb(214, 71, 0);</string>
   <zorder>label_2</zorder>
   <zorder>reg_button</zorder>
   <zorder>error_label</zorder>
+  <zorder>errorconnect_label</zorder>
  </widget>
  <resources>
   <include location="image.qrc"/>

@@ -404,7 +404,7 @@ break;
         else
         {
             QString message = "Already!";
-            out << message;
+            out << QString("Reg") << message;
             client->write(block);
         }
 
@@ -427,12 +427,12 @@ break;
         if(!sqlitedb->CorrectInput(Login, Password))
         {
         QString message = "Error_Login_Pass";
-        out << message;
+        out << QString("LogIN") <<  message;
         client->write(block);
         }
         else
         {
-            QString message = "Welcome!";
+            QString message = "Error_Login_Pass";
             out << message;
             client->write(block);
         }

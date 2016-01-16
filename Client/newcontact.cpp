@@ -6,11 +6,14 @@ NewContact::NewContact(QWidget *parent, QTcpSocket *client) :
     QWidget(parent),
     ui(new Ui::NewContact)
 {
+    socket = new QTcpSocket;
+    socket->abort();
+    socket->connectToHost("127.0.0.1", 55155);
 
     ui->setupUi(this);
     ui->Error_label->hide();
-    socket = client;
-
+    //socket = client;
+    //socket->
     connect(socket, SIGNAL(readyRead()), this, SLOT(getMessagee()));
 }
 
@@ -23,21 +26,25 @@ void NewContact::getMessagee()
 {
         QDataStream in(socket);
         in.setVersion(QDataStream::Qt_5_4);
-        QString mes;
+        QString  mes;
+
         in >> mes;
         qDebug() << "GetNew" << mes;
+
         if(mes == "Already")
             ui->Error_label->show();
         if(mes == "Welcome!" && !ui->enter_city->text().isEmpty() \
-                && !ui->enter_password->text().isEmpty() \
-                && !ui->enter_user_name->text().isEmpty() \
-                && !ui->age->text().isEmpty() \
-                && !ui->sex_person->currentText().isEmpty())
+                             && !ui->enter_password->text().isEmpty() \
+                             && !ui->enter_user_name->text().isEmpty() \
+                             && !ui->age->text().isEmpty() \
+                             && !ui->sex_person->currentText().isEmpty())
         {
             emit sendData(QString("Show"));
-            this->~NewContact();
+            socket->close();
+            this->close();
         }
 }
+
 
 void NewContact::on_accept_button_clicked()
 {
