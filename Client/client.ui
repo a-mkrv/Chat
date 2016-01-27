@@ -125,8 +125,8 @@ background-color: rgb(74, 107, 142);</string>
     <widget class="QTextEdit" name="textEdit1">
      <property name="geometry">
       <rect>
-       <x>10</x>
-       <y>0</y>
+       <x>230</x>
+       <y>40</y>
        <width>201</width>
        <height>41</height>
       </rect>
@@ -179,9 +179,9 @@ background-color: rgb(74, 107, 142);</string>
     <widget class="QLineEdit" name="editText">
      <property name="geometry">
       <rect>
-       <x>210</x>
+       <x>70</x>
        <y>30</y>
-       <width>321</width>
+       <width>461</width>
        <height>51</height>
       </rect>
      </property>
@@ -198,10 +198,42 @@ background-color: rgb(74, 107, 142);</string>
       <string>Write a message..</string>
      </property>
     </widget>
+    <widget class="QPushButton" name="pushButton_2">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>30</y>
+       <width>51</width>
+       <height>41</height>
+      </rect>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">
+  border:none;
+</string>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+     <property name="icon">
+      <iconset resource="image.qrc">
+       <normaloff>:/new/prefix1/Resource/right-arrow6.png</normaloff>:/new/prefix1/Resource/right-arrow6.png</iconset>
+     </property>
+     <property name="iconSize">
+      <size>
+       <width>32</width>
+       <height>32</height>
+      </size>
+     </property>
+     <property name="flat">
+      <bool>true</bool>
+     </property>
+    </widget>
     <zorder>textEdit1</zorder>
     <zorder>pushButton</zorder>
     <zorder>editText</zorder>
     <zorder>sendMessage</zorder>
+    <zorder>pushButton_2</zorder>
    </widget>
    <widget class="QListWidget" name="userList">
     <property name="geometry">
@@ -1195,19 +1227,6 @@ border:none;</string>
      <string/>
     </property>
    </widget>
-   <widget class="QPushButton" name="pushButton_2">
-    <property name="geometry">
-     <rect>
-      <x>770</x>
-      <y>20</y>
-      <width>93</width>
-      <height>28</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>PushButton</string>
-    </property>
-   </widget>
    <widget class="QLabel" name="chat_back_lab">
     <property name="geometry">
      <rect>
@@ -1381,7 +1400,6 @@ border:none;</string>
      </widget>
     </widget>
    </widget>
-   <zorder>widget_2</zorder>
    <zorder>stackedWidget_2</zorder>
    <zorder>line</zorder>
    <zorder>userList</zorder>
@@ -1394,8 +1412,8 @@ border:none;</string>
    <zorder>search_line_edit</zorder>
    <zorder>chat_back_lab</zorder>
    <zorder>chatDialog</zorder>
-   <zorder>pushButton_2</zorder>
    <zorder>widget</zorder>
+   <zorder>widget_2</zorder>
   </widget>
   <action name="actionShowHideWindow">
    <property name="text">

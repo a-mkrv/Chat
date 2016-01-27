@@ -306,6 +306,9 @@ border-width: 1px;
    <property name="editable">
     <bool>false</bool>
    </property>
+   <property name="currentIndex">
+    <number>0</number>
+   </property>
    <property name="frame">
     <bool>false</bool>
    </property>
@@ -413,6 +416,51 @@ border-width: 1px;
     <string>Error.. Name already exists.</string>
    </property>
   </widget>
+  <widget class="QLabel" name="Error_label_2">
+   <property name="geometry">
+    <rect>
+     <x>250</x>
+     <y>370</y>
+     <width>221</width>
+     <height>16</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">color: rgb(214, 71, 0);</string>
+   </property>
+   <property name="text">
+    <string>Error.. Enter username and password.</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="pushButton">
+   <property name="geometry">
+    <rect>
+     <x>120</x>
+     <y>424</y>
+     <width>61</width>
+     <height>51</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">border-radius: 5px;
+border-width: 1px;
+border-style: solid;
+</string>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+   <property name="icon">
+    <iconset resource="image.qrc">
+     <normaloff>:/new/prefix1/Resource/back.png</normaloff>:/new/prefix1/Resource/back.png</iconset>
+   </property>
+   <property name="iconSize">
+    <size>
+     <width>30</width>
+     <height>30</height>
+    </size>
+   </property>
+  </widget>
   <zorder>label</zorder>
   <zorder>label_4</zorder>
   <zorder>label_6</zorder>
@@ -430,6 +478,8 @@ border-width: 1px;
   <zorder>enter_city</zorder>
   <zorder>enter_password</zorder>
   <zorder>Error_label</zorder>
+  <zorder>Error_label_2</zorder>
+  <zorder>pushButton</zorder>
  </widget>
  <resources>
   <include location="image.qrc"/>

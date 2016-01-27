@@ -13,7 +13,7 @@ Server::Server(QWidget *parent) :
     if (!tcpServer->listen(QHostAddress::Any, 55155))
     {
         QMessageBox::critical(this, tr("Chat Server"),
-            tr("Unable to start the server: %1.").arg(tcpServer->errorString()));
+                              tr("Unable to start the server: %1.").arg(tcpServer->errorString()));
         close();
         return;
     }
@@ -62,30 +62,30 @@ void Server::onDisconnect()
         for (auto i : clientConnections)
             currentSockets.push_back(i->socketDescriptor());
 
-if(!userList.empty())
-{
-        for (auto i : userList)
+        if(!userList.empty())
         {
-            bool found = true;
-            for (auto ii : currentSockets)
-                if (i.first == ii)
-                    found = false;
+            for (auto i : userList)
+            {
+                bool found = true;
+                for (auto ii : currentSockets)
+                    if (i.first == ii)
+                        found = false;
 
-            if (found == true)
-                socketID = i.first;
+                if (found == true)
+                    socketID = i.first;
 
+            }
+
+            username = getUsername(socketID);
+
+            auto iter = userList.find(socketID);
+            if (iter != userList.end())
+                userList.erase(iter);
+
+            ui->userList->clear();
+            for (auto i : userList)
+                new QListWidgetItem(i.second, ui->userList);
         }
-
-        username = getUsername(socketID);
-
-        auto iter = userList.find(socketID);
-        if (iter != userList.end())
-            userList.erase(iter);
-
-        ui->userList->clear();
-        for (auto i : userList)
-            new QListWidgetItem(i.second, ui->userList);
-}
 
         clientConnections.removeAll(socket);
         socket->deleteLater();
@@ -142,7 +142,7 @@ void Server::doCommand(QString command, int ID)
     }
 
     else
-           message += "Invalid command";
+        message += "Invalid command";
 
     sendToID(message, ID);
 }
@@ -174,6 +174,7 @@ void Server::sendToID(QString message, int ID)
 
 void Server::getMessage()
 {
+    qDebug() << "----------------------------------------";
     QTime   time;
     QString typePacket;
     QTcpSocket *client = qobject_cast<QTcpSocket*>(sender());
@@ -193,29 +194,30 @@ void Server::getMessage()
 
     in >> time >> typePacket;
     qDebug() << typePacket;
-    qDebug() << client->socketDescriptor();
+    //qDebug() << client->socketDescriptor();
+
     QString message;
     int command = 0; // 0 - пусто,
-                     // 1 - имя пользователя,
-                     // 2 - команда,
-                     // 3 - поиск
-                     // 4 - Файл
-                     // 5 - Регистрация
+    // 1 - имя пользователя,
+    // 2 - команда,
+    // 3 - поиск
+    // 4 - Файл
+    // 5 - Регистрация
 
     if (typePacket == "_USR_")
         command = 1;
 
     else if (typePacket == "_UCD_")
-       command = 2;
+        command = 2;
 
     else if (typePacket == "_FND_")
     {
-         in >> find_User;
-         command = 3;
+        in >> find_User;
+        command = 3;
     }
 
     else if (typePacket == "_FILE_")
-         command = 4;
+        command = 4;
 
     else if(typePacket == "_REG_")
         command = 5;
@@ -278,13 +280,13 @@ void Server::getMessage()
         command_mes.clear();
         for (auto i : messageTokens)
         {
-           command_mes += i;
-           command_mes += " ";
+            command_mes += i;
+            command_mes += " ";
         }
         doCommand(command_mes, client->socketDescriptor());
         break;
     }
-     case 3:
+    case 3:
     {
         qDebug() << "Case 3";
 
@@ -293,22 +295,22 @@ void Server::getMessage()
         {
             dat = i.second;
 
-               if(find_User!=dat)
-                    sendToID("_FIN_ NOFIN", client->socketDescriptor() );
+            if(find_User!=dat)
+                sendToID("_FIN_ NOFIN", client->socketDescriptor() );
 
-               else if (find_User==dat)
-             {
+            else if (find_User==dat)
+            {
                 QString recipient = find_User;
                 int rID = 0;
 
                 for (auto i : userList)
                     if (i.second == recipient)
-                       rID = i.first;
+                        rID = i.first;
 
                 auto user = userList.find(client->socketDescriptor());
-                            message = "_INV_ " + user->second;
-                            qDebug() << message << "\n\n";
-                            sendToID(message, rID);
+                message = "_INV_ " + user->second;
+                qDebug() << message << "\n\n";
+                sendToID(message, rID);
 
                 sendToID("_FIN_ OKFIN", client->socketDescriptor() );
                 return;
@@ -321,57 +323,57 @@ void Server::getMessage()
     {
         qDebug() << "Case 4";
 
-               QByteArray buffer;
-               QString fileName;
-               qint64 fileSize;
+        QByteArray buffer;
+        QString fileName;
+        qint64 fileSize;
 
-               QString dirDownloads = QDir::homePath() + "/op/";
-               QDir(dirDownloads).mkdir(dirDownloads);
+        QString dirDownloads = QDir::homePath() + "/op/";
+        QDir(dirDownloads).mkdir(dirDownloads);
 
-               in >> fileName >> fileSize;
-                qDebug() << fileName;
-                qDebug() << fileSize;
-               QMessageBox messageBox;
-               messageBox.setInformativeText(QObject::trUtf8("Принять файл ") + fileName +
-               QObject::trUtf8(" от ")  + "?");
-               messageBox.setStandardButtons(QMessageBox::Save | QMessageBox::Cancel);
-               int ret = messageBox.exec();
+        in >> fileName >> fileSize;
+        qDebug() << fileName;
+        qDebug() << fileSize;
+        QMessageBox messageBox;
+        messageBox.setInformativeText(QObject::trUtf8("Принять файл ") + fileName +
+                                      QObject::trUtf8(" от ")  + "?");
+        messageBox.setStandardButtons(QMessageBox::Save | QMessageBox::Cancel);
+        int ret = messageBox.exec();
 
 
-               if (ret == QMessageBox::Save) {
+        if (ret == QMessageBox::Save) {
 
-                   forever
-                    {
-                        if (!nextBlockSize) {
+            forever
+            {
+                if (!nextBlockSize) {
 
-                            if (quint16(client->bytesAvailable()) < sizeof(quint16)) {
-                                break;
-                            }
-                            in >> nextBlockSize;
-                        }
-
-                        in >> buffer;
-
-                        //sendToClient(mClientSocket, "SC_FILE_TRANSFER_ASK", fileName);
-
-                        if (client->bytesAvailable() < nextBlockSize) {
-                            break;
-                        }
+                    if (quint16(client->bytesAvailable()) < sizeof(quint16)) {
+                        break;
                     }
+                    in >> nextBlockSize;
+                }
 
-                    QFile receiveFile(dirDownloads + fileName);
-                    receiveFile.open(QIODevice::ReadWrite);
-                    receiveFile.write(buffer);
-                    receiveFile.close();
-                    buffer.clear();
+                in >> buffer;
+
+                //sendToClient(mClientSocket, "SC_FILE_TRANSFER_ASK", fileName);
+
+                if (client->bytesAvailable() < nextBlockSize) {
                     break;
-               }
-               else
-               {
+                }
+            }
 
-               }
-               nextBlockSize = 0;
-break;
+            QFile receiveFile(dirDownloads + fileName);
+            receiveFile.open(QIODevice::ReadWrite);
+            receiveFile.write(buffer);
+            receiveFile.close();
+            buffer.clear();
+            break;
+        }
+        else
+        {
+
+        }
+        nextBlockSize = 0;
+        break;
     }
     case 5:
     {
@@ -392,23 +394,29 @@ break;
         QDataStream out(&block, QIODevice::WriteOnly);
         out.setVersion(QDataStream::Qt_5_4);
 
-        if(!sqlitedb->FindInDB(UserName))
-        {
-        sqlitedb->AddContact(UserName, Sex, Age.toInt(), City, Password);
-        qDebug() << "New" << UserName;
 
-        QString message = "Welcome!";
-        out << message;
-        client->write(block);
+        if(Password.isEmpty() || UserName.isEmpty())
+        {
+            out << QString("PassEmpty");
+            client->write(block);
+        }
+        else if(!sqlitedb->FindInDB(UserName))
+        {
+            if(City.isEmpty())
+                City="Unknown";
+            sqlitedb->AddContact(UserName, Sex, Age.toInt(), City, Password);
+            qDebug() << "Новый пользователь: " << UserName;
+
+            out << QString("Welcome!");
+            client->write(block);
         }
         else
         {
-            QString message = "Already!";
-            out << QString("Reg") << message;
+            out << QString("Already!");
             client->write(block);
         }
 
-break;
+        break;
     }
     case 6:
     {
@@ -418,7 +426,6 @@ break;
 
         in >> Login;
         in >> Password;
-           qDebug() << Login << Password;
 
         QByteArray block;
         QDataStream out(&block, QIODevice::WriteOnly);
@@ -426,13 +433,12 @@ break;
 
         if(!sqlitedb->CorrectInput(Login, Password))
         {
-        QString message = "Error_Login_Pass";
-        out << QString("LogIN") <<  message;
-        client->write(block);
+            out << QString("Error_Login_Pass");
+            client->write(block);
         }
         else
         {
-            QString message = "Error_Login_Pass";
+            QString message = "LogInOK!";
             out << message;
             client->write(block);
         }

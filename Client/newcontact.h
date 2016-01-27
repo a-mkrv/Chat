@@ -20,6 +20,8 @@ private slots:
     void on_accept_button_clicked();
     void getMessagee();
 
+    void on_pushButton_clicked();
+
 signals:
     void sendData(QString str);
 
