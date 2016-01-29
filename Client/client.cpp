@@ -87,50 +87,51 @@ Client::Client(QWidget *parent) : QMainWindow(parent), ui(new Ui::Client)
     connect(ui->actionExit, SIGNAL(triggered()), this, SLOT(close()));
 
     ui->userList->setItemDelegate(new ListDelegate(ui->userList));
+    ui->chatDialog->setItemDelegate(new ChatListDelegate(ui->chatDialog));
     ui->chatDialog->setStyleSheet("background: transparent;");
 }
 
- void Client::keyReleaseEvent(QKeyEvent *event)
+void Client::keyReleaseEvent(QKeyEvent *event)
 {
-     if(ui->RB_sendEnter->isChecked())
-     {
-    switch(event->key()) {
-    case Qt::Key_Escape:
-       // Обработка нажатия Esc
-       break;
-    case Qt::Key_Enter:
-    case Qt::Key_Return:
-        if(ui->widget_2->isHidden() && ui->RB_sendEnter->isChecked())
-       on_sendMessage_clicked();
-       break;
-     // Обработчики других клавиш
-    }
+    if(ui->RB_sendEnter->isChecked())
+    {
+        switch(event->key()) {
+        case Qt::Key_Escape:
+            // Обработка нажатия Esc
+            break;
+        case Qt::Key_Enter:
+        case Qt::Key_Return:
+            if(ui->widget_2->isHidden() && ui->RB_sendEnter->isChecked())
+                on_sendMessage_clicked();
+            break;
+            // Обработчики других клавиш
+        }
     }
 
-     if(ui->RB_send_CEnter->isChecked())
-     {
+    if(ui->RB_send_CEnter->isChecked())
+    {
         if(event->modifiers()==Qt::ControlModifier)
         {
             if(event->key() == Qt::Key_Return)
             {
                 if(ui->widget_2->isHidden() && ui->RB_send_CEnter->isChecked())
                     on_sendMessage_clicked();
-       }
-     }
-   }
+            }
+        }
+    }
 }
 
 void Client::recieveData(QString str, QString pas)
 {
     qDebug() << str;
-   if(str!="" && pas!="")
-   {
+    if(str!="" && pas!="")
+    {
         name = str;
         name.replace(" ", "_");
         ui->usernameEdit->setText(name);
         this->show();
         trayIcon->show();
-   }
+    }
 }
 
 void Client::on_sendMessage_clicked()
@@ -158,18 +159,18 @@ void Client::on_sendMessage_clicked()
     QTextDocument doc;
     doc.setHtml(ui->textEdit1->toPlainText());
     doc.toPlainText();
-    //new QListWidgetItem(doc.toPlainText(), ui->chatDialog);
-    //ui->chatDialog->setItemDelegate(new ListDelegate(ui->chatDialog));
 
     ui->editText->clear();
     blockSize = 0;
 
     if (!message.isEmpty())              //Отправка сообщений
     {
+        if(ui->ChBox_PSound->isChecked())
+            QSound::play(":/new/prefix1/Resource/to.wav");
+
         if (message.at(0) == '/')        //Личное сообщение / команда
-        {
             sendUserCommand(message);
-        }
+
         else                            //Сообщение на сервер
         {
             QByteArray msg;
@@ -177,12 +178,11 @@ void Client::on_sendMessage_clicked()
             out.setVersion(QDataStream::Qt_5_4);
 
 
-            QDateTime dt = QDateTime::currentDateTime();
-            new QListWidgetItem(name + ": " +  message + "\n"+ QDateTime::currentDateTime().toString("dd.MM.yy hh:mm"), ui->chatDialog);
-            ui->chatDialog->setItemDelegate(new ListDelegate(ui->chatDialog));
-
-            if(ui->ChBox_PSound->isChecked())
-                QSound::play(":/new/prefix1/Resource/to.wav");
+            QListWidgetItem *item = new QListWidgetItem();
+            item->setData(Qt::DisplayRole, name + ": " +  message);
+            item->setData(Qt::ToolTipRole, QDateTime::currentDateTime().toString("dd.MM.yy hh:mm"));
+            item->setData(Qt::UserRole + 1, "TO");
+            ui->chatDialog->addItem(item);
 
             out << quint16(0) << QTime::currentTime() << message;
             tcpSocket->write(msg);
@@ -227,8 +227,12 @@ void Client::on_connect_button_clicked()
     quint16 port = 55155;
     QString status = tr("-> Connecting to 127.0.0.1 on port 55155.");
 
-    new QListWidgetItem(status, ui->chatDialog);
-    ui->chatDialog->setItemDelegate(new ListDelegate(ui->chatDialog));
+    QListWidgetItem *item = new QListWidgetItem();
+    item->setData(Qt::DisplayRole, status);
+    item->setData(Qt::ToolTipRole, QDateTime::currentDateTime().toString("dd.MM.yy hh:mm"));
+    item->setData(Qt::UserRole + 1, "TO");
+    ui->chatDialog->addItem(item);
+
     tcpSocket->abort();
     tcpSocket->connectToHost(hostname, port);
 }
@@ -265,23 +269,6 @@ void Client::getMessage()
 
     switch (cmd)
     {
-    case COMMAND::USERLIST:
-    {
-//        commandList = message.split(" ", QString::SkipEmptyParts);          // получение списка пользователей
-//        commandList.removeFirst();                                          // Удаление первого слова (обозначение команды)
-//        ui->userList->clear();                                              // Очищение(обновление) текущего списка пользователей
-
-//        QListWidgetItem *q;
-
-//        for (auto i : commandList)                      // Перезапись обновленного списка в сети
-//        {
-//            q = new QListWidgetItem(i, ui->userList);
-//            q->setSizeHint(QSize(0,65));
-//            q->setIcon(pic);
-//        }
-        break;
-    }
-
     case COMMAND::FINDUSER:
     {
         QString find_user = commandList.at(1);
@@ -289,7 +276,7 @@ void Client::getMessage()
         if(gl_fname==name)
             break;
         if(find_user=="OKFIN" && gl_fname!=name)
-           {
+        {
             QListWidgetItem *item = new QListWidgetItem();
             item->setData(Qt::DisplayRole, gl_fname);
             item->setData(Qt::ToolTipRole, QDateTime::currentDateTime().toString("dd.MM.yy hh:mm"));
@@ -306,6 +293,7 @@ void Client::getMessage()
     {
         // Пока без предложения дружбы.
         // Не знаю, нужно ли автоматически добавлять в друзья на той стороне.
+
         qDebug() << "Invite";
         if(gl_fname==name)
             break;
@@ -321,11 +309,18 @@ void Client::getMessage()
         break;
     }
     default:                                                // Получение обычного текстового сообщения. Звук и добавление в ЧатЛист
-       if(ui->ChBox_PSound->isChecked())
+        if(ui->ChBox_PSound->isChecked())
             QSound::play(":/new/prefix1/Resource/from.wav");
 
-        new QListWidgetItem(message, ui->chatDialog);
-        ui->chatDialog->setItemDelegate(new ListDelegate(ui->chatDialog));
+
+        QListWidgetItem *item = new QListWidgetItem();
+        item->setData(Qt::DisplayRole, message);
+        item->setData(Qt::ToolTipRole, QDateTime::currentDateTime().toString("dd.MM.yy hh:mm"));
+        if(QStringRef(&message, 0, 3)=="*To")
+            item->setData(Qt::UserRole + 1, "TO");
+        else
+            item->setData(Qt::UserRole + 1, "FROM");
+        ui->chatDialog->addItem(item);
         ui->chatDialog->scrollToBottom();
     }
 }
@@ -350,22 +345,22 @@ void Client::show_Error(QAbstractSocket::SocketError errorSocket)
     {
     case QAbstractSocket::RemoteHostClosedError:
         QMessageBox::information(this, tr("Chat Client"),
-            tr("Disconnected from Server."));
+                                 tr("Disconnected from Server."));
         break;
     case QAbstractSocket::HostNotFoundError:
         QMessageBox::information(this, tr("Chat Client"),
-            tr("The host was not found.\nPlease check the hostname and port settings."));
+                                 tr("The host was not found.\nPlease check the hostname and port settings."));
         break;
-        case QAbstractSocket::ConnectionRefusedError:
-            QMessageBox::information(this, tr("Chat Client"),
-                tr("The connection was refused by the peer.\n"
-                "Make sure the server is running,\n"
-                "and check that the host name and port\n"
-                "settings are correct."));
-            break;
-        default:
-            QMessageBox::information(this, tr("Chat Client"),
-                tr("The following error occurred: %1.").arg(tcpSocket->errorString()));
+    case QAbstractSocket::ConnectionRefusedError:
+        QMessageBox::information(this, tr("Chat Client"),
+                                 tr("The connection was refused by the peer.\n"
+                                    "Make sure the server is running,\n"
+                                    "and check that the host name and port\n"
+                                    "settings are correct."));
+        break;
+    default:
+        QMessageBox::information(this, tr("Chat Client"),
+                                 tr("The following error occurred: %1.").arg(tcpSocket->errorString()));
     }
 }
 
@@ -375,7 +370,11 @@ void Client::send_personal_data()
     {
         personDates = true;
 
-        new QListWidgetItem("Sending personal dates...", ui->chatDialog);
+        QListWidgetItem *item = new QListWidgetItem();
+        item->setData(Qt::DisplayRole, "Sending personal dates...");
+        item->setData(Qt::ToolTipRole, QDateTime::currentDateTime().toString("dd.MM.yy hh:mm"));
+        item->setData(Qt::UserRole + 1, "TO");
+        ui->chatDialog->addItem(item);
 
         QByteArray block;
         QDataStream out(&block, QIODevice::WriteOnly);
@@ -392,9 +391,13 @@ void Client::send_personal_data()
 
 void Client::onDisconnect()
 {
-    new QListWidgetItem("Disconnected..", ui->chatDialog);
-    ui->chatDialog->setItemDelegate(new ListDelegate(ui->chatDialog));
+    QListWidgetItem *item = new QListWidgetItem();
+    item->setData(Qt::DisplayRole, "Disconnected..");
+    item->setData(Qt::ToolTipRole, QDateTime::currentDateTime().toString("dd.MM.yy hh:mm"));
+    item->setData(Qt::UserRole + 1, "FROM");
+    ui->chatDialog->addItem(item);
     ui->chatDialog->scrollToBottom();
+
     ui->userList->clear();
     personDates = false;
 }
@@ -411,7 +414,7 @@ void Client::sendUserCommand(QString command)
 
 void Client::on_userSetting_clicked()
 {
-   ui->widget_2->show();
+    ui->widget_2->show();
 }
 
 void Client::on_close_setting_button_clicked()
@@ -438,7 +441,7 @@ void Client::whisperOnClick(QListWidgetItem* user)
 void Client::on_pushButton_clicked()
 {
 
-     showEmoji();
+    showEmoji();
 }
 
 void Client::showEmoji()
@@ -465,19 +468,19 @@ void Client::findtoserv(QString name_user)
     static bool tmp = true;
 
     if(tmp)
-        {
+    {
         qDebug() << "Поиск";
 
-            QByteArray msg;
-            QDataStream out(&msg, QIODevice::WriteOnly);
-            out.setVersion(QDataStream::Qt_5_4);
+        QByteArray msg;
+        QDataStream out(&msg, QIODevice::WriteOnly);
+        out.setVersion(QDataStream::Qt_5_4);
 
-            out << quint16(0) << QTime::currentTime() << QString("_FND_") << name_user;
-            tcpSocket->write(msg);
-            tmp=false;
-        }
+        out << quint16(0) << QTime::currentTime() << QString("_FND_") << name_user;
+        tcpSocket->write(msg);
+        tmp=false;
+    }
     else    // Костылек :)
-            tmp=true;
+        tmp=true;
 }
 
 void Client::on_newContact_Button_clicked()
@@ -488,7 +491,7 @@ void Client::on_newContact_Button_clicked()
 
 void Client::on_actionShowHideWindow_triggered()
 {
-     showHideWindow();
+    showHideWindow();
 }
 
 void Client::on_actionExit_triggered()
@@ -545,17 +548,13 @@ void Client::on_PB_SelColor_clicked()
     QString textColorName = color.name();
 
     QPixmap pixmap(16,16);
-        QPainter painter;
-        painter.begin(&pixmap);
-        painter.drawRect(0,0,16,16);
-        painter.fillRect(0,0,16,16,QBrush(QColor(color)));
-        painter.end();
-        ui->imageLabel->setPixmap(pixmap);
-        ui->chat_back_lab->setPixmap(pixmap);
-
-        // ui->imageLabel->setStyleSheet("background-color: " + textColorName);
-        // ui->chatDialog->setStyleSheet("background-color: " + textColorName);
-
+    QPainter painter;
+    painter.begin(&pixmap);
+    painter.drawRect(0,0,16,16);
+    painter.fillRect(0,0,16,16,QBrush(QColor(color)));
+    painter.end();
+    ui->imageLabel->setPixmap(pixmap);
+    ui->chat_back_lab->setPixmap(pixmap);
 }
 
 void Client::on_PB_LoadFileBackground_clicked()
@@ -565,7 +564,7 @@ void Client::on_PB_LoadFileBackground_clicked()
                 this,
                 tr("Select Images"),"",
                 tr("Images (*.jpg *jpeg *.png)")
-             );
+                );
 
     if(QString::compare(files, QString())!=0)
     {
@@ -576,14 +575,6 @@ void Client::on_PB_LoadFileBackground_clicked()
         {
             ui->chat_back_lab->setPixmap(QPixmap::fromImage(image));
             ui->imageLabel->setPixmap(QPixmap::fromImage(image));
-
-            // Стиль для QListWidget, установка фона.
-            //ui->chatDialog->setStyleSheet(
-            //            "background-image: url(" + files  + "); "
-            //            "max-width:677px;"
-            //            "max-height:421px; "
-            //             "background-position: center;");
-
         }
         else
         {
@@ -599,7 +590,7 @@ void Client::on_radioButton_2_clicked()
                 this,
                 tr("Select Images"),"",
                 tr("Images (*.jpg *jpeg *.png)")
-             );
+                );
 
     if(QString::compare(files, QString())!=0)
     {
@@ -631,7 +622,7 @@ void Client::on_Download_path_PB_clicked()
             (
                 this,
                 tr("Select Images"),""
-             );
+                );
     if(QString::compare(path, QString())!=0)
     {
         download_path = path;
@@ -646,8 +637,8 @@ void Client::on_pushButton_2_clicked()
 {
 
     QString filePatch = QFileDialog::getOpenFileName(this,
-            QObject::trUtf8("Выбор файла для отправки"), "",
-            QObject::trUtf8("(*.*)"));
+                                                     QObject::trUtf8("Выбор файла для отправки"), "",
+                                                     QObject::trUtf8("(*.*)"));
     if (filePatch.isEmpty()) {
         return ;
     }
@@ -668,7 +659,7 @@ void Client::on_pushButton_2_clicked()
     QByteArray buffer = sendFile->readAll();
 
     out << quint16(0) << QTime::currentTime() << QString("_FILE_")
-            << fileName << fileSize << buffer;
+        << fileName << fileSize << buffer;
 
     out.device()->seek(0);
     out << quint16(arrBlock.size() - sizeof(quint16));

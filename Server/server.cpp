@@ -18,9 +18,6 @@ Server::Server(QWidget *parent) :
         return;
     }
     sqlitedb = new SQLiteDB;
-    //QTimer *timer = new QTimer(this);
-    //connect(timer, SIGNAL(timeout()), this, SIGNAL(SEND_UserList()));
-    //timer->start(6000);
 
     connect(tcpServer, SIGNAL(newConnection()), this, SLOT(newConnection()));
     connect(this, SIGNAL(newConnection()), this, SLOT(getMessage()));
@@ -32,7 +29,6 @@ void Server::newConnection()
 {
     QTcpSocket *newSocket = tcpServer->nextPendingConnection();                 // Подключение нового клиента
     connect(newSocket, SIGNAL(disconnected()), this, SLOT(onDisconnect()));
-    //connect(newSocket, SIGNAL(disconnected()), this, SLOT(sendUserList()));
     connect(newSocket, SIGNAL(readyRead()), this, SLOT(getMessage()));
     clientConnections.append(newSocket);
 
@@ -57,7 +53,8 @@ void Server::onDisconnect()
     QString username = 0;
     if(!userList.empty() && !clientConnections.empty())
     if (socket != 0)
-    {qDebug() << "in Disconnect";
+    {
+        qDebug() << "in Disconnect";
         std::vector<int> currentSockets;
         int socketID = 0;
 
@@ -131,7 +128,7 @@ void Server::doCommand(QString command, int ID)
 
                 auto user = userList.find(ID);
 
-                message = "* To: " + recipient + ": " + text;
+                message = "*To: " + recipient + ": " + text;
                 QString rMessage = "* From: " + user->second + ": " + text;
                 sendToID(rMessage, rID);
 
@@ -196,10 +193,10 @@ void Server::getMessage()
 
     in >> time >> typePacket;
     qDebug() << typePacket;
-    //qDebug() << client->socketDescriptor();
 
     QString message;
-    int command = 0; // 0 - пусто,
+    int command = 0;
+    // 0 - пусто,
     // 1 - имя пользователя,
     // 2 - команда,
     // 3 - поиск
@@ -452,8 +449,6 @@ void Server::getMessage()
             client->write(block);
         }
 
-
-
         break;
     }
     default:
@@ -485,26 +480,6 @@ void Server::updateStatus(QString message)
     ui->chatDialog->scrollToBottom();
 }
 
-void Server::sendUserList()
-{
-    QByteArray block;
-    QDataStream out(&block, QIODevice::WriteOnly);
-    out.setVersion(QDataStream::Qt_5_4);
-
-    QString userlist;
-
-    userlist = "_LST_";
-
-    for (auto i : userList)
-    {
-        userlist += " ";
-        userlist += i.second;
-    }
-
-    out << userlist;
-    for (auto i : clientConnections)
-        i->write(block);
-}
 
 QTcpSocket* Server::getSocket(int ID)
 {

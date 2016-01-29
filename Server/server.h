@@ -25,7 +25,6 @@ private slots:
     void getMessage();
     void newConnection();
     void onDisconnect();
-    void sendUserList();
 
 signals:
     void SEND_UserList();

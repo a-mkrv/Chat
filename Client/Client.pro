@@ -24,7 +24,8 @@ SOURCES += main.cpp\
     listwidgetemoji.cpp \
     listdelegate.cpp \
     registration.cpp \
-    newcontact.cpp
+    newcontact.cpp \
+    chatlistdelegate.cpp
 
 HEADERS  += client.h \
     emojiframe.h \
@@ -36,7 +37,8 @@ HEADERS  += client.h \
     listwidgetemoji.h \
     listdelegate.h \
     registration.h \
-    newcontact.h
+    newcontact.h \
+    chatlistdelegate.h
 
 FORMS    += client.ui \
     emojiframe.ui \

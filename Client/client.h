@@ -22,6 +22,8 @@
 #include <QColorDialog>
 #include <QKeyEvent>
 #include "listdelegate.h"
+#include "chatlistdelegate.h"
+
 #include <QTime>
 
 namespace Ui {
