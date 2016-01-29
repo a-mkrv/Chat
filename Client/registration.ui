@@ -308,7 +308,7 @@ color: rgb(255, 170, 255);</string>
     <string/>
    </property>
    <property name="pixmap">
-    <pixmap resource="image.qrc">:/new/prefix1/Resource/add_user.png</pixmap>
+    <pixmap resource="image.qrc">:/new/prefix1/Resource/users53.png</pixmap>
    </property>
    <property name="scaledContents">
     <bool>true</bool>

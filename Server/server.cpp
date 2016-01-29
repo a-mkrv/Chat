@@ -52,10 +52,12 @@ void Server::newConnection()
 
 void Server::onDisconnect()
 {
+    qDebug() << "Disconnect";
     QTcpSocket *socket = qobject_cast<QTcpSocket*>(sender());
     QString username = 0;
+    if(!userList.empty() && !clientConnections.empty())
     if (socket != 0)
-    {
+    {qDebug() << "in Disconnect";
         std::vector<int> currentSockets;
         int socketID = 0;
 
@@ -213,6 +215,7 @@ void Server::getMessage()
     else if (typePacket == "_FND_")
     {
         in >> find_User;
+        qDebug() << "Хотят найти: " << find_User;
         command = 3;
     }
 
@@ -291,31 +294,37 @@ void Server::getMessage()
         qDebug() << "Case 3";
 
         QString dat;
-        for (auto i : userList)
-        {
-            dat = i.second;
 
-            if(find_User!=dat)
-                sendToID("_FIN_ NOFIN", client->socketDescriptor() );
+        if (sqlitedb->FindInDB(find_User))
+            sendToID("_FIN_ OKFIN", client->socketDescriptor());
+        else
+            sendToID("_FIN_ NOFIN", client->socketDescriptor() );
 
-            else if (find_User==dat)
-            {
-                QString recipient = find_User;
-                int rID = 0;
+//        for (auto i : userList)
+//        {
+//            dat = i.second;
 
-                for (auto i : userList)
-                    if (i.second == recipient)
-                        rID = i.first;
+//            if(find_User!=dat)
+//                sendToID("_FIN_ NOFIN", client->socketDescriptor() );
 
-                auto user = userList.find(client->socketDescriptor());
-                message = "_INV_ " + user->second;
-                qDebug() << message << "\n\n";
-                sendToID(message, rID);
+//            else if (find_User==dat)
+//            {
+//                QString recipient = find_User;
+//                int rID = 0;
 
-                sendToID("_FIN_ OKFIN", client->socketDescriptor() );
-                return;
-            }
-        }
+//                for (auto i : userList)
+//                    if (i.second == recipient)
+//                        rID = i.first;
+
+//                auto user = userList.find(client->socketDescriptor());
+//                message = "_INV_ " + user->second;
+//                qDebug() << message << "\n\n";
+//                sendToID(message, rID);
+
+//                sendToID("_FIN_ OKFIN", client->socketDescriptor() );
+//                return;
+//            }
+//        }
         break;
     }
 

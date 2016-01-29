@@ -405,6 +405,10 @@ background-color: rgb(99, 137, 168);
      <property name="text">
       <string/>
      </property>
+     <property name="icon">
+      <iconset resource="image.qrc">
+       <normaloff>:/new/prefix1/Resource/back.png</normaloff>:/new/prefix1/Resource/back.png</iconset>
+     </property>
     </widget>
     <widget class="QListWidget" name="userList_3">
      <property name="geometry">
@@ -1252,155 +1256,7 @@ border:none;</string>
      <bool>true</bool>
     </property>
    </widget>
-   <widget class="QStackedWidget" name="stackedWidget_2">
-    <property name="geometry">
-     <rect>
-      <x>830</x>
-      <y>150</y>
-      <width>201</width>
-      <height>311</height>
-     </rect>
-    </property>
-    <property name="currentIndex">
-     <number>2</number>
-    </property>
-    <widget class="QWidget" name="user0">
-     <widget class="QListWidget" name="list_us_0">
-      <property name="geometry">
-       <rect>
-        <x>0</x>
-        <y>0</y>
-        <width>511</width>
-        <height>381</height>
-       </rect>
-      </property>
-      <item>
-       <property name="text">
-        <string>0</string>
-       </property>
-      </item>
-     </widget>
-    </widget>
-    <widget class="QWidget" name="user1">
-     <widget class="QListWidget" name="list_us_1">
-      <property name="geometry">
-       <rect>
-        <x>0</x>
-        <y>0</y>
-        <width>511</width>
-        <height>381</height>
-       </rect>
-      </property>
-      <item>
-       <property name="text">
-        <string>1</string>
-       </property>
-      </item>
-     </widget>
-    </widget>
-    <widget class="QWidget" name="user2">
-     <widget class="QListWidget" name="list_us_2">
-      <property name="geometry">
-       <rect>
-        <x>0</x>
-        <y>0</y>
-        <width>511</width>
-        <height>381</height>
-       </rect>
-      </property>
-      <item>
-       <property name="text">
-        <string>2</string>
-       </property>
-      </item>
-     </widget>
-    </widget>
-    <widget class="QWidget" name="user3">
-     <widget class="QListWidget" name="list_us_3">
-      <property name="geometry">
-       <rect>
-        <x>0</x>
-        <y>0</y>
-        <width>511</width>
-        <height>381</height>
-       </rect>
-      </property>
-     </widget>
-    </widget>
-    <widget class="QWidget" name="user4">
-     <widget class="QListWidget" name="list_us_4">
-      <property name="geometry">
-       <rect>
-        <x>0</x>
-        <y>0</y>
-        <width>511</width>
-        <height>381</height>
-       </rect>
-      </property>
-     </widget>
-    </widget>
-    <widget class="QWidget" name="user5">
-     <widget class="QListWidget" name="list_us_5">
-      <property name="geometry">
-       <rect>
-        <x>0</x>
-        <y>0</y>
-        <width>511</width>
-        <height>381</height>
-       </rect>
-      </property>
-     </widget>
-    </widget>
-    <widget class="QWidget" name="user6">
-     <widget class="QListWidget" name="list_us_6">
-      <property name="geometry">
-       <rect>
-        <x>0</x>
-        <y>0</y>
-        <width>511</width>
-        <height>381</height>
-       </rect>
-      </property>
-     </widget>
-    </widget>
-    <widget class="QWidget" name="user7">
-     <widget class="QListWidget" name="list_us_7">
-      <property name="geometry">
-       <rect>
-        <x>0</x>
-        <y>0</y>
-        <width>511</width>
-        <height>381</height>
-       </rect>
-      </property>
-     </widget>
-    </widget>
-    <widget class="QWidget" name="user8">
-     <widget class="QListWidget" name="list_us_8">
-      <property name="geometry">
-       <rect>
-        <x>0</x>
-        <y>0</y>
-        <width>511</width>
-        <height>381</height>
-       </rect>
-      </property>
-     </widget>
-    </widget>
-    <widget class="QWidget" name="user9">
-     <widget class="QListWidget" name="list_us_9">
-      <property name="geometry">
-       <rect>
-        <x>0</x>
-        <y>0</y>
-        <width>511</width>
-        <height>381</height>
-       </rect>
-      </property>
-     </widget>
-    </widget>
-   </widget>
-   <zorder>stackedWidget_2</zorder>
+   <zorder>widget_2</zorder>
    <zorder>line</zorder>
    <zorder>userList</zorder>
    <zorder>background_inder_list</zorder>
@@ -1413,7 +1269,6 @@ border:none;</string>
    <zorder>chat_back_lab</zorder>
    <zorder>chatDialog</zorder>
    <zorder>widget</zorder>
-   <zorder>widget_2</zorder>
   </widget>
   <action name="actionShowHideWindow">
    <property name="text">

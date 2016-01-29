@@ -86,7 +86,7 @@ Client::Client(QWidget *parent) : QMainWindow(parent), ui(new Ui::Client)
     connect(ui->userList, SIGNAL(itemClicked(QListWidgetItem*)), SLOT(whisperOnClickSelectUsers(QListWidgetItem*)));
     connect(ui->actionExit, SIGNAL(triggered()), this, SLOT(close()));
 
-    ui->stackedWidget_2->setStyleSheet("background: transparent;");
+    ui->userList->setItemDelegate(new ListDelegate(ui->userList));
     ui->chatDialog->setStyleSheet("background: transparent;");
 }
 
@@ -135,8 +135,6 @@ void Client::recieveData(QString str, QString pas)
 
 void Client::on_sendMessage_clicked()
 {
-
-
     QRegExp rx("<a [^>]*name=\"([^\"]+)\"[^>]*>");      // Регулярные выражения для парсинга смайликов в сообщении
     QString str = ui->editText->text();                 // Получение сообщения для отправки
     QString message = str;
@@ -292,12 +290,13 @@ void Client::getMessage()
             break;
         if(find_user=="OKFIN" && gl_fname!=name)
            {
-            QListWidgetItem *q;
-            q = new QListWidgetItem(gl_fname, ui->userList);
-            q->setSizeHint(QSize(0,65));
-            q->setIcon(pic);
-            map.insert(gl_fname, t);
-            t++;
+            QListWidgetItem *item = new QListWidgetItem();
+            item->setData(Qt::DisplayRole, gl_fname);
+            item->setData(Qt::ToolTipRole, QDateTime::currentDateTime().toString("dd.MM.yy hh:mm"));
+            item->setData(Qt::UserRole + 1, "New User.");
+            item->setData(Qt::DecorationRole, pic);
+            vec.push_back(item);
+            ui->userList->addItem(item);
             findcont->~findcontacts();
         }
         break;
@@ -305,16 +304,20 @@ void Client::getMessage()
 
     case COMMAND::INVITE:
     {
+        // Пока без предложения дружбы.
+        // Не знаю, нужно ли автоматически добавлять в друзья на той стороне.
+        qDebug() << "Invite";
         if(gl_fname==name)
             break;
         QString find_user = commandList.at(1);
 
-        QListWidgetItem *q;
-        q = new QListWidgetItem(find_user, ui->userList);
-        q->setSizeHint(QSize(0,65));
-        q->setIcon(pic);
-        map.insert(gl_fname, t);
-        t++;
+        QListWidgetItem *item = new QListWidgetItem();
+        item->setData(Qt::DisplayRole, gl_fname);
+        item->setData(Qt::ToolTipRole, QDateTime::currentDateTime().toString("dd.MM.yy hh:mm"));
+        item->setData(Qt::UserRole + 1, "New User.");
+        item->setData(Qt::DecorationRole, pic);
+        vec.push_back(item);
+        ui->userList->addItem(item);
         break;
     }
     default:                                                // Получение обычного текстового сообщения. Звук и добавление в ЧатЛист
@@ -338,15 +341,6 @@ void Client::whisperOnClickUsers(QListWidgetItem* user)
 
 void Client::whisperOnClickSelectUsers(QListWidgetItem* user)
 {
-    QMap<QString,int>::iterator it = map.begin();
-
-    for(;it != map.end(); ++it)
-    {
-       if(user->text()==it.key()){
-           ui->stackedWidget_2->setCurrentIndex(it.value());
-       break;}
-    }
-
 
 }
 
@@ -398,7 +392,6 @@ void Client::send_personal_data()
 
 void Client::onDisconnect()
 {
-
     new QListWidgetItem("Disconnected..", ui->chatDialog);
     ui->chatDialog->setItemDelegate(new ListDelegate(ui->chatDialog));
     ui->chatDialog->scrollToBottom();
@@ -468,15 +461,18 @@ void Client::findtoserv(QString name_user)
     trayIcon->showMessage("Hello", "My name is Anton", QSystemTrayIcon::Information, 1);
     gl_fname=name_user;
 
+
     static bool tmp = true;
+
     if(tmp)
         {
-            QString find_us = name_user;
+        qDebug() << "Поиск";
+
             QByteArray msg;
             QDataStream out(&msg, QIODevice::WriteOnly);
             out.setVersion(QDataStream::Qt_5_4);
 
-            out << quint16(0) << QTime::currentTime() << QString("_FND_") <<find_us;
+            out << quint16(0) << QTime::currentTime() << QString("_FND_") << name_user;
             tcpSocket->write(msg);
             tmp=false;
         }

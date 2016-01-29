@@ -94,12 +94,14 @@ private:
     findcontacts *findcont;
     registration *reg_window;
 
+    QVector<QListWidgetItem*> vec;
+    QVector<QListWidget*> chatvec;
+
     QStackedWidget *stackchat;
     QFile *sendFile;
     QString name;
     QString download_path;
     bool personDates;
-    QMap<QString, int> map;
     int t;
 };
 

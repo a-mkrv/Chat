@@ -32,7 +32,7 @@ findcontacts::~findcontacts()
 
 void findcontacts::recieveData(QString str)
 {
-    ui->label_3->setText("Heh");
+
 }
 
 void findcontacts::on_invite_cont_button_clicked()

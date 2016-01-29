@@ -22,7 +22,6 @@
         <file>Resource/squares110.png</file>
         <file>Resource/write50.png</file>
         <file>Resource/reg.png</file>
-        <file>Resource/add_user.png</file>
     </qresource>
     <qresource prefix="/Avatars">
         <file>Resource/Avatars/1.jpg</file>
