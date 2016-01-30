@@ -48,7 +48,6 @@ protected:
 private slots:
     void getMessage();                  //Получение сообщений
     void on_sendMessage_clicked();      //Отправка сообщения
-    void on_connect_button_clicked();   //Соединение к серверу
     void show_Error(QAbstractSocket::SocketError errorSocket);  //Их большая часть в коде -_-
     void send_personal_data();          //Отправка сведений о клиенте
     void onDisconnect();                //Отключение

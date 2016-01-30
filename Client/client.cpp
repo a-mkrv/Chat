@@ -12,6 +12,14 @@
 QString gl_fname; //Поиск человека
 
 
+// Завтра доделать разделение на приватные беседы.
+// Стэк Списков, вектора на адреса списков.
+// Выявить падения при дисконнекте
+// Устойчивая отправка файлов до клииента
+// Доделать обновление статуса(последнего сообщения) под ником у друзей
+// Все, я спать, устал.
+
+
 Client::Client(QWidget *parent) : QMainWindow(parent), ui(new Ui::Client)
 {
     srand((time(NULL)));
@@ -123,12 +131,17 @@ void Client::keyReleaseEvent(QKeyEvent *event)
 
 void Client::recieveData(QString str, QString pas)
 {
-    qDebug() << str;
     if(str!="" && pas!="")
     {
         name = str;
         name.replace(" ", "_");
         ui->usernameEdit->setText(name);
+
+        QString hostname = "127.0.0.1";
+        quint16 port = 55155;
+        tcpSocket->abort();
+        tcpSocket->connectToHost(hostname, port);
+
         this->show();
         trayIcon->show();
     }
@@ -179,7 +192,7 @@ void Client::on_sendMessage_clicked()
 
 
             QListWidgetItem *item = new QListWidgetItem();
-            item->setData(Qt::DisplayRole, name + ": " +  message);
+            item->setData(Qt::DisplayRole, "You: " +  message);
             item->setData(Qt::ToolTipRole, QDateTime::currentDateTime().toString("dd.MM.yy hh:mm"));
             item->setData(Qt::UserRole + 1, "TO");
             ui->chatDialog->addItem(item);
@@ -221,22 +234,6 @@ void Client::insertEmoticon(QString symbol)
     }
 }
 
-void Client::on_connect_button_clicked()
-{
-    QString hostname = "127.0.0.1";
-    quint16 port = 55155;
-    QString status = tr("-> Connecting to 127.0.0.1 on port 55155.");
-
-    QListWidgetItem *item = new QListWidgetItem();
-    item->setData(Qt::DisplayRole, status);
-    item->setData(Qt::ToolTipRole, QDateTime::currentDateTime().toString("dd.MM.yy hh:mm"));
-    item->setData(Qt::UserRole + 1, "TO");
-    ui->chatDialog->addItem(item);
-
-    tcpSocket->abort();
-    tcpSocket->connectToHost(hostname, port);
-}
-
 void Client::getMessage()
 {
     QDataStream in(tcpSocket);
@@ -250,7 +247,7 @@ void Client::getMessage()
     commandList = message.split(" ", QString::SkipEmptyParts);
     if(commandList.at(1)==name)
         return;
-
+    QString fromname = commandList.at(1);
     enum class COMMAND { NONE, USERLIST, FINDUSER, INVITE};
     COMMAND cmd = COMMAND::NONE;
 
@@ -261,8 +258,6 @@ void Client::getMessage()
         cmd = COMMAND::FINDUSER;
     if (checkCmd == "_INV_")
         cmd = COMMAND::INVITE;
-
-    qDebug() << checkCmd;
 
     int rand_avatar =  rand()%22+1;
     QIcon pic(":/Avatars/Resource/Avatars/"+QString::number(rand_avatar)+".jpg");
@@ -312,14 +307,29 @@ void Client::getMessage()
         if(ui->ChBox_PSound->isChecked())
             QSound::play(":/new/prefix1/Resource/from.wav");
 
-
         QListWidgetItem *item = new QListWidgetItem();
         item->setData(Qt::DisplayRole, message);
         item->setData(Qt::ToolTipRole, QDateTime::currentDateTime().toString("dd.MM.yy hh:mm"));
-        if(QStringRef(&message, 0, 3)=="*To")
+
+        if(QStringRef(&message, 0, 3)=="You")
             item->setData(Qt::UserRole + 1, "TO");
         else
+        {
+            fromname.chop(1);
+            if (!vec.empty())
+            {
+                for(int i=0; i<vec.size(); i++)
+                    if(vec.at(i)->data(Qt::DisplayRole)==fromname)
+                    {
+                        vec.at(i)->setData(Qt::UserRole + 1, message.remove(0, 9+fromname.size()));
+                        vec.at(i)->setData(Qt::ToolTipRole, QDateTime::currentDateTime().toString("dd.MM.yy hh:mm"));
+                       item->setData(Qt::UserRole + 1, "FROM");
+                        break;
+                    }
+            }
+
             item->setData(Qt::UserRole + 1, "FROM");
+        }
         ui->chatDialog->addItem(item);
         ui->chatDialog->scrollToBottom();
     }
@@ -369,12 +379,6 @@ void Client::send_personal_data()
     if(!personDates)
     {
         personDates = true;
-
-        QListWidgetItem *item = new QListWidgetItem();
-        item->setData(Qt::DisplayRole, "Sending personal dates...");
-        item->setData(Qt::ToolTipRole, QDateTime::currentDateTime().toString("dd.MM.yy hh:mm"));
-        item->setData(Qt::UserRole + 1, "TO");
-        ui->chatDialog->addItem(item);
 
         QByteArray block;
         QDataStream out(&block, QIODevice::WriteOnly);

@@ -296,9 +296,9 @@ background-color: rgb(74, 107, 142);</string>
    <widget class="QListWidget" name="chatDialog">
     <property name="geometry">
      <rect>
-      <x>385</x>
+      <x>390</x>
       <y>60</y>
-      <width>677</width>
+      <width>671</width>
       <height>421</height>
      </rect>
     </property>
@@ -1247,13 +1247,23 @@ border:none;</string>
      </size>
     </property>
     <property name="styleSheet">
-     <string notr="true">background-color: rgb(0, 255, 0);</string>
+     <string notr="true">background-color: rgb(255, 246, 238);</string>
     </property>
     <property name="text">
      <string/>
     </property>
     <property name="scaledContents">
      <bool>true</bool>
+    </property>
+   </widget>
+   <widget class="QStackedWidget" name="stackedWidget_2">
+    <property name="geometry">
+     <rect>
+      <x>580</x>
+      <y>60</y>
+      <width>481</width>
+      <height>421</height>
+     </rect>
     </property>
    </widget>
    <zorder>widget_2</zorder>
@@ -1269,6 +1279,7 @@ border:none;</string>
    <zorder>chat_back_lab</zorder>
    <zorder>chatDialog</zorder>
    <zorder>widget</zorder>
+   <zorder>stackedWidget_2</zorder>
   </widget>
   <action name="actionShowHideWindow">
    <property name="text">

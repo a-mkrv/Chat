@@ -14,10 +14,10 @@ registration::registration(QWidget *parent) :
     ui->error_label->hide();
     ui->errorconnect_label->hide();
 
-    reg = new NewContact(parent, 0);
+    //reg = new NewContact(parent, 0);
     connect(ui->pushButton, SIGNAL(clicked()), this, SLOT(onButtonSendUser()));
     connect(socket, SIGNAL(readyRead()), this, SLOT(getMessage()));
-    connect(reg, SIGNAL(sendData(QString)), this, SLOT(recieveData(QString)));
+   // connect(reg, SIGNAL(sendData(QString)), this, SLOT(recieveData(QString)));
 
     ui->pass_enter->setEchoMode(QLineEdit::Password);
     this->show();
@@ -65,6 +65,7 @@ void registration::getMessage()
         if(mes == "LogInOK!" && !ui->username_enter->text().simplified().isEmpty() && !ui->pass_enter->text().simplified().isEmpty())
         {
             emit sendData(ui->username_enter->text().simplified(), ui->pass_enter->text().simplified());
+           // socket->abort();
             this->hide();
         }
 }
@@ -77,6 +78,9 @@ void registration::keyReleaseEvent(QKeyEvent *event)
        if(ui->username_enter->text().simplified()!="" && ui->pass_enter->text().simplified()!="")
        {
            emit sendData(ui->username_enter->text().simplified(), ui->pass_enter->text().simplified());
+           socket->deleteLater();
+           //connect(socket, SIGNAL(disconnected()), this, SLOT());
+          // socket->close();
            this->hide();
        }
       break;
@@ -90,8 +94,14 @@ registration::~registration()
 
 void registration::on_reg_button_clicked()
 {
-    reg->show();
-    this->hide();
+    if(socket->state()!=QAbstractSocket::ConnectedState)
+           ui->errorconnect_label->show();
+    else
+    {
+        ui->errorconnect_label->hide();
+        reg->show();
+        this->hide();
+    }
 }
 
 

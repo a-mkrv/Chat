@@ -21,16 +21,19 @@ Server::Server(QWidget *parent) :
 
     connect(tcpServer, SIGNAL(newConnection()), this, SLOT(newConnection()));
     connect(this, SIGNAL(newConnection()), this, SLOT(getMessage()));
-    connect(this, SIGNAL(SEND_UserList()), this, SLOT(sendUserList()));
+    //connect(this, SIGNAL(SEND_UserList()), this, SLOT(sendUserList()));
 
 }
 
 void Server::newConnection()
 {
+    qDebug() << "Новое соединение";
     QTcpSocket *newSocket = tcpServer->nextPendingConnection();                 // Подключение нового клиента
     connect(newSocket, SIGNAL(disconnected()), this, SLOT(onDisconnect()));
     connect(newSocket, SIGNAL(readyRead()), this, SLOT(getMessage()));
     clientConnections.append(newSocket);
+
+    qDebug() << newSocket->socketDescriptor();
 
     QByteArray block;
     QDataStream out(&block, QIODevice::WriteOnly);
@@ -48,10 +51,12 @@ void Server::newConnection()
 
 void Server::onDisconnect()
 {
-    qDebug() << "Disconnect";
     QTcpSocket *socket = qobject_cast<QTcpSocket*>(sender());
     QString username = 0;
+    qDebug() << "Start Disconnect - " << socket->socketDescriptor();
+
     if(!userList.empty() && !clientConnections.empty())
+    {
     if (socket != 0)
     {
         qDebug() << "in Disconnect";
@@ -74,13 +79,14 @@ void Server::onDisconnect()
                     socketID = i.first;
 
             }
-
+qDebug() << "Середина дисконекта";
             username = getUsername(socketID);
-
+        qDebug() << "После Усернейма дисконекта и авто";
             auto iter = userList.find(socketID);
+            qDebug() << "После Усернейма дисконекта и авто";
             if (iter != userList.end())
                 userList.erase(iter);
-
+qDebug() << "2/3 дисконекта";
             ui->userList->clear();
             for (auto i : userList)
                 new QListWidgetItem(i.second, ui->userList);
@@ -90,6 +96,9 @@ void Server::onDisconnect()
         socket->deleteLater();
         updateStatus("Connection terminated. (" + username + ":" + QString::number(socketID) + ")");
     }
+    }
+    qDebug() << "Finish Disconnect";
+
 }
 
 void Server::doCommand(QString command, int ID)
@@ -100,7 +109,7 @@ void Server::doCommand(QString command, int ID)
     QStringList instruction = command.split(" ", QString::SkipEmptyParts);
     command = instruction.takeFirst();
 
-
+    qDebug() << "Start Do Command";
     if (command == "/msg"  || command == "/pm")
     {
         if (!instruction.isEmpty())
@@ -128,8 +137,8 @@ void Server::doCommand(QString command, int ID)
 
                 auto user = userList.find(ID);
 
-                message = "*To: " + recipient + ": " + text;
-                QString rMessage = "* From: " + user->second + ": " + text;
+                message = "You: " + recipient + ": " + text;
+                QString rMessage = "*From: " + user->second + ": " + text;
                 sendToID(rMessage, rID);
 
                 QString status = "PM: (" + user->second + " -> " + recipient + ") " + text;
@@ -144,6 +153,7 @@ void Server::doCommand(QString command, int ID)
         message += "Invalid command";
 
     sendToID(message, ID);
+    qDebug() << "Finish Do Command";
 }
 
 void Server::sendMessage(QString message, QTcpSocket& socket)
@@ -494,7 +504,9 @@ QTcpSocket* Server::getSocket(int ID)
 
 QString Server::getUsername(int ID)
 {
+    qDebug() << ID;
     auto itr = userList.find(ID);
+    qDebug() << "ВХОД";
     return itr->second;
 }
 

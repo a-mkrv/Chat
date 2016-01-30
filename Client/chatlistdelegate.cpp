@@ -66,7 +66,7 @@ void ChatListDelegate::paint ( QPainter * painter, const QStyleOptionViewItem & 
     {
         //TITLE
         r = option.rect.adjusted(imageSpace, 10, -10, -27);
-        painter->setFont( QFont( "Lucida Grande", 12, QFont::Normal ) );
+        painter->setFont( QFont( "Lucida Grande", 11, QFont::Normal ) );
         painter->drawText(r.left(), r.top(), r.width(), r.height(), Qt::AlignTop|Qt::AlignLeft, title, &r);
         // TIME
         r = option.rect.adjusted(60, 10, -10, -27);
@@ -77,7 +77,7 @@ void ChatListDelegate::paint ( QPainter * painter, const QStyleOptionViewItem & 
     {
         //TITLE
         r = option.rect.adjusted(imageSpace, 10, -10, -27);
-        painter->setFont( QFont( "Lucida Grande", 12, QFont::Normal ) );
+        painter->setFont( QFont( "Lucida Grande", 11, QFont::Normal ) );
         painter->drawText(r.left(), r.top(), r.width(), r.height(), Qt::AlignTop|Qt::AlignRight, title, &r);
         // TIME
         r = option.rect.adjusted(5, 10, -10, -27);
