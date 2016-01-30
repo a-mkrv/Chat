@@ -299,7 +299,7 @@ background-color: rgb(74, 107, 142);</string>
       <x>390</x>
       <y>60</y>
       <width>671</width>
-      <height>421</height>
+      <height>61</height>
      </rect>
     </property>
     <property name="maximumSize">
@@ -1259,13 +1259,14 @@ border:none;</string>
    <widget class="QStackedWidget" name="stackedWidget_2">
     <property name="geometry">
      <rect>
-      <x>580</x>
-      <y>60</y>
-      <width>481</width>
+      <x>385</x>
+      <y>61</y>
+      <width>678</width>
       <height>421</height>
      </rect>
     </property>
    </widget>
+   <zorder>chatDialog</zorder>
    <zorder>widget_2</zorder>
    <zorder>line</zorder>
    <zorder>userList</zorder>
@@ -1277,7 +1278,6 @@ border:none;</string>
    <zorder>search_label</zorder>
    <zorder>search_line_edit</zorder>
    <zorder>chat_back_lab</zorder>
-   <zorder>chatDialog</zorder>
    <zorder>widget</zorder>
    <zorder>stackedWidget_2</zorder>
   </widget>

@@ -272,12 +272,30 @@ void Client::getMessage()
             break;
         if(find_user=="OKFIN" && gl_fname!=name)
         {
+
+            if (!vec.empty())
+            {
+                for(int i=0; i<vec.size(); i++)
+                    if(vec.at(i)->data(Qt::DisplayRole)==gl_fname)
+                    {
+                        return;
+                    }
+
+            }
+
             QListWidgetItem *item = new QListWidgetItem();
+            QListWidget *chatlist = new QListWidget();
+            chatlist->setItemDelegate(new ChatListDelegate(chatlist));
+            ui->stackedWidget_2->addWidget(chatlist);
+
             item->setData(Qt::DisplayRole, gl_fname);
             item->setData(Qt::ToolTipRole, QDateTime::currentDateTime().toString("dd.MM.yy hh:mm"));
             item->setData(Qt::UserRole + 1, "New User.");
             item->setData(Qt::DecorationRole, pic);
+
             vec.push_back(item);
+            chatvec.push_back(chatlist);
+
             ui->userList->addItem(item);
             findcont->~findcontacts();
         }
@@ -312,7 +330,14 @@ void Client::getMessage()
         item->setData(Qt::ToolTipRole, QDateTime::currentDateTime().toString("dd.MM.yy hh:mm"));
 
         if(QStringRef(&message, 0, 3)=="You")
+        {
+            QListWidgetItem *item = new QListWidgetItem();
             item->setData(Qt::UserRole + 1, "TO");
+            item->setData(Qt::DisplayRole, message.remove(0, 6+fromname.size()));
+            item->setData(Qt::ToolTipRole, QDateTime::currentDateTime().toString("dd.MM.yy hh:mm"));
+            chatvec.at(ui->stackedWidget_2->currentIndex())->addItem(item);
+            //item->setData(Qt::UserRole + 1, "TO");
+        }
         else
         {
             fromname.chop(1);
@@ -321,9 +346,19 @@ void Client::getMessage()
                 for(int i=0; i<vec.size(); i++)
                     if(vec.at(i)->data(Qt::DisplayRole)==fromname)
                     {
-                        vec.at(i)->setData(Qt::UserRole + 1, message.remove(0, 9+fromname.size()));
+                        qDebug() << fromname << "Heh";
+                        QListWidgetItem *item = new QListWidgetItem();
+                        item->setData(Qt::UserRole + 1, "FROM");
+                        item->setData(Qt::DisplayRole, message.remove(0, 9+fromname.size()));
+                        item->setData(Qt::ToolTipRole, QDateTime::currentDateTime().toString("dd.MM.yy hh:mm"));
+
+                        vec.at(i)->setData(Qt::UserRole + 1, message);
                         vec.at(i)->setData(Qt::ToolTipRole, QDateTime::currentDateTime().toString("dd.MM.yy hh:mm"));
-                       item->setData(Qt::UserRole + 1, "FROM");
+
+                        chatvec.at(i)->addItem(item);
+                        vec.at(i)->setSelected(true);
+                        ui->stackedWidget_2->setCurrentIndex(i);
+
                         break;
                     }
             }
@@ -669,4 +704,13 @@ void Client::on_pushButton_2_clicked()
     out << quint16(arrBlock.size() - sizeof(quint16));
 
     tcpSocket->write(arrBlock);
+}
+
+void Client::on_userList_clicked(const QModelIndex &index)
+{
+    if (!vec.empty())
+    {        qDebug() << index.data(Qt::DisplayRole).toString();
+
+        ui->stackedWidget_2->setCurrentIndex(index.row());
+    }
 }

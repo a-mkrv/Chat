@@ -74,6 +74,8 @@ private slots:
     void on_Download_path_PB_clicked();
     void on_pushButton_2_clicked();
 
+    void on_userList_clicked(const QModelIndex &index);
+
 public slots:
     void recieveData(QString str, QString pas);
 

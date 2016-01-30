@@ -55,7 +55,7 @@ void ChatListDelegate::paint ( QPainter * painter, const QStyleOptionViewItem & 
 
     int imageSpace = 10;
     if (!ic.isNull()) {
-         r = option.rect.adjusted(2, 2, -1, -1);
+        r = option.rect.adjusted(2, 2, -1, -1);
         ic.paint(painter, r, Qt::AlignVCenter|Qt::AlignLeft);
         imageSpace = 85;
     }
@@ -65,9 +65,9 @@ void ChatListDelegate::paint ( QPainter * painter, const QStyleOptionViewItem & 
     if(description=="FROM")
     {
         //TITLE
-        r = option.rect.adjusted(imageSpace, 10, -10, -27);
+        r = option.rect.adjusted(imageSpace, 0, -10, -27);
         painter->setFont( QFont( "Lucida Grande", 11, QFont::Normal ) );
-        painter->drawText(r.left(), r.top(), r.width(), r.height(), Qt::AlignTop|Qt::AlignLeft, title, &r);
+        painter->drawText(r.left(), r.top(), r.width(), r.height(), Qt::AlignBottom|Qt::AlignLeft, title, &r);
         // TIME
         r = option.rect.adjusted(60, 10, -10, -27);
         painter->setFont( QFont( "Lucida Grande", 8, QFont::Normal ) );
@@ -84,10 +84,10 @@ void ChatListDelegate::paint ( QPainter * painter, const QStyleOptionViewItem & 
         painter->setFont( QFont( "Lucida Grande", 8, QFont::Normal ) );
         painter->drawText(r.left(), r.top(), r.width(), r.height(), Qt::AlignTop|Qt::AlignLeft, time , &r);
     }
-        }
+}
 
 QSize ChatListDelegate::sizeHint ( const QStyleOptionViewItem & option, const QModelIndex & index ) const{
-        return QSize(200, 70); // very dumb value
-    }
+    return QSize(200, 70); // very dumb value
+}
 
 
