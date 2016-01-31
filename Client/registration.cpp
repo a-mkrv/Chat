@@ -6,21 +6,21 @@ registration::registration(QWidget *parent) :
     ui(new Ui::registration)
 {
     ui->setupUi(this);
-    this->setWindowFlags(Qt::Window | Qt::FramelessWindowHint | Qt::CustomizeWindowHint);
-
     socket = new QTcpSocket;
+    reg = new NewContact(parent);
+
     socket->abort();
     socket->connectToHost("127.0.0.1", 55155);
 
-    ui->error_label->hide();
-    ui->errorconnect_label->hide();
-
-    reg = new NewContact(parent, 0);
     connect(ui->pushButton, SIGNAL(clicked()), this, SLOT(onButtonSendUser()));
     connect(socket, SIGNAL(readyRead()), this, SLOT(getMessage()));
     connect(reg, SIGNAL(sendData(QString)), this, SLOT(recieveData(QString)));
 
+    ui->error_label->hide();
+    ui->errorconnect_label->hide();
     ui->pass_enter->setEchoMode(QLineEdit::Password);
+
+    this->setWindowFlags(Qt::Window | Qt::FramelessWindowHint | Qt::CustomizeWindowHint);
     this->show();
 }
 
@@ -34,7 +34,6 @@ void registration::mouseMoveEvent(QMouseEvent *event)
 
 void registration::mousePressEvent(QMouseEvent *event)
 {
-     setStyleSheet("QFrame {background-color: rgba(0, 0, 0, 30%);}");
     if (event->button() == Qt::LeftButton) {
         m_dragPosition = event->globalPos() - frameGeometry().topLeft();
         event->accept();
@@ -53,11 +52,10 @@ void registration::on_pushButton_clicked()
     else
         ui->errorconnect_label->hide();
 
-
     QString login = ui->username_enter->text().simplified();
     QString password = ui->pass_enter->text().simplified();
 
-    if(login!="" && password!="")
+    if(!login.isEmpty() && !password.isEmpty())
     {
         QByteArray block;
         QDataStream out(&block, QIODevice::WriteOnly);
@@ -71,28 +69,28 @@ void registration::on_pushButton_clicked()
 
 void registration::getMessage()
 {
+    QString received_message;
+
     QDataStream in(socket);
     in.setVersion(QDataStream::Qt_5_4);
-    QString mes;
-    in >> mes;
+    in >> received_message;
 
-    if(mes == "Error_Login_Pass")
+    if(received_message == "Error_Login_Pass")
         ui->error_label->show();
-    if(mes == "LogInOK!" && !ui->username_enter->text().simplified().isEmpty() && !ui->pass_enter->text().simplified().isEmpty())
+
+    else if(received_message == "LogInOK!" && !ui->username_enter->text().simplified().isEmpty() && !ui->pass_enter->text().simplified().isEmpty())
     {
         emit sendData(ui->username_enter->text().simplified(), ui->pass_enter->text().simplified());
-       // socket->close();
         this->close();
     }
 }
-
 
 
 void registration::keyReleaseEvent(QKeyEvent *event)
 {
     switch(event->key()) {
     case Qt::Key_Return:
-        if(ui->username_enter->text().simplified()!="" && ui->pass_enter->text().simplified()!="")
+        if(!ui->username_enter->text().simplified().isEmpty() && !ui->pass_enter->text().simplified().isNull())
         {
             emit sendData(ui->username_enter->text().simplified(), ui->pass_enter->text().simplified());
             socket->deleteLater();
@@ -100,11 +98,6 @@ void registration::keyReleaseEvent(QKeyEvent *event)
         }
         break;
     }
-}
-
-registration::~registration()
-{
-    delete ui;
 }
 
 void registration::on_reg_button_clicked()
@@ -122,7 +115,6 @@ void registration::on_reg_button_clicked()
 
 void registration::recieveData(QString str)
 {
-    qDebug() << str;
     if(str=="Show")
         this->show();
 }
@@ -135,4 +127,9 @@ void registration::on_closeregBut_clicked()
 void registration::on_minimazregBut_clicked()
 {
     this->showMinimized();
+}
+
+registration::~registration()
+{
+    delete ui;
 }

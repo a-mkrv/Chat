@@ -13,7 +13,7 @@ class NewContact : public QWidget
     Q_OBJECT
 
 public:
-    explicit NewContact(QWidget *parent = 0, QTcpSocket *client=0);
+    explicit NewContact(QWidget *parent = 0);
     ~NewContact();
 
 private slots:

@@ -24,7 +24,7 @@
 #include "listdelegate.h"
 #include "chatlistdelegate.h"
 #include "aboutdialog.h"
-
+#include "notification.h"
 #include <QMouseEvent>
 #include <QPoint>
 #include <QTime>
@@ -108,6 +108,7 @@ private:
     findcontacts *findcont;
     AboutDialog *aboutdialog;
     registration *reg_window;
+    Notification *notice;
 
     QPoint m_dragPosition;
     QVector<QListWidgetItem*> vec;

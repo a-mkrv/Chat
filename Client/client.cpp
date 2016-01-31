@@ -19,6 +19,8 @@ QString gl_fname; //Поиск человека
 // Изменил верхнюю панель, завтра прикручу)         -- Сделано
 // Доделать обновление статуса(последнего сообщения) под ником у друзей                         --Сделано
 // При добавлении в список друзей просматривать Пол, и в зависимости от этого ставить аватар.   -- Сделано
+// Отправку сообщения по текущему диалогу, а не по команде msg User     --Сделано
+// Добавлены уведомления в углу экрана.
 
 
 // Основное:
@@ -26,7 +28,6 @@ QString gl_fname; //Поиск человека
 // -- Дисконнект из-за доп.сокетов и соединений при авторизации. (Правильно прикрутить закрытие сокета)
 
 // Устойчивая отправка файлов до клииента           -- Не смотрел.
-// Отправку сообщения по текущему диалогу, а не по команде msg User
 // СОХРАНЕНИЕ ПОЛЬЗОВАТЕЛЕЙ Друг у Друга (Либо через БД, либо пока через файл. Заголовок - Ник, а в файле список друзей)
 
 
@@ -45,6 +46,7 @@ Client::Client(QWidget *parent) : QMainWindow(parent), ui(new Ui::Client)
     emojiMan = new EmojiManager();
     this->setWindowFlags(Qt::Window | Qt::FramelessWindowHint | Qt::CustomizeWindowHint);
 
+    notice = new Notification();
     reg_window = new registration();
     connect(reg_window, SIGNAL(sendData(QString, QString)), this, SLOT(recieveData(QString, QString)));
 
@@ -170,8 +172,6 @@ void Client::on_sendMessage_clicked()
     QString str = ui->editText->text();                 // Получение сообщения для отправки
     QString message = str;
 
-    //qDebug() << vec.at(ui->userList->currentRow())->data(Qt::DisplayRole);
-
     QStringList list;
 
     list.clear();
@@ -201,28 +201,28 @@ void Client::on_sendMessage_clicked()
         if(ui->ChBox_PSound->isChecked())
             QSound::play(":/new/prefix1/Resource/to.wav");
 
-//        if (message.at(0) == '/')       //Личное сообщение / команда
-//            {
-            QString new_mes = "/msg " + vec.at(ui->userList->currentRow())->data(Qt::DisplayRole).toString() + " " + message;
-            sendUserCommand(new_mes);
-//        }
+        //        if (message.at(0) == '/')       //Личное сообщение / команда
+        //            {
+        QString new_mes = "/msg " + vec.at(ui->userList->currentRow())->data(Qt::DisplayRole).toString() + " " + message;
+        sendUserCommand(new_mes);
+        //        }
 
-//        else                            //Сообщение на сервер
-//        {
-//            QByteArray msg;
-//            QDataStream out(&msg, QIODevice::WriteOnly);
-//            out.setVersion(QDataStream::Qt_5_4);
+        //        else                            //Сообщение на сервер
+        //        {
+        //            QByteArray msg;
+        //            QDataStream out(&msg, QIODevice::WriteOnly);
+        //            out.setVersion(QDataStream::Qt_5_4);
 
 
-//            QListWidgetItem *item = new QListWidgetItem();
-//            item->setData(Qt::DisplayRole, "You: " +  message);
-//            item->setData(Qt::ToolTipRole, QDateTime::currentDateTime().toString("dd.MM.yy hh:mm"));
-//            item->setData(Qt::UserRole + 1, "TO");
-//            ui->chatDialog->addItem(item);
+        //            QListWidgetItem *item = new QListWidgetItem();
+        //            item->setData(Qt::DisplayRole, "You: " +  message);
+        //            item->setData(Qt::ToolTipRole, QDateTime::currentDateTime().toString("dd.MM.yy hh:mm"));
+        //            item->setData(Qt::UserRole + 1, "TO");
+        //            ui->chatDialog->addItem(item);
 
-//            out << quint16(0) << QTime::currentTime() << message;
-//            tcpSocket->write(msg);
-//        }
+        //            out << quint16(0) << QTime::currentTime() << message;
+        //            tcpSocket->write(msg);
+        //        }
     }
 }
 
@@ -293,17 +293,17 @@ void Client::getMessage()
         if(find_user=="OKFIN" && gl_fname!=name)
         {
             int rand_avatar;
-        QString sex = commandList.at(2);
-        if(sex=="Man")
-            rand_avatar = rand()%13+1;
-        else if(sex=="Woman")
-            rand_avatar = rand()%9+14;
-        else if(sex=="Unknown")
-            rand_avatar = rand()%10+23;
+            QString sex = commandList.at(2);
+            if(sex=="Man")
+                rand_avatar = rand()%13+1;
+            else if(sex=="Woman")
+                rand_avatar = rand()%9+14;
+            else if(sex=="Unknown")
+                rand_avatar = rand()%10+23;
 
-        QIcon pic(":/Avatars/Resource/Avatars/"+QString::number(rand_avatar)+".jpg");
+            QIcon pic(":/Avatars/Resource/Avatars/"+QString::number(rand_avatar)+".jpg");
 
-               qDebug() << sex;
+            qDebug() << sex;
             if (!vec.empty())
             {
                 for(int i=0; i<vec.size(); i++)
@@ -376,7 +376,6 @@ void Client::getMessage()
                 for(int i=0; i<vec.size(); i++)
                     if(vec.at(i)->data(Qt::DisplayRole)==fromname)
                     {
-                        qDebug() << fromname << "Heh";
                         QListWidgetItem *item = new QListWidgetItem();
                         item->setData(Qt::UserRole + 1, "FROM");
                         item->setData(Qt::DisplayRole, message.remove(0, 9+fromname.size()));
@@ -385,6 +384,11 @@ void Client::getMessage()
                         vec.at(i)->setData(Qt::UserRole + 1, message);
                         vec.at(i)->setData(Qt::ToolTipRole, QDateTime::currentDateTime().toString("dd.MM.yy hh:mm"));
 
+                        if(!this->isVisible())
+                        {
+                            notice->setPopupText("New message (" + fromname + "):\n" + message);
+                            notice->show();
+                        }
                         chatvec.at(i)->addItem(item);
                         vec.at(i)->setSelected(true);
                         ui->stackedWidget_2->setCurrentIndex(i);
@@ -546,16 +550,11 @@ void Client::showFindCont()
 
 void Client::findtoserv(QString name_user)
 {
-    trayIcon->showMessage("Hello", "My name is Anton", QSystemTrayIcon::Information, 1);
     gl_fname=name_user;
-
-
     static bool tmp = true;
 
     if(tmp)
     {
-        qDebug() << "Поиск";
-
         QByteArray msg;
         QDataStream out(&msg, QIODevice::WriteOnly);
         out.setVersion(QDataStream::Qt_5_4);
@@ -621,11 +620,6 @@ void Client::closeEvent(QCloseEvent *event)
     event->ignore();
 }
 
-
-Client::~Client()
-{
-    delete ui;
-}
 
 void Client::on_PB_SelColor_clicked()
 {
@@ -724,9 +718,9 @@ void Client::on_pushButton_2_clicked()
     QString filePatch = QFileDialog::getOpenFileName(this,
                                                      QObject::trUtf8("Выбор файла для отправки"), "",
                                                      QObject::trUtf8("(*.*)"));
-    if (filePatch.isEmpty()) {
-        return ;
-    }
+    if (filePatch.isEmpty())
+        return;
+
 
     QByteArray  arrBlock;
     qint64 fileSize;
@@ -750,15 +744,13 @@ void Client::on_pushButton_2_clicked()
     out << quint16(arrBlock.size() - sizeof(quint16));
 
     tcpSocket->write(arrBlock);
+    tcpSocket->abort();
 }
 
 void Client::on_userList_clicked(const QModelIndex &index)
 {
     if (!vec.empty())
-    {        qDebug() << index.data(Qt::DisplayRole).toString();
-
         ui->stackedWidget_2->setCurrentIndex(index.row());
-    }
 }
 
 void Client::on_pushButton_3_clicked()
@@ -812,4 +804,9 @@ void Client::on_comboBox_currentIndexChanged(int index)
         break;
     }
     }
+}
+
+Client::~Client()
+{
+    delete ui;
 }

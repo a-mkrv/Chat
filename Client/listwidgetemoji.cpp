@@ -15,6 +15,7 @@ void ListWidgetEmoji::loadEmojiListView(QString category)
             if (category != m_emojiList.at(i).category)
                 continue;
         }
+
         QListWidgetItem *newItem = new QListWidgetItem;
 
         QString binDir = QCoreApplication::applicationDirPath();

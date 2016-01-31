@@ -26,7 +26,8 @@ SOURCES += main.cpp\
     registration.cpp \
     newcontact.cpp \
     chatlistdelegate.cpp \
-    aboutdialog.cpp
+    aboutdialog.cpp \
+    notification.cpp
 
 HEADERS  += client.h \
     emojiframe.h \
@@ -40,7 +41,8 @@ HEADERS  += client.h \
     registration.h \
     newcontact.h \
     chatlistdelegate.h \
-    aboutdialog.h
+    aboutdialog.h \
+    notification.h
 
 FORMS    += client.ui \
     emojiframe.ui \

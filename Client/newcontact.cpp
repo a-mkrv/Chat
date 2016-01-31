@@ -2,14 +2,11 @@
 #include "ui_newcontact.h"
 #include <QTime>
 
-NewContact::NewContact(QWidget *parent, QTcpSocket *client) :
+NewContact::NewContact(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::NewContact)
 {
-
-      socket = new QTcpSocket();
-//    socket->abort();
-//    socket->connectToHost("127.0.0.1", 55155);
+    socket = new QTcpSocket();
 
     ui->setupUi(this);
     ui->Error_label->hide();
@@ -18,31 +15,25 @@ NewContact::NewContact(QWidget *parent, QTcpSocket *client) :
     connect(socket, SIGNAL(readyRead()), this, SLOT(getMessagee()));
 }
 
-NewContact::~NewContact()
-{
-    delete ui;
-}
-
 void NewContact::getMessagee()
 {
+    QString  received_message;
+
     QDataStream in(socket);
     in.setVersion(QDataStream::Qt_5_4);
-    QString  mes;
+    in >> received_message;
 
-    in >> mes;
-    qDebug() << "Окно регистрации. Сообщение получено:" << mes;
-
-    if(mes == "PassEmpty")
+    if(received_message == "PassEmpty")
     {
         ui->Error_label->hide();
         ui->Error_label_2->show();
     }
-    if(mes == "Already!")
+    if(received_message == "Already!")
     {
         ui->Error_label_2->hide();
         ui->Error_label->show();
     }
-    if(mes == "Welcome!")
+    if(received_message == "Welcome!")
     {
         emit sendData(QString("Show"));
         socket->close();
@@ -75,4 +66,9 @@ void NewContact::on_pushButton_clicked()
 
     emit sendData(QString("Show"));
     this->close();
+}
+
+NewContact::~NewContact()
+{
+    delete ui;
 }

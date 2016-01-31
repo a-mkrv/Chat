@@ -9,6 +9,8 @@ ListDelegate::ListDelegate(QObject *parent)
 
 
 void ListDelegate::paint ( QPainter * painter, const QStyleOptionViewItem & option, const QModelIndex & index ) const{
+
+
     QRect r = option.rect;
     QPen linePen(QColor::fromRgb(211,211,211), 1, Qt::SolidLine);
     QPen lineMarkedPen(QColor::fromRgb(0,90,131), 1, Qt::SolidLine);
@@ -78,7 +80,7 @@ void ListDelegate::paint ( QPainter * painter, const QStyleOptionViewItem & opti
         }
 
 QSize ListDelegate::sizeHint ( const QStyleOptionViewItem & option, const QModelIndex & index ) const{
-        return QSize(200, 70); // very dumb value
+        return QSize(200, 70); // Размер элемента списка
     }
 
 

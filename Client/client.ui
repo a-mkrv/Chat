@@ -329,14 +329,23 @@ background-color: rgb(99, 137, 168);</string>
       <height>61</height>
      </rect>
     </property>
+    <property name="font">
+     <font>
+      <pointsize>12</pointsize>
+     </font>
+    </property>
     <property name="styleSheet">
      <string notr="true">background-color: rgb(235, 235, 235);
+color: rgb(255, 255, 255);
 background-color: rgb(185, 211, 238);
 background-color: rgb(106, 163, 220);
 background-color: rgb(99, 137, 168);</string>
     </property>
     <property name="text">
      <string/>
+    </property>
+    <property name="margin">
+     <number>15</number>
     </property>
    </widget>
    <widget class="QWidget" name="widget_2" native="true">
@@ -1363,6 +1372,7 @@ border:none;</string>
      <bool>true</bool>
     </property>
    </widget>
+   <zorder>widget_2</zorder>
    <zorder>chatDialog</zorder>
    <zorder>line</zorder>
    <zorder>userList</zorder>
@@ -1379,7 +1389,6 @@ border:none;</string>
    <zorder>pushButton_3</zorder>
    <zorder>pushButton_4</zorder>
    <zorder>pushButton_5</zorder>
-   <zorder>widget_2</zorder>
   </widget>
   <action name="actionShowHideWindow">
    <property name="text">
