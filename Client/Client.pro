@@ -25,7 +25,8 @@ SOURCES += main.cpp\
     listdelegate.cpp \
     registration.cpp \
     newcontact.cpp \
-    chatlistdelegate.cpp
+    chatlistdelegate.cpp \
+    aboutdialog.cpp
 
 HEADERS  += client.h \
     emojiframe.h \
@@ -38,14 +39,16 @@ HEADERS  += client.h \
     listdelegate.h \
     registration.h \
     newcontact.h \
-    chatlistdelegate.h
+    chatlistdelegate.h \
+    aboutdialog.h
 
 FORMS    += client.ui \
     emojiframe.ui \
     findcontacts.ui \
     registration.ui \
     maingui.ui \
-    newcontact.ui
+    newcontact.ui \
+    aboutdialog.ui
 
 RESOURCES += \
     image.qrc

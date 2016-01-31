@@ -8,16 +8,31 @@
 #include <QString>
 #include <QPainter>
 #include <time.h>
+#include <QPropertyAnimation>
 
 QString gl_fname; //Поиск человека
 
 
-// Завтра доделать разделение на приватные беседы.
-// Стэк Списков, вектора на адреса списков.
-// Выявить падения при дисконнекте
-// Устойчивая отправка файлов до клииента
-// Доделать обновление статуса(последнего сообщения) под ником у друзей
-// Все, я спать, устал.
+// Завтра доделать разделение на приватные беседы.  -- Сделано
+// Стэк Списков, вектора на адреса списков.         -- Сделано
+// Попробовать добавить 1-2 языка..                 -- Сделано (Русский)
+// Изменил верхнюю панель, завтра прикручу)         -- Сделано
+// Доделать обновление статуса(последнего сообщения) под ником у друзей                         --Сделано
+// При добавлении в список друзей просматривать Пол, и в зависимости от этого ставить аватар.   -- Сделано
+
+
+// Основное:
+// Выявить падения при дисконнекте  (при добавлении и переписки - ок, как только кто выходит - падает сервер, что-то с итератором)
+// Устойчивая отправка файлов до клииента           -- Не смотрел.
+// Отправку сообщения по текущему диалогу, а не по команде msg User
+// СОХРАНЕНИЕ ПОЛЬЗОВАТЕЛЕЙ Друг у Друга (Либо через БД, либо пока через файл. Заголовок - Ник, а в файле список друзей)
+
+
+// Второй план:
+// Разбить код по доп классам, функциям (УБРАТЬ НАСТРОЙКИ В ДРУГОЕ МЕСТО!!!!!))
+// Возможно исправить делегата, сделав сообщения пузырьком.
+// Т.к есть структура со всей инфой о человеке(город, пол и т.д), мб добавлю Информационное окно, где-то нужно инфу разместить в общем.
+
 
 
 Client::Client(QWidget *parent) : QMainWindow(parent), ui(new Ui::Client)
@@ -26,6 +41,7 @@ Client::Client(QWidget *parent) : QMainWindow(parent), ui(new Ui::Client)
     ui->setupUi(this);
     frameEmoji = new EmojiFrame();
     emojiMan = new EmojiManager();
+    this->setWindowFlags(Qt::Window | Qt::FramelessWindowHint | Qt::CustomizeWindowHint);
 
     reg_window = new registration();
     connect(reg_window, SIGNAL(sendData(QString, QString)), this, SLOT(recieveData(QString, QString)));
@@ -42,7 +58,6 @@ Client::Client(QWidget *parent) : QMainWindow(parent), ui(new Ui::Client)
     trayIcon->setContextMenu(trayIconMenu);
     connect(trayIcon, SIGNAL(activated(QSystemTrayIcon::ActivationReason)), this, SLOT(iconActivated(QSystemTrayIcon::ActivationReason)));
     trayIcon->hide();
-
     ui->chatDialog->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Maximum);
     ui->chatDialog->clearSelection();
 
@@ -259,9 +274,6 @@ void Client::getMessage()
     if (checkCmd == "_INV_")
         cmd = COMMAND::INVITE;
 
-    int rand_avatar =  rand()%22+1;
-    QIcon pic(":/Avatars/Resource/Avatars/"+QString::number(rand_avatar)+".jpg");
-
     switch (cmd)
     {
     case COMMAND::FINDUSER:
@@ -272,7 +284,18 @@ void Client::getMessage()
             break;
         if(find_user=="OKFIN" && gl_fname!=name)
         {
+            int rand_avatar;
+        QString sex = commandList.at(2);
+        if(sex=="Man")
+            rand_avatar = rand()%13+1;
+        else if(sex=="Woman")
+            rand_avatar = rand()%9+14;
+        else if(sex=="Unknown")
+            rand_avatar = rand()%10+23;
 
+        QIcon pic(":/Avatars/Resource/Avatars/"+QString::number(rand_avatar)+".jpg");
+
+               qDebug() << sex;
             if (!vec.empty())
             {
                 for(int i=0; i<vec.size(); i++)
@@ -311,12 +334,11 @@ void Client::getMessage()
         if(gl_fname==name)
             break;
         QString find_user = commandList.at(1);
-
         QListWidgetItem *item = new QListWidgetItem();
         item->setData(Qt::DisplayRole, gl_fname);
         item->setData(Qt::ToolTipRole, QDateTime::currentDateTime().toString("dd.MM.yy hh:mm"));
         item->setData(Qt::UserRole + 1, "New User.");
-        item->setData(Qt::DecorationRole, pic);
+        //item->setData(Qt::DecorationRole, pic);
         vec.push_back(item);
         ui->userList->addItem(item);
         break;
@@ -382,6 +404,22 @@ void Client::whisperOnClickUsers(QListWidgetItem* user)
 void Client::whisperOnClickSelectUsers(QListWidgetItem* user)
 {
 
+}
+
+void Client::mouseMoveEvent(QMouseEvent *event)
+{
+    if (event->buttons() && Qt::LeftButton) {
+        move(event->globalPos() - m_dragPosition);
+        event->accept();
+    }
+}
+
+void Client::mousePressEvent(QMouseEvent *event)
+{
+    if (event->button() == Qt::LeftButton) {
+        m_dragPosition = event->globalPos() - frameGeometry().topLeft();
+        event->accept();
+    }
 }
 
 void Client::show_Error(QAbstractSocket::SocketError errorSocket)
@@ -467,11 +505,11 @@ void Client::on_close_setting_button_clicked()
 void Client::whisperOnClick(QListWidgetItem* user)
 {
     QString section = user->text();
-    if (section == "Profile")
+    if (section == "Profile" || section == "Профиль")
         ui->stackedWidget->setCurrentIndex(0);
-    else if(section=="General")
+    else if(section=="General" || section == "Основное")
         ui->stackedWidget->setCurrentIndex(1);
-    else if (section == "Chat options")
+    else if (section == "Chat options" || section == "Опции чата")
         ui->stackedWidget->setCurrentIndex(2);
     else
         ui->stackedWidget->setCurrentIndex(3);
@@ -712,5 +750,58 @@ void Client::on_userList_clicked(const QModelIndex &index)
     {        qDebug() << index.data(Qt::DisplayRole).toString();
 
         ui->stackedWidget_2->setCurrentIndex(index.row());
+    }
+}
+
+void Client::on_pushButton_3_clicked()
+{
+    this->close();
+}
+
+void Client::on_pushButton_5_clicked()
+{
+    aboutdialog = new AboutDialog();
+    QPoint p = QCursor::pos();
+    aboutdialog->setGeometry(p.x() -680, p.y() +80, 380, 480);
+    aboutdialog->show();
+}
+
+void Client::on_comboBox_currentIndexChanged(int index)
+{
+    switch (index) {
+    case 0:
+    {
+
+        break;
+    }
+    case 1:
+    {
+        ui->checkBox_3->setText("Загрузка при старте системы");
+        ui->label_2->setText("Язык: ");
+        ui->label_3->setText("Загрузочный путь: ");
+        ui->RB_sendEnter->setText("Отправка по \"Enter\"");
+        ui->RB_send_CEnter->setText("Отправка по \"Ctrl + Enter\"");
+        ui->ChBox_Notif->setText("Уведомления");
+        ui->ChBox_PSound->setText("Звук");
+        ui->label_7->setText("Выбор фона");
+        ui->PB_SelColor->setText("Выбрать из палитры:");
+        ui->PB_LoadFileBackground->setText("Загрузить из файла:");
+        ui->username_label->setText("Имя пользователя: ");
+        ui->radioButton->setText("По умолчанию");
+        ui->radioButton_2->setText("Загрузить");
+        ui->groupBox->setTitle("Аватар");
+        ui->userList_3->item(0)->setText("Профиль");
+        ui->userList_3->item(1)->setText("Основное");
+        ui->userList_3->item(2)->setText("Опции чата");
+        ui->userList_3->item(3)->setText("Сеть");
+        ui->search_line_edit->setPlaceholderText("Поиск");
+        ui->editText->setPlaceholderText("Введите сообщение..");
+        break;
+    }
+    case 2:
+    {
+
+        break;
+    }
     }
 }

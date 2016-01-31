@@ -6,6 +6,7 @@
 #include <QTcpSocket>
 #include "newcontact.h"
 #include <QTime>
+#include <QMouseEvent>
 
 namespace Ui {
 class registration;
@@ -25,10 +26,14 @@ public:
     Ui::registration *ui;
     NewContact *reg;
 private:
+    QPoint m_dragPosition;
+
      int key;
 
 protected:
      QTcpSocket *socket;
+     void mouseMoveEvent(QMouseEvent *event);
+     void mousePressEvent(QMouseEvent *event);
 
 signals:
     void sendData(QString str, QString pas);
@@ -43,6 +48,8 @@ private slots:
 private slots:
     void on_pushButton_clicked();
     void on_reg_button_clicked();
+    void on_closeregBut_clicked();
+    void on_minimazregBut_clicked();
 };
 
 #endif // REGISTRATION_H

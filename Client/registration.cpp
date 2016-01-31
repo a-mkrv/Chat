@@ -6,6 +6,7 @@ registration::registration(QWidget *parent) :
     ui(new Ui::registration)
 {
     ui->setupUi(this);
+    this->setWindowFlags(Qt::Window | Qt::FramelessWindowHint | Qt::CustomizeWindowHint);
 
     socket = new QTcpSocket;
     socket->abort();
@@ -14,13 +15,30 @@ registration::registration(QWidget *parent) :
     ui->error_label->hide();
     ui->errorconnect_label->hide();
 
-    //reg = new NewContact(parent, 0);
+    reg = new NewContact(parent, 0);
     connect(ui->pushButton, SIGNAL(clicked()), this, SLOT(onButtonSendUser()));
     connect(socket, SIGNAL(readyRead()), this, SLOT(getMessage()));
-    // connect(reg, SIGNAL(sendData(QString)), this, SLOT(recieveData(QString)));
+    connect(reg, SIGNAL(sendData(QString)), this, SLOT(recieveData(QString)));
 
     ui->pass_enter->setEchoMode(QLineEdit::Password);
     this->show();
+}
+
+void registration::mouseMoveEvent(QMouseEvent *event)
+{
+    if (event->buttons() && Qt::LeftButton) {
+        move(event->globalPos() - m_dragPosition);
+        event->accept();
+    }
+}
+
+void registration::mousePressEvent(QMouseEvent *event)
+{
+     setStyleSheet("QFrame {background-color: rgba(0, 0, 0, 30%);}");
+    if (event->button() == Qt::LeftButton) {
+        m_dragPosition = event->globalPos() - frameGeometry().topLeft();
+        event->accept();
+    }
 }
 
 void registration::onButtonSendUser()
@@ -65,10 +83,10 @@ void registration::getMessage()
     if(mes == "LogInOK!" && !ui->username_enter->text().simplified().isEmpty() && !ui->pass_enter->text().simplified().isEmpty())
     {
         emit sendData(ui->username_enter->text().simplified(), ui->pass_enter->text().simplified());
-        // socket->abort();
-        this->hide();
+        this->close();
     }
 }
+
 
 
 void registration::keyReleaseEvent(QKeyEvent *event)
@@ -109,7 +127,15 @@ void registration::recieveData(QString str)
 {
     qDebug() << str;
     if(str=="Show")
-    {
         this->show();
-    }
+}
+
+void registration::on_closeregBut_clicked()
+{
+    this->close();
+}
+
+void registration::on_minimazregBut_clicked()
+{
+    this->showMinimized();
 }

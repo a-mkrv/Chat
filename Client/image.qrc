@@ -22,6 +22,14 @@
         <file>Resource/squares110.png</file>
         <file>Resource/write50.png</file>
         <file>Resource/reg.png</file>
+        <file>Resource/123.jpg</file>
+        <file>Resource/closebtn.jpg</file>
+        <file>Resource/clbt.png</file>
+        <file>Resource/minbt.png</file>
+        <file>Resource/close34.png</file>
+        <file>Resource/down51.png</file>
+        <file>Resource/minbtn.png</file>
+        <file>Resource/aboutbtn.png</file>
     </qresource>
     <qresource prefix="/Avatars">
         <file>Resource/Avatars/1.jpg</file>

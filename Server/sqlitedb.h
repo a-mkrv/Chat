@@ -16,7 +16,7 @@ private:
 
 public slots:
     void AddContact(QString, QString, int, QString, QString);
-    bool FindInDB(QString);
+    QString FindInDB(QString);
     bool CorrectInput(QString, QString);
 };
 

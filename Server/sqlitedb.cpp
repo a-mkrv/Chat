@@ -37,18 +37,18 @@ void SQLiteDB::AddContact(QString UserName, QString Sex, int Age, QString City, 
     query.exec();
 }
 
-bool SQLiteDB::FindInDB(QString UserName)
+QString SQLiteDB::FindInDB(QString UserName)
 {
     qDebug() << "Поиск в БД: " << UserName;
 
     QSqlQuery query(myDB);
-    if(query.exec("SELECT UserName FROM Users WHERE UserName=\'" +UserName+ "\'"))
+    if(query.exec("SELECT UserName, Sex FROM Users WHERE UserName=\'" +UserName+ "\'"))
         if(query.next())
             if (query.value(0).toString()==UserName)
-                return true;
+                return query.value(1).toString();
 
     query.exec();
-    return false;
+    return "false";
 }
 
 bool SQLiteDB::CorrectInput(QString _login, QString _password)

@@ -18,7 +18,7 @@ findcontacts::findcontacts(QWidget *parent) :
 
     QPropertyAnimation* animation = new QPropertyAnimation(this, "windowOpacity");
 
-    animation->setDuration(2000);
+    animation->setDuration(3000);
     animation->setStartValue(0);
     animation->setEndValue(1);
     animation->start();

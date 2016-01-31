@@ -301,9 +301,10 @@ void Server::getMessage()
         qDebug() << "Case 3";
 
         QString dat;
+        QString result = sqlitedb->FindInDB(find_User);
 
-        if (sqlitedb->FindInDB(find_User))
-            sendToID("_FIN_ OKFIN", client->socketDescriptor());
+        if (result!="false")
+            sendToID("_FIN_ OKFIN " + result, client->socketDescriptor());
         else
             sendToID("_FIN_ NOFIN", client->socketDescriptor() );
 
@@ -416,7 +417,7 @@ void Server::getMessage()
             out << QString("PassEmpty");
             client->write(block);
         }
-        else if(!sqlitedb->FindInDB(UserName))
+        else if(sqlitedb->FindInDB(UserName)=="false")
         {
             if(City.isEmpty())
                 City="Unknown";

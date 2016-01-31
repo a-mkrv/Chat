@@ -23,7 +23,10 @@
 #include <QKeyEvent>
 #include "listdelegate.h"
 #include "chatlistdelegate.h"
+#include "aboutdialog.h"
 
+#include <QMouseEvent>
+#include <QPoint>
 #include <QTime>
 
 namespace Ui {
@@ -44,6 +47,8 @@ public:
 
 protected:
     void closeEvent(QCloseEvent *event);
+    void mouseMoveEvent(QMouseEvent *event);
+    void mousePressEvent(QMouseEvent *event);
 
 private slots:
     void getMessage();                  //Получение сообщений
@@ -76,6 +81,12 @@ private slots:
 
     void on_userList_clicked(const QModelIndex &index);
 
+    void on_pushButton_3_clicked();
+
+    void on_pushButton_5_clicked();
+
+    void on_comboBox_currentIndexChanged(int index);
+
 public slots:
     void recieveData(QString str, QString pas);
 
@@ -95,8 +106,10 @@ private:
     EmojiManager *emojiMan;
     EmojiFrame *frameEmoji;
     findcontacts *findcont;
+    AboutDialog *aboutdialog;
     registration *reg_window;
 
+    QPoint m_dragPosition;
     QVector<QListWidgetItem*> vec;
     QVector<QListWidget*> chatvec;
 

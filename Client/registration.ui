@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>722</width>
-    <height>493</height>
+    <height>511</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -20,7 +20,7 @@
    <property name="geometry">
     <rect>
      <x>220</x>
-     <y>348</y>
+     <y>368</y>
      <width>171</width>
      <height>41</height>
     </rect>
@@ -66,7 +66,7 @@ border-width: 1px;
    <property name="geometry">
     <rect>
      <x>0</x>
-     <y>0</y>
+     <y>20</y>
      <width>721</width>
      <height>491</height>
     </rect>
@@ -88,7 +88,7 @@ border-width: 1px;
    <property name="geometry">
     <rect>
      <x>200</x>
-     <y>110</y>
+     <y>130</y>
      <width>301</width>
      <height>221</height>
     </rect>
@@ -106,7 +106,7 @@ border-radius: 8px;
    <property name="geometry">
     <rect>
      <x>301</x>
-     <y>150</y>
+     <y>170</y>
      <width>161</width>
      <height>41</height>
     </rect>
@@ -134,7 +134,7 @@ border-width: 1px;
    <property name="geometry">
     <rect>
      <x>301</x>
-     <y>208</y>
+     <y>228</y>
      <width>161</width>
      <height>41</height>
     </rect>
@@ -162,7 +162,7 @@ border-width: 1px;
    <property name="geometry">
     <rect>
      <x>200</x>
-     <y>60</y>
+     <y>80</y>
      <width>301</width>
      <height>41</height>
     </rect>
@@ -192,7 +192,7 @@ background-color: rgb(255, 255, 255,0);
    <property name="geometry">
     <rect>
      <x>400</x>
-     <y>352</y>
+     <y>372</y>
      <width>91</width>
      <height>31</height>
     </rect>
@@ -210,7 +210,7 @@ background-color: rgb(204, 224, 251, 50);
    <property name="geometry">
     <rect>
      <x>200</x>
-     <y>50</y>
+     <y>70</y>
      <width>301</width>
      <height>61</height>
     </rect>
@@ -229,7 +229,7 @@ border-radius: 8px;
    <property name="geometry">
     <rect>
      <x>240</x>
-     <y>153</y>
+     <y>173</y>
      <width>44</width>
      <height>37</height>
     </rect>
@@ -251,7 +251,7 @@ border-radius: 8px;
    <property name="geometry">
     <rect>
      <x>240</x>
-     <y>210</y>
+     <y>230</y>
      <width>44</width>
      <height>37</height>
     </rect>
@@ -273,7 +273,7 @@ border-radius: 8px;
    <property name="geometry">
     <rect>
      <x>200</x>
-     <y>330</y>
+     <y>350</y>
      <width>301</width>
      <height>81</height>
     </rect>
@@ -295,7 +295,7 @@ border-radius: 8px;
    <property name="geometry">
     <rect>
      <x>240</x>
-     <y>290</y>
+     <y>310</y>
      <width>41</width>
      <height>31</height>
     </rect>
@@ -318,7 +318,7 @@ color: rgb(255, 170, 255);</string>
    <property name="geometry">
     <rect>
      <x>301</x>
-     <y>290</y>
+     <y>310</y>
      <width>161</width>
      <height>28</height>
     </rect>
@@ -344,7 +344,7 @@ color: rgb(86, 96, 109);</string>
    <property name="geometry">
     <rect>
      <x>300</x>
-     <y>250</y>
+     <y>270</y>
      <width>161</width>
      <height>20</height>
     </rect>
@@ -361,7 +361,7 @@ color: rgb(214, 71, 0);</string>
    <property name="geometry">
     <rect>
      <x>220</x>
-     <y>380</y>
+     <y>400</y>
      <width>171</width>
      <height>31</height>
     </rect>
@@ -372,6 +372,65 @@ color: rgb(214, 71, 0);</string>
    </property>
    <property name="text">
     <string>Error connecting...</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_9">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>721</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+   <property name="pixmap">
+    <pixmap resource="image.qrc">:/new/prefix1/Resource/123.jpg</pixmap>
+   </property>
+   <property name="scaledContents">
+    <bool>true</bool>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="closeregBut">
+   <property name="geometry">
+    <rect>
+     <x>692</x>
+     <y>2</y>
+     <width>21</width>
+     <height>18</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+   <property name="icon">
+    <iconset resource="image.qrc">
+     <normaloff>:/new/prefix1/Resource/clbt.png</normaloff>:/new/prefix1/Resource/clbt.png</iconset>
+   </property>
+   <property name="flat">
+    <bool>true</bool>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="minimazregBut">
+   <property name="geometry">
+    <rect>
+     <x>655</x>
+     <y>-1</y>
+     <width>21</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+   <property name="icon">
+    <iconset resource="image.qrc">
+     <normaloff>:/new/prefix1/Resource/minbt.png</normaloff>:/new/prefix1/Resource/minbt.png</iconset>
+   </property>
+   <property name="flat">
+    <bool>true</bool>
    </property>
   </widget>
   <zorder>label_3</zorder>
@@ -389,6 +448,9 @@ color: rgb(214, 71, 0);</string>
   <zorder>reg_button</zorder>
   <zorder>error_label</zorder>
   <zorder>errorconnect_label</zorder>
+  <zorder>label_9</zorder>
+  <zorder>closeregBut</zorder>
+  <zorder>minimazregBut</zorder>
  </widget>
  <resources>
   <include location="image.qrc"/>

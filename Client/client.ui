@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1061</width>
-    <height>590</height>
+    <height>620</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -17,28 +17,6 @@
    <string notr="true"/>
   </property>
   <widget class="QWidget" name="centralWidget">
-   <widget class="QPushButton" name="connect_button">
-    <property name="geometry">
-     <rect>
-      <x>1000</x>
-      <y>10</y>
-      <width>51</width>
-      <height>41</height>
-     </rect>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">color: rgb(127, 0, 63);
-    background-color: rgb(255, 255, 255);
-    selection-color: white;
-    selection-background-color: rgb(191, 31, 127);
-    border: 2px groove gray;
-    border-radius: 10px;
-    padding: 2px 4px;</string>
-    </property>
-    <property name="text">
-     <string>ON</string>
-    </property>
-   </widget>
    <widget class="Line" name="line">
     <property name="windowModality">
      <enum>Qt::NonModal</enum>
@@ -46,7 +24,7 @@
     <property name="geometry">
      <rect>
       <x>370</x>
-      <y>0</y>
+      <y>30</y>
       <width>31</width>
       <height>591</height>
      </rect>
@@ -80,7 +58,7 @@
     <property name="geometry">
      <rect>
       <x>385</x>
-      <y>480</y>
+      <y>510</y>
       <width>678</width>
       <height>111</height>
      </rect>
@@ -239,7 +217,7 @@ background-color: rgb(74, 107, 142);</string>
     <property name="geometry">
      <rect>
       <x>-1</x>
-      <y>60</y>
+      <y>90</y>
       <width>383</width>
       <height>531</height>
      </rect>
@@ -297,7 +275,7 @@ background-color: rgb(74, 107, 142);</string>
     <property name="geometry">
      <rect>
       <x>390</x>
-      <y>60</y>
+      <y>90</y>
       <width>671</width>
       <height>61</height>
      </rect>
@@ -326,7 +304,7 @@ background-color: rgb(74, 107, 142);</string>
     <property name="geometry">
      <rect>
       <x>-1</x>
-      <y>0</y>
+      <y>30</y>
       <width>383</width>
       <height>61</height>
      </rect>
@@ -346,7 +324,7 @@ background-color: rgb(99, 137, 168);</string>
     <property name="geometry">
      <rect>
       <x>385</x>
-      <y>0</y>
+      <y>30</y>
       <width>678</width>
       <height>61</height>
      </rect>
@@ -365,9 +343,9 @@ background-color: rgb(99, 137, 168);</string>
     <property name="geometry">
      <rect>
       <x>0</x>
-      <y>0</y>
+      <y>30</y>
       <width>1061</width>
-      <height>601</height>
+      <height>591</height>
      </rect>
     </property>
     <property name="styleSheet">
@@ -691,33 +669,14 @@ background-color: rgb(99, 137, 168);</string>
       <string notr="true">background-color: rgb(255, 255, 255);</string>
      </property>
      <property name="currentIndex">
-      <number>0</number>
+      <number>2</number>
      </property>
      <widget class="QWidget" name="page">
-      <widget class="QLabel" name="username_label">
-       <property name="geometry">
-        <rect>
-         <x>40</x>
-         <y>30</y>
-         <width>161</width>
-         <height>51</height>
-        </rect>
-       </property>
-       <property name="font">
-        <font>
-         <family>Sitka Small</family>
-         <pointsize>10</pointsize>
-        </font>
-       </property>
-       <property name="text">
-        <string>Username:</string>
-       </property>
-      </widget>
       <widget class="QGroupBox" name="groupBox">
        <property name="geometry">
         <rect>
-         <x>30</x>
-         <y>150</y>
+         <x>40</x>
+         <y>120</y>
          <width>311</width>
          <height>151</height>
         </rect>
@@ -827,32 +786,51 @@ background-color: rgb(99, 137, 168);</string>
         </layout>
        </widget>
       </widget>
-      <widget class="QLineEdit" name="usernameEdit">
+      <widget class="QWidget" name="">
        <property name="geometry">
         <rect>
-         <x>150</x>
-         <y>41</y>
-         <width>211</width>
-         <height>31</height>
+         <x>40</x>
+         <y>30</y>
+         <width>291</width>
+         <height>61</height>
         </rect>
        </property>
-       <property name="font">
-        <font>
-         <family>Sitka Small</family>
-         <pointsize>10</pointsize>
-        </font>
-       </property>
-       <property name="styleSheet">
-        <string notr="true">border-top-color: rgb(255, 255, 255);
+       <layout class="QHBoxLayout" name="horizontalLayout">
+        <item>
+         <widget class="QLabel" name="username_label">
+          <property name="font">
+           <font>
+            <family>Sitka Small</family>
+            <pointsize>10</pointsize>
+           </font>
+          </property>
+          <property name="text">
+           <string>Username:</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLineEdit" name="usernameEdit">
+          <property name="font">
+           <font>
+            <family>Sitka Small</family>
+            <pointsize>10</pointsize>
+           </font>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">border-top-color: rgb(255, 255, 255);
 border-color: rgb(85, 170, 255);
 color: rgb(96, 125, 139);</string>
-       </property>
-       <property name="text">
-        <string>NoName</string>
-       </property>
-       <property name="frame">
-        <bool>false</bool>
-       </property>
+          </property>
+          <property name="text">
+           <string>NoName</string>
+          </property>
+          <property name="frame">
+           <bool>false</bool>
+          </property>
+         </widget>
+        </item>
+       </layout>
       </widget>
      </widget>
      <widget class="QWidget" name="page_3">
@@ -878,8 +856,8 @@ color: rgb(96, 125, 139);</string>
        <property name="geometry">
         <rect>
          <x>40</x>
-         <y>80</y>
-         <width>118</width>
+         <y>140</y>
+         <width>161</width>
          <height>21</height>
         </rect>
        </property>
@@ -895,9 +873,9 @@ color: rgb(96, 125, 139);</string>
       <widget class="QPushButton" name="Download_path_PB">
        <property name="geometry">
         <rect>
-         <x>160</x>
-         <y>70</y>
-         <width>101</width>
+         <x>200</x>
+         <y>130</y>
+         <width>81</width>
          <height>41</height>
         </rect>
        </property>
@@ -924,7 +902,7 @@ border:none;</string>
        <property name="geometry">
         <rect>
          <x>40</x>
-         <y>110</y>
+         <y>170</y>
          <width>721</width>
          <height>21</height>
         </rect>
@@ -937,6 +915,49 @@ border:none;</string>
        <property name="text">
         <string>(C:/...)</string>
        </property>
+      </widget>
+      <widget class="QLabel" name="label_2">
+       <property name="geometry">
+        <rect>
+         <x>40</x>
+         <y>80</y>
+         <width>91</width>
+         <height>31</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>10</pointsize>
+        </font>
+       </property>
+       <property name="text">
+        <string>Language:</string>
+       </property>
+      </widget>
+      <widget class="QComboBox" name="comboBox">
+       <property name="geometry">
+        <rect>
+         <x>210</x>
+         <y>80</y>
+         <width>91</width>
+         <height>22</height>
+        </rect>
+       </property>
+       <item>
+        <property name="text">
+         <string>English</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Russian</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>French</string>
+        </property>
+       </item>
       </widget>
      </widget>
      <widget class="QWidget" name="page_2">
@@ -1038,7 +1059,7 @@ border:none;</string>
         <rect>
          <x>40</x>
          <y>10</y>
-         <width>181</width>
+         <width>261</width>
          <height>271</height>
         </rect>
        </property>
@@ -1125,7 +1146,7 @@ border:none;</string>
     <property name="geometry">
      <rect>
       <x>220</x>
-      <y>17</y>
+      <y>47</y>
       <width>151</width>
       <height>29</height>
      </rect>
@@ -1150,7 +1171,7 @@ border:none;</string>
     <property name="geometry">
      <rect>
       <x>65</x>
-      <y>8</y>
+      <y>38</y>
       <width>51</width>
       <height>41</height>
      </rect>
@@ -1177,7 +1198,7 @@ border:none;</string>
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>10</y>
+      <y>40</y>
       <width>51</width>
       <height>41</height>
      </rect>
@@ -1198,7 +1219,7 @@ border:none;</string>
     <property name="geometry">
      <rect>
       <x>170</x>
-      <y>10</y>
+      <y>40</y>
       <width>51</width>
       <height>41</height>
      </rect>
@@ -1235,7 +1256,7 @@ border:none;</string>
     <property name="geometry">
      <rect>
       <x>385</x>
-      <y>61</y>
+      <y>91</y>
       <width>677</width>
       <height>421</height>
      </rect>
@@ -1260,19 +1281,93 @@ border:none;</string>
     <property name="geometry">
      <rect>
       <x>385</x>
-      <y>61</y>
+      <y>91</y>
       <width>678</width>
       <height>421</height>
      </rect>
     </property>
    </widget>
+   <widget class="QLabel" name="label">
+    <property name="geometry">
+     <rect>
+      <x>0</x>
+      <y>-2</y>
+      <width>1061</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">background-color: rgb(99, 137, 168);</string>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="pushButton_3">
+    <property name="geometry">
+     <rect>
+      <x>1027</x>
+      <y>0</y>
+      <width>31</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+    <property name="icon">
+     <iconset resource="image.qrc">
+      <normaloff>:/new/prefix1/Resource/close34.png</normaloff>:/new/prefix1/Resource/close34.png</iconset>
+    </property>
+    <property name="flat">
+     <bool>true</bool>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="pushButton_4">
+    <property name="geometry">
+     <rect>
+      <x>990</x>
+      <y>0</y>
+      <width>31</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+    <property name="icon">
+     <iconset resource="image.qrc">
+      <normaloff>:/new/prefix1/Resource/minbtn.png</normaloff>:/new/prefix1/Resource/minbtn.png</iconset>
+    </property>
+    <property name="flat">
+     <bool>true</bool>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="pushButton_5">
+    <property name="geometry">
+     <rect>
+      <x>951</x>
+      <y>0</y>
+      <width>31</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+    <property name="icon">
+     <iconset resource="image.qrc">
+      <normaloff>:/new/prefix1/Resource/aboutbtn.png</normaloff>:/new/prefix1/Resource/aboutbtn.png</iconset>
+    </property>
+    <property name="flat">
+     <bool>true</bool>
+    </property>
+   </widget>
    <zorder>chatDialog</zorder>
-   <zorder>widget_2</zorder>
    <zorder>line</zorder>
    <zorder>userList</zorder>
    <zorder>background_inder_list</zorder>
    <zorder>background_under_chat</zorder>
-   <zorder>connect_button</zorder>
    <zorder>userSetting_button</zorder>
    <zorder>newContact_Button</zorder>
    <zorder>search_label</zorder>
@@ -1280,6 +1375,11 @@ border:none;</string>
    <zorder>chat_back_lab</zorder>
    <zorder>widget</zorder>
    <zorder>stackedWidget_2</zorder>
+   <zorder>label</zorder>
+   <zorder>pushButton_3</zorder>
+   <zorder>pushButton_4</zorder>
+   <zorder>pushButton_5</zorder>
+   <zorder>widget_2</zorder>
   </widget>
   <action name="actionShowHideWindow">
    <property name="text">
