@@ -5,7 +5,7 @@ int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
     Client w;
-    //w.hide();
+    w.hide();
 
     return a.exec();
 }

@@ -23,6 +23,8 @@ QString gl_fname; //Поиск человека
 
 // Основное:
 // Выявить падения при дисконнекте  (при добавлении и переписки - ок, как только кто выходит - падает сервер, что-то с итератором)
+// -- Дисконнект из-за доп.сокетов и соединений при авторизации. (Правильно прикрутить закрытие сокета)
+
 // Устойчивая отправка файлов до клииента           -- Не смотрел.
 // Отправку сообщения по текущему диалогу, а не по команде msg User
 // СОХРАНЕНИЕ ПОЛЬЗОВАТЕЛЕЙ Друг у Друга (Либо через БД, либо пока через файл. Заголовок - Ник, а в файле список друзей)
@@ -167,6 +169,9 @@ void Client::on_sendMessage_clicked()
     QRegExp rx("<a [^>]*name=\"([^\"]+)\"[^>]*>");      // Регулярные выражения для парсинга смайликов в сообщении
     QString str = ui->editText->text();                 // Получение сообщения для отправки
     QString message = str;
+
+    //qDebug() << vec.at(ui->userList->currentRow())->data(Qt::DisplayRole);
+
     QStringList list;
 
     list.clear();
@@ -191,30 +196,33 @@ void Client::on_sendMessage_clicked()
     ui->editText->clear();
     blockSize = 0;
 
-    if (!message.isEmpty())              //Отправка сообщений
+    if (!message.isEmpty() && vec.size()!=0)              //Отправка сообщений
     {
         if(ui->ChBox_PSound->isChecked())
             QSound::play(":/new/prefix1/Resource/to.wav");
 
-        if (message.at(0) == '/')        //Личное сообщение / команда
-            sendUserCommand(message);
+//        if (message.at(0) == '/')       //Личное сообщение / команда
+//            {
+            QString new_mes = "/msg " + vec.at(ui->userList->currentRow())->data(Qt::DisplayRole).toString() + " " + message;
+            sendUserCommand(new_mes);
+//        }
 
-        else                            //Сообщение на сервер
-        {
-            QByteArray msg;
-            QDataStream out(&msg, QIODevice::WriteOnly);
-            out.setVersion(QDataStream::Qt_5_4);
+//        else                            //Сообщение на сервер
+//        {
+//            QByteArray msg;
+//            QDataStream out(&msg, QIODevice::WriteOnly);
+//            out.setVersion(QDataStream::Qt_5_4);
 
 
-            QListWidgetItem *item = new QListWidgetItem();
-            item->setData(Qt::DisplayRole, "You: " +  message);
-            item->setData(Qt::ToolTipRole, QDateTime::currentDateTime().toString("dd.MM.yy hh:mm"));
-            item->setData(Qt::UserRole + 1, "TO");
-            ui->chatDialog->addItem(item);
+//            QListWidgetItem *item = new QListWidgetItem();
+//            item->setData(Qt::DisplayRole, "You: " +  message);
+//            item->setData(Qt::ToolTipRole, QDateTime::currentDateTime().toString("dd.MM.yy hh:mm"));
+//            item->setData(Qt::UserRole + 1, "TO");
+//            ui->chatDialog->addItem(item);
 
-            out << quint16(0) << QTime::currentTime() << message;
-            tcpSocket->write(msg);
-        }
+//            out << quint16(0) << QTime::currentTime() << message;
+//            tcpSocket->write(msg);
+//        }
     }
 }
 

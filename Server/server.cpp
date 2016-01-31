@@ -350,14 +350,6 @@ void Server::getMessage()
         in >> fileName >> fileSize;
         qDebug() << fileName;
         qDebug() << fileSize;
-        QMessageBox messageBox;
-        messageBox.setInformativeText(QObject::trUtf8("Принять файл ") + fileName +
-                                      QObject::trUtf8(" от ")  + "?");
-        messageBox.setStandardButtons(QMessageBox::Save | QMessageBox::Cancel);
-        int ret = messageBox.exec();
-
-
-        if (ret == QMessageBox::Save) {
 
             forever
             {
@@ -384,11 +376,7 @@ void Server::getMessage()
             receiveFile.close();
             buffer.clear();
             break;
-        }
-        else
-        {
 
-        }
         nextBlockSize = 0;
         break;
     }

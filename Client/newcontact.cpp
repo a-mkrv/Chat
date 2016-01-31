@@ -6,9 +6,10 @@ NewContact::NewContact(QWidget *parent, QTcpSocket *client) :
     QWidget(parent),
     ui(new Ui::NewContact)
 {
-    socket = new QTcpSocket;
-    socket->abort();
-    socket->connectToHost("127.0.0.1", 55155);
+
+      socket = new QTcpSocket();
+//    socket->abort();
+//    socket->connectToHost("127.0.0.1", 55155);
 
     ui->setupUi(this);
     ui->Error_label->hide();
@@ -52,6 +53,9 @@ void NewContact::getMessagee()
 
 void NewContact::on_accept_button_clicked()
 {
+    socket->abort();
+    socket->connectToHost("127.0.0.1", 55155);
+
     QByteArray block;
     QDataStream out(&block, QIODevice::WriteOnly);
     out.setVersion(QDataStream::Qt_5_4);

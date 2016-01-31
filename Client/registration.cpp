@@ -74,15 +74,14 @@ void registration::getMessage()
     QDataStream in(socket);
     in.setVersion(QDataStream::Qt_5_4);
     QString mes;
-
     in >> mes;
-    qDebug() << "GetReg" <<mes;
 
     if(mes == "Error_Login_Pass")
         ui->error_label->show();
     if(mes == "LogInOK!" && !ui->username_enter->text().simplified().isEmpty() && !ui->pass_enter->text().simplified().isEmpty())
     {
         emit sendData(ui->username_enter->text().simplified(), ui->pass_enter->text().simplified());
+       // socket->close();
         this->close();
     }
 }
@@ -97,8 +96,6 @@ void registration::keyReleaseEvent(QKeyEvent *event)
         {
             emit sendData(ui->username_enter->text().simplified(), ui->pass_enter->text().simplified());
             socket->deleteLater();
-            //connect(socket, SIGNAL(disconnected()), this, SLOT());
-            // socket->close();
             this->hide();
         }
         break;
