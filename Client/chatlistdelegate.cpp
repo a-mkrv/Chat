@@ -13,6 +13,11 @@ void ChatListDelegate::paint ( QPainter * painter, const QStyleOptionViewItem & 
     QPen fontPen(QColor::fromRgb(51,51,51), 1, Qt::SolidLine);
     QPen fontMarkedPen(Qt::white, 1, Qt::SolidLine);
 
+    //GET TITLE, DESCRIPTION AND ICON
+    QIcon ic = QIcon(qvariant_cast<QIcon>(index.data(Qt::DecorationRole)));
+    QString title = index.data(Qt::DisplayRole).toString();
+    QString description = index.data(Qt::UserRole + 1).toString();
+    QString time = index.data(Qt::ToolTipRole).toString();
 
     if(option.state & QStyle::State_Selected){
 
@@ -32,9 +37,13 @@ void ChatListDelegate::paint ( QPainter * painter, const QStyleOptionViewItem & 
         painter->setPen(fontMarkedPen);
 
     } else {
+
         //BACKGROUND
-        //ALTERNATING COLORS
-        painter->setBrush( (index.row() % 2) ? Qt::white : QColor(252,252,252) );
+        if(description=="FROM")
+            painter->setBrush(QColor("#eeefff"));
+        else if (description=="TO")
+            painter->setBrush(QColor(255,255,235));
+
         painter->drawRect(r);
 
         //BORDER
@@ -47,11 +56,7 @@ void ChatListDelegate::paint ( QPainter * painter, const QStyleOptionViewItem & 
         painter->setPen(fontPen);
     }
 
-    //GET TITLE, DESCRIPTION AND ICON
-    QIcon ic = QIcon(qvariant_cast<QIcon>(index.data(Qt::DecorationRole)));
-    QString title = index.data(Qt::DisplayRole).toString();
-    QString description = index.data(Qt::UserRole + 1).toString();
-    QString time = index.data(Qt::ToolTipRole).toString();
+
 
     int imageSpace = 10;
     if (!ic.isNull()) {
@@ -60,18 +65,16 @@ void ChatListDelegate::paint ( QPainter * painter, const QStyleOptionViewItem & 
         imageSpace = 85;
     }
 
-
-
     if(description=="FROM")
     {
         //TITLE
-        r = option.rect.adjusted(imageSpace, 0, -10, -27);
+        r = option.rect.adjusted(imageSpace, 10, -10, -27);
         painter->setFont( QFont( "Lucida Grande", 11, QFont::Normal ) );
-        painter->drawText(r.left(), r.top(), r.width(), r.height(), Qt::AlignBottom|Qt::AlignLeft, title, &r);
+        painter->drawText(r.left(), r.top(), r.width(), r.height(), Qt::AlignTop|Qt::AlignLeft, title, &r);
         // TIME
-        r = option.rect.adjusted(60, 10, -10, -27);
+        r = option.rect.adjusted(imageSpace, 10, -10, -27);
         painter->setFont( QFont( "Lucida Grande", 8, QFont::Normal ) );
-        painter->drawText(r.left(), r.top(), r.width(), r.height(), Qt::AlignTop|Qt::AlignRight, time , &r);
+        painter->drawText(r.left(), r.top()+10, r.width(), r.height(), Qt::AlignBottom|Qt::AlignLeft, time , &r);
     }
     else if (description == "TO")
     {
@@ -80,9 +83,9 @@ void ChatListDelegate::paint ( QPainter * painter, const QStyleOptionViewItem & 
         painter->setFont( QFont( "Lucida Grande", 11, QFont::Normal ) );
         painter->drawText(r.left(), r.top(), r.width(), r.height(), Qt::AlignTop|Qt::AlignRight, title, &r);
         // TIME
-        r = option.rect.adjusted(5, 10, -10, -27);
+        r = option.rect.adjusted(imageSpace, 10, -10, -27);
         painter->setFont( QFont( "Lucida Grande", 8, QFont::Normal ) );
-        painter->drawText(r.left(), r.top(), r.width(), r.height(), Qt::AlignTop|Qt::AlignLeft, time , &r);
+        painter->drawText(r.left(), r.top()+10, r.width(), r.height(), Qt::AlignBottom|Qt::AlignRight, time , &r);
     }
 }
 

@@ -179,7 +179,7 @@ border-width: 1px;
    <property name="styleSheet">
     <string notr="true">border-radius: 5px;
 background-color: rgb(255, 255, 255,0);
-</string>
+color: rgb(168, 185, 196);</string>
    </property>
    <property name="text">
     <string>LOG IN</string>
@@ -230,7 +230,7 @@ border-radius: 8px;
     <rect>
      <x>240</x>
      <y>173</y>
-     <width>44</width>
+     <width>41</width>
      <height>37</height>
     </rect>
    </property>
@@ -252,7 +252,7 @@ border-radius: 8px;
     <rect>
      <x>240</x>
      <y>230</y>
-     <width>44</width>
+     <width>41</width>
      <height>37</height>
     </rect>
    </property>
@@ -294,10 +294,10 @@ border-radius: 8px;
   <widget class="QLabel" name="label_2">
    <property name="geometry">
     <rect>
-     <x>240</x>
+     <x>245</x>
      <y>310</y>
-     <width>41</width>
-     <height>31</height>
+     <width>32</width>
+     <height>32</height>
     </rect>
    </property>
    <property name="styleSheet">
@@ -308,7 +308,7 @@ color: rgb(255, 170, 255);</string>
     <string/>
    </property>
    <property name="pixmap">
-    <pixmap resource="image.qrc">:/new/prefix1/Resource/users53.png</pixmap>
+    <pixmap resource="image.qrc">:/new/prefix1/Resource/add40 (1).png</pixmap>
    </property>
    <property name="scaledContents">
     <bool>true</bool>
@@ -397,7 +397,7 @@ color: rgb(214, 71, 0);</string>
    <property name="geometry">
     <rect>
      <x>692</x>
-     <y>2</y>
+     <y>3</y>
      <width>21</width>
      <height>18</height>
     </rect>

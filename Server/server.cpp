@@ -8,6 +8,7 @@ Server::Server(QWidget *parent) :
 {
     ui->setupUi(this);
     nextBlockSize=0;
+    timer = new QTimer;
     tcpServer = new QTcpServer(this);
 
     if (!tcpServer->listen(QHostAddress::Any, 55155))
@@ -21,32 +22,24 @@ Server::Server(QWidget *parent) :
 
     connect(tcpServer, SIGNAL(newConnection()), this, SLOT(newConnection()));
     connect(this, SIGNAL(newConnection()), this, SLOT(getMessage()));
-    //connect(this, SIGNAL(SEND_UserList()), this, SLOT(sendUserList()));
+//    connect(timer, SIGNAL(timeout()), this, SLOT(Status()));
+//    timer->start(1000);
 
 }
 
 void Server::newConnection()
 {
-    qDebug() << "Новое соединение";
     QTcpSocket *newSocket = tcpServer->nextPendingConnection();                 // Подключение нового клиента
     connect(newSocket, SIGNAL(disconnected()), this, SLOT(onDisconnect()));
     connect(newSocket, SIGNAL(readyRead()), this, SLOT(getMessage()));
     clientConnections.append(newSocket);
 
-    qDebug() << newSocket->socketDescriptor();
-
-    QByteArray block;
-    QDataStream out(&block, QIODevice::WriteOnly);
-    out.setVersion(QDataStream::Qt_5_4);
+    qDebug() << "Новое соединение" << newSocket->socketDescriptor();
 
     QByteArray *buffer = new QByteArray();
     qint32 *s = new qint32(0);
     buffers.insert(newSocket, buffer);
     sizes.insert(newSocket, s);
-
-    QString message = "Server: Connected!";
-    out << message;
-    newSocket->write(block);
 }
 
 void Server::onDisconnect()
@@ -503,6 +496,15 @@ QString Server::timeconnect()
 {
     QString time = QDateTime::currentDateTime().toString();
     return "[" + time + "]";
+}
+
+void Server::Status()
+{
+    qDebug() << "------------------STATUS_START--------------";
+    qDebug() << "QLIST" << clientConnections;
+    //qDebug() << "USER_LIST" << userList.;
+   qDebug() << "------------------STATUS_FINISH--------------";
+
 }
 
 Server::~Server()

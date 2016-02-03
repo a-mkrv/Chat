@@ -23,6 +23,10 @@ QString gl_fname; //Поиск человека
 // Добавлены уведомления в углу экрана.
 
 
+
+// ЗАВТРА. 1) Пофиксить log in/out. 2) Сохранение контактов.
+
+
 // Основное:
 // Выявить падения при дисконнекте  (при добавлении и переписки - ок, как только кто выходит - падает сервер, что-то с итератором)
 // -- Дисконнект из-за доп.сокетов и соединений при авторизации. (Правильно прикрутить закрытие сокета)
@@ -62,39 +66,8 @@ Client::Client(QWidget *parent) : QMainWindow(parent), ui(new Ui::Client)
     trayIcon->setContextMenu(trayIconMenu);
     connect(trayIcon, SIGNAL(activated(QSystemTrayIcon::ActivationReason)), this, SLOT(iconActivated(QSystemTrayIcon::ActivationReason)));
     trayIcon->hide();
-    ui->chatDialog->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Maximum);
-    ui->chatDialog->clearSelection();
-
-    QPixmap back_to_menu(":/new/prefix1/Resource/double78.png");
-    QIcon ButtonIcon(back_to_menu);
-
-    QPixmap setting(":/new/prefix1/Resource/tool257.png");
-    QIcon ButtonIcon2(setting);
-
-    QPixmap add_contact(":/new/prefix1/Resource/square292.png");
-    QIcon ButtonIcon3(add_contact);
-
-    QPixmap send(":/new/prefix1/Resource/right-arrow6.png");
-    QIcon ButtonIcon4(send);
-
-    QPixmap search_mes(":/new/prefix1/Resource/magnifying glass57.png");
 
     ui->chat_back_lab->setStyleSheet("background-color: rgb(255, 255, 235)");
-    ui->chatDialog->setStyleSheet(""" color: white; background-image: url(:/new/prefix1/Resource/bg3.jpg);background-attachment: scroll;""");
-
-    ui->close_setting_button_2->setIcon(ButtonIcon);
-    ui->close_setting_button_2->setIconSize(back_to_menu.rect().size()/2);
-
-    ui->userSetting_button->setIcon(ButtonIcon2);
-    ui->userSetting_button->setIconSize(setting.rect().size());
-
-    ui->newContact_Button->setIcon(ButtonIcon3);
-    ui->newContact_Button->setIconSize(add_contact.rect().size()/2);
-
-    ui->sendMessage->setIcon(ButtonIcon4);
-    ui->sendMessage->setIconSize(send.rect().size());
-
-    ui->search_label->setPixmap(search_mes);
 
     personDates = false;
     ui->widget_2->hide();
@@ -112,10 +85,7 @@ Client::Client(QWidget *parent) : QMainWindow(parent), ui(new Ui::Client)
     connect(ui->userList, SIGNAL(itemDoubleClicked(QListWidgetItem*)), SLOT(whisperOnClickUsers(QListWidgetItem*)));
     connect(ui->userList, SIGNAL(itemClicked(QListWidgetItem*)), SLOT(whisperOnClickSelectUsers(QListWidgetItem*)));
     connect(ui->actionExit, SIGNAL(triggered()), this, SLOT(close()));
-
     ui->userList->setItemDelegate(new ListDelegate(ui->userList));
-    ui->chatDialog->setItemDelegate(new ChatListDelegate(ui->chatDialog));
-    ui->chatDialog->setStyleSheet("background: transparent;");
 }
 
 void Client::keyReleaseEvent(QKeyEvent *event)
@@ -162,6 +132,12 @@ void Client::recieveData(QString str, QString pas)
         tcpSocket->connectToHost(hostname, port);
 
         this->show();
+        QPropertyAnimation* animation = new QPropertyAnimation(this, "windowOpacity");
+        animation->setDuration(1500);
+        animation->setStartValue(0);
+        animation->setEndValue(1);
+        animation->start();
+
         trayIcon->show();
     }
 }
@@ -201,28 +177,8 @@ void Client::on_sendMessage_clicked()
         if(ui->ChBox_PSound->isChecked())
             QSound::play(":/new/prefix1/Resource/to.wav");
 
-        //        if (message.at(0) == '/')       //Личное сообщение / команда
-        //            {
         QString new_mes = "/msg " + vec.at(ui->userList->currentRow())->data(Qt::DisplayRole).toString() + " " + message;
         sendUserCommand(new_mes);
-        //        }
-
-        //        else                            //Сообщение на сервер
-        //        {
-        //            QByteArray msg;
-        //            QDataStream out(&msg, QIODevice::WriteOnly);
-        //            out.setVersion(QDataStream::Qt_5_4);
-
-
-        //            QListWidgetItem *item = new QListWidgetItem();
-        //            item->setData(Qt::DisplayRole, "You: " +  message);
-        //            item->setData(Qt::ToolTipRole, QDateTime::currentDateTime().toString("dd.MM.yy hh:mm"));
-        //            item->setData(Qt::UserRole + 1, "TO");
-        //            ui->chatDialog->addItem(item);
-
-        //            out << quint16(0) << QTime::currentTime() << message;
-        //            tcpSocket->write(msg);
-        //        }
     }
 }
 
@@ -295,11 +251,11 @@ void Client::getMessage()
             int rand_avatar;
             QString sex = commandList.at(2);
             if(sex=="Man")
-                rand_avatar = rand()%13+1;
+                rand_avatar = rand()%18+1;
             else if(sex=="Woman")
-                rand_avatar = rand()%9+14;
+                rand_avatar = rand()%13+19;
             else if(sex=="Unknown")
-                rand_avatar = rand()%10+23;
+                rand_avatar = rand()%20+32;
 
             QIcon pic(":/Avatars/Resource/Avatars/"+QString::number(rand_avatar)+".jpg");
 
@@ -399,8 +355,6 @@ void Client::getMessage()
 
             item->setData(Qt::UserRole + 1, "FROM");
         }
-        ui->chatDialog->addItem(item);
-        ui->chatDialog->scrollToBottom();
     }
 }
 
@@ -480,13 +434,6 @@ void Client::send_personal_data()
 
 void Client::onDisconnect()
 {
-    QListWidgetItem *item = new QListWidgetItem();
-    item->setData(Qt::DisplayRole, "Disconnected..");
-    item->setData(Qt::ToolTipRole, QDateTime::currentDateTime().toString("dd.MM.yy hh:mm"));
-    item->setData(Qt::UserRole + 1, "FROM");
-    ui->chatDialog->addItem(item);
-    ui->chatDialog->scrollToBottom();
-
     ui->userList->clear();
     personDates = false;
 }
@@ -771,7 +718,26 @@ void Client::on_comboBox_currentIndexChanged(int index)
     switch (index) {
     case 0:
     {
-
+        ui->checkBox_3->setText("Загрузка при старте системы");
+        ui->label_2->setText("Язык: ");
+        ui->label_3->setText("Загрузочный путь: ");
+        ui->RB_sendEnter->setText("Отправка по \"Enter\"");
+        ui->RB_send_CEnter->setText("Отправка по \"Ctrl + Enter\"");
+        ui->ChBox_Notif->setText("Уведомления");
+        ui->ChBox_PSound->setText("Звук");
+        ui->label_7->setText("Выбор фона");
+        ui->PB_SelColor->setText("Выбрать из палитры:");
+        ui->PB_LoadFileBackground->setText("Загрузить из файла:");
+        ui->username_label->setText("Имя пользователя: ");
+        ui->radioButton->setText("По умолчанию");
+        ui->radioButton_2->setText("Загрузить");
+        ui->groupBox->setTitle("Аватар");
+        ui->userList_3->item(0)->setText("Профиль");
+        ui->userList_3->item(1)->setText("Основное");
+        ui->userList_3->item(2)->setText("Опции чата");
+        ui->userList_3->item(3)->setText("Сеть");
+        ui->search_line_edit->setPlaceholderText("Поиск");
+        ui->editText->setPlaceholderText("Введите сообщение..");
         break;
     }
     case 1:
@@ -800,7 +766,26 @@ void Client::on_comboBox_currentIndexChanged(int index)
     }
     case 2:
     {
-
+        ui->checkBox_3->setText("Chargement au lancement");
+        ui->label_2->setText("Langue de: ");
+        ui->label_3->setText("Le chemin d'amorçage: ");
+        ui->RB_sendEnter->setText("Envoyer à \"Entrée\"");
+        ui->RB_send_CEnter->setText("Envoyer à \"Ctrl + Entrée\"");
+        ui->ChBox_Notif->setText("Notification");
+        ui->ChBox_PSound->setText("Le son");
+        ui->label_7->setText("Sélection de l'fond");
+        ui->PB_SelColor->setText("Choisir de palette:");
+        ui->PB_LoadFileBackground->setText("Télécharger un fichier:");
+        ui->username_label->setText("Nom d'utilisateur: ");
+        ui->radioButton->setText("Par défaut");
+        ui->radioButton_2->setText("Download");
+        ui->groupBox->setTitle("Image");
+        ui->userList_3->item(0)->setText("Profil");
+        ui->userList_3->item(1)->setText("Principal");
+        ui->userList_3->item(2)->setText("Options du Chat");
+        ui->userList_3->item(3)->setText("Networking");
+        ui->search_line_edit->setPlaceholderText("Recherche en");
+        ui->editText->setPlaceholderText("Inscris ton message..");
         break;
     }
     }

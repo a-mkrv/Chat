@@ -20,24 +20,20 @@ public:
     explicit Notification(QWidget *parent = 0);
 
 protected:
-    void paintEvent(QPaintEvent *event);    // Фон будет отрисовываться через метод перерисовки
+    void paintEvent(QPaintEvent *event);
 
 public slots:
-    void setPopupText(const QString& text); // Установка текста в уведомление
-    void show();                            /* Собственный метод показа виджета
-                                             * Необходимо для преварительной настройки анимации
-                                             * */
+    void setPopupText(const QString& text);
+    void show();
 
 private slots:
-    void hideAnimation();                   // Слот для запуска анимации скрытия
-    void hide();                            /* По окончании анимации, в данном слоте делается проверка,
-                                             * виден ли виджет, или его необходимо скрыть
-                                             * */
+    void hideAnimation();
+    void hide();
 
 private:
-    QLabel label;           // Label с сообщением
-    QGridLayout layout;     // Размещение для лейбла
-    QPropertyAnimation animation;   // Свойство анимации для всплывающего сообщения
+    QLabel label;
+    QGridLayout layout;
+    QPropertyAnimation animation;
     float popupOpacity;     // Свойства полупрозрачности виджета
     QTimer *timer;          // Таймер, по которому виджет будет скрыт
 };

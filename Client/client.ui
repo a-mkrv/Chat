@@ -72,10 +72,10 @@ background-color: rgb(74, 107, 142);</string>
     <widget class="QPushButton" name="pushButton">
      <property name="geometry">
       <rect>
-       <x>602</x>
-       <y>33</y>
-       <width>41</width>
-       <height>41</height>
+       <x>607</x>
+       <y>31</y>
+       <width>51</width>
+       <height>51</height>
       </rect>
      </property>
      <property name="styleSheet">
@@ -88,12 +88,12 @@ background-color: rgb(74, 107, 142);</string>
      </property>
      <property name="icon">
       <iconset resource="image.qrc">
-       <normaloff>:/new/prefix1/Resource/smiling36.png</normaloff>:/new/prefix1/Resource/smiling36.png</iconset>
+       <normaloff>:/new/prefix1/Resource/smiling.png</normaloff>:/new/prefix1/Resource/smiling.png</iconset>
      </property>
      <property name="iconSize">
       <size>
-       <width>32</width>
-       <height>32</height>
+       <width>42</width>
+       <height>42</height>
       </size>
      </property>
      <property name="flat">
@@ -125,10 +125,10 @@ background-color: rgb(74, 107, 142);</string>
     <widget class="QPushButton" name="sendMessage">
      <property name="geometry">
       <rect>
-       <x>550</x>
-       <y>33</y>
-       <width>41</width>
-       <height>41</height>
+       <x>536</x>
+       <y>31</y>
+       <width>51</width>
+       <height>51</height>
       </rect>
      </property>
      <property name="styleSheet">
@@ -137,6 +137,16 @@ background-color: rgb(74, 107, 142);</string>
      </property>
      <property name="text">
       <string/>
+     </property>
+     <property name="icon">
+      <iconset resource="image.qrc">
+       <normaloff>:/new/prefix1/Resource/origami28.png</normaloff>:/new/prefix1/Resource/origami28.png</iconset>
+     </property>
+     <property name="iconSize">
+      <size>
+       <width>42</width>
+       <height>42</height>
+      </size>
      </property>
      <property name="checkable">
       <bool>false</bool>
@@ -180,9 +190,9 @@ background-color: rgb(74, 107, 142);</string>
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>30</y>
+       <y>31</y>
        <width>51</width>
-       <height>41</height>
+       <height>51</height>
       </rect>
      </property>
      <property name="styleSheet">
@@ -195,22 +205,28 @@ background-color: rgb(74, 107, 142);</string>
      </property>
      <property name="icon">
       <iconset resource="image.qrc">
-       <normaloff>:/new/prefix1/Resource/right-arrow6.png</normaloff>:/new/prefix1/Resource/right-arrow6.png</iconset>
+       <normaloff>:/new/prefix1/Resource/sendfile.png</normaloff>:/new/prefix1/Resource/sendfile.png</iconset>
      </property>
      <property name="iconSize">
       <size>
-       <width>32</width>
-       <height>32</height>
+       <width>42</width>
+       <height>42</height>
       </size>
+     </property>
+     <property name="autoDefault">
+      <bool>false</bool>
+     </property>
+     <property name="default">
+      <bool>false</bool>
      </property>
      <property name="flat">
       <bool>true</bool>
      </property>
     </widget>
+    <zorder>sendMessage</zorder>
     <zorder>textEdit1</zorder>
     <zorder>pushButton</zorder>
     <zorder>editText</zorder>
-    <zorder>sendMessage</zorder>
     <zorder>pushButton_2</zorder>
    </widget>
    <widget class="QListWidget" name="userList">
@@ -269,35 +285,6 @@ background-color: rgb(74, 107, 142);</string>
     </property>
     <property name="sortingEnabled">
      <bool>false</bool>
-    </property>
-   </widget>
-   <widget class="QListWidget" name="chatDialog">
-    <property name="geometry">
-     <rect>
-      <x>390</x>
-      <y>90</y>
-      <width>671</width>
-      <height>61</height>
-     </rect>
-    </property>
-    <property name="maximumSize">
-     <size>
-      <width>677</width>
-      <height>421</height>
-     </size>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">background-color: rgb(255, 255, 235);
-</string>
-    </property>
-    <property name="frameShape">
-     <enum>QFrame::NoFrame</enum>
-    </property>
-    <property name="sizeAdjustPolicy">
-     <enum>QAbstractScrollArea::AdjustIgnored</enum>
-    </property>
-    <property name="layoutMode">
-     <enum>QListView::Batched</enum>
     </property>
    </widget>
    <widget class="QLabel" name="background_inder_list">
@@ -364,10 +351,10 @@ background-color: rgb(10, 88, 170);</string>
     <widget class="QPushButton" name="close_setting_button_2">
      <property name="geometry">
       <rect>
-       <x>17</x>
-       <y>16</y>
+       <x>20</x>
+       <y>10</y>
        <width>51</width>
-       <height>41</height>
+       <height>51</height>
       </rect>
      </property>
      <property name="focusPolicy">
@@ -394,7 +381,16 @@ background-color: rgb(99, 137, 168);
      </property>
      <property name="icon">
       <iconset resource="image.qrc">
-       <normaloff>:/new/prefix1/Resource/back.png</normaloff>:/new/prefix1/Resource/back.png</iconset>
+       <normaloff>:/new/prefix1/Resource/double78.png</normaloff>:/new/prefix1/Resource/double78.png</iconset>
+     </property>
+     <property name="iconSize">
+      <size>
+       <width>42</width>
+       <height>42</height>
+      </size>
+     </property>
+     <property name="flat">
+      <bool>true</bool>
      </property>
     </widget>
     <widget class="QListWidget" name="userList_3">
@@ -678,7 +674,7 @@ background-color: rgb(99, 137, 168);</string>
       <string notr="true">background-color: rgb(255, 255, 255);</string>
      </property>
      <property name="currentIndex">
-      <number>1</number>
+      <number>2</number>
      </property>
      <widget class="QWidget" name="page">
       <widget class="QGroupBox" name="groupBox">
@@ -749,7 +745,7 @@ background-color: rgb(99, 137, 168);</string>
          <string/>
         </property>
         <property name="pixmap">
-         <pixmap resource="image.qrc">:/new/prefix1/Resource/users53.png</pixmap>
+         <pixmap resource="image.qrc">:/Avatars/Resource/Avatars/5.jpg</pixmap>
         </property>
         <property name="scaledContents">
          <bool>true</bool>
@@ -968,6 +964,13 @@ border:none;</string>
         </property>
        </item>
       </widget>
+      <zorder>checkBox_3</zorder>
+      <zorder>label_3</zorder>
+      <zorder>Download_path_PB</zorder>
+      <zorder>label_6</zorder>
+      <zorder>label_2</zorder>
+      <zorder>comboBox</zorder>
+      <zorder>widget</zorder>
      </widget>
      <widget class="QWidget" name="page_2">
       <widget class="QWidget" name="layoutWidget">
@@ -1154,10 +1157,10 @@ border:none;</string>
    <widget class="QLineEdit" name="search_line_edit">
     <property name="geometry">
      <rect>
-      <x>220</x>
-      <y>47</y>
-      <width>151</width>
-      <height>29</height>
+      <x>218</x>
+      <y>46</y>
+      <width>154</width>
+      <height>30</height>
      </rect>
     </property>
     <property name="styleSheet">
@@ -1179,11 +1182,14 @@ border:none;</string>
    <widget class="QPushButton" name="newContact_Button">
     <property name="geometry">
      <rect>
-      <x>65</x>
+      <x>70</x>
       <y>38</y>
-      <width>51</width>
-      <height>41</height>
+      <width>44</width>
+      <height>40</height>
      </rect>
+    </property>
+    <property name="toolTip">
+     <string>Add new contact</string>
     </property>
     <property name="styleSheet">
      <string notr="true">
@@ -1193,10 +1199,14 @@ border:none;</string>
     <property name="text">
      <string/>
     </property>
+    <property name="icon">
+     <iconset resource="image.qrc">
+      <normaloff>:/new/prefix1/Resource/square292.png</normaloff>:/new/prefix1/Resource/square292.png</iconset>
+    </property>
     <property name="iconSize">
      <size>
-      <width>23</width>
-      <height>23</height>
+      <width>40</width>
+      <height>40</height>
      </size>
     </property>
     <property name="flat">
@@ -1208,8 +1218,8 @@ border:none;</string>
      <rect>
       <x>10</x>
       <y>40</y>
-      <width>51</width>
-      <height>41</height>
+      <width>44</width>
+      <height>40</height>
      </rect>
     </property>
     <property name="styleSheet">
@@ -1220,45 +1230,18 @@ border:none;</string>
     <property name="text">
      <string/>
     </property>
+    <property name="icon">
+     <iconset resource="image.qrc">
+      <normaloff>:/new/prefix1/Resource/tool257.png</normaloff>:/new/prefix1/Resource/tool257.png</iconset>
+    </property>
+    <property name="iconSize">
+     <size>
+      <width>40</width>
+      <height>40</height>
+     </size>
+    </property>
     <property name="flat">
      <bool>true</bool>
-    </property>
-   </widget>
-   <widget class="QLabel" name="search_label">
-    <property name="geometry">
-     <rect>
-      <x>170</x>
-      <y>40</y>
-      <width>51</width>
-      <height>41</height>
-     </rect>
-    </property>
-    <property name="sizePolicy">
-     <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-      <horstretch>0</horstretch>
-      <verstretch>0</verstretch>
-     </sizepolicy>
-    </property>
-    <property name="sizeIncrement">
-     <size>
-      <width>0</width>
-      <height>0</height>
-     </size>
-    </property>
-    <property name="baseSize">
-     <size>
-      <width>0</width>
-      <height>0</height>
-     </size>
-    </property>
-    <property name="styleSheet">
-     <string notr="true"/>
-    </property>
-    <property name="frameShape">
-     <enum>QFrame::NoFrame</enum>
-    </property>
-    <property name="text">
-     <string/>
     </property>
    </widget>
    <widget class="QLabel" name="chat_back_lab">
@@ -1281,6 +1264,9 @@ border:none;</string>
     </property>
     <property name="text">
      <string/>
+    </property>
+    <property name="pixmap">
+     <pixmap resource="image.qrc">:/new/prefix1/Resource/bumaga.jpg</pixmap>
     </property>
     <property name="scaledContents">
      <bool>true</bool>
@@ -1372,23 +1358,95 @@ border:none;</string>
      <bool>true</bool>
     </property>
    </widget>
-   <zorder>widget_2</zorder>
-   <zorder>chatDialog</zorder>
+   <widget class="QTextBrowser" name="textBrowser">
+    <property name="geometry">
+     <rect>
+      <x>550</x>
+      <y>260</y>
+      <width>371</width>
+      <height>66</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">background-color: rgb(129, 129, 129, 90);
+    selection-color: white;
+    selection-background-color: rgb(191, 31, 127);
+    border: 2px groove gray;
+    border-radius: 10px;
+    padding: 2px 4px;</string>
+    </property>
+    <property name="html">
+     <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:7.8pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:10pt;&quot;&gt;Please select a chat to start messaging  &lt;/span&gt;&lt;/p&gt;
+&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:10pt;&quot;&gt;or add new friends to communicate&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+    </property>
+    <property name="textInteractionFlags">
+     <set>Qt::TextSelectableByMouse</set>
+    </property>
+   </widget>
+   <widget class="QLabel" name="search_label">
+    <property name="geometry">
+     <rect>
+      <x>171</x>
+      <y>40</y>
+      <width>44</width>
+      <height>40</height>
+     </rect>
+    </property>
+    <property name="sizePolicy">
+     <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+      <horstretch>0</horstretch>
+      <verstretch>0</verstretch>
+     </sizepolicy>
+    </property>
+    <property name="sizeIncrement">
+     <size>
+      <width>0</width>
+      <height>0</height>
+     </size>
+    </property>
+    <property name="baseSize">
+     <size>
+      <width>0</width>
+      <height>0</height>
+     </size>
+    </property>
+    <property name="styleSheet">
+     <string notr="true"/>
+    </property>
+    <property name="frameShape">
+     <enum>QFrame::NoFrame</enum>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+    <property name="pixmap">
+     <pixmap resource="image.qrc">:/new/prefix1/Resource/magnifying glass57.png</pixmap>
+    </property>
+    <property name="scaledContents">
+     <bool>false</bool>
+    </property>
+   </widget>
    <zorder>line</zorder>
    <zorder>userList</zorder>
    <zorder>background_inder_list</zorder>
    <zorder>background_under_chat</zorder>
    <zorder>userSetting_button</zorder>
    <zorder>newContact_Button</zorder>
-   <zorder>search_label</zorder>
    <zorder>search_line_edit</zorder>
    <zorder>chat_back_lab</zorder>
    <zorder>widget</zorder>
-   <zorder>stackedWidget_2</zorder>
    <zorder>label</zorder>
    <zorder>pushButton_3</zorder>
    <zorder>pushButton_4</zorder>
    <zorder>pushButton_5</zorder>
+   <zorder>textBrowser</zorder>
+   <zorder>stackedWidget_2</zorder>
+   <zorder>search_label</zorder>
+   <zorder>widget_2</zorder>
   </widget>
   <action name="actionShowHideWindow">
    <property name="text">
