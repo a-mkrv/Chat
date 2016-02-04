@@ -11,6 +11,7 @@
 #include <QFile>
 
 #include "sqlitedb.h"
+#include "user.h"
 
 namespace Ui {
 class Server;
@@ -20,36 +21,32 @@ class Server : public QMainWindow
 {
     Q_OBJECT
 
-private slots:
-    void sendMessage(QString message, QTcpSocket& socket);
-    void getMessage();
-    void newConnection();
-    void onDisconnect();
-    void Status();
-
-signals:
-    void SEND_UserList();
-
 public:
     explicit Server(QWidget *parent = 0);
     ~Server();
+
+private slots:
+    void getMessage();
+    void NewConnect();
+    void onDisconnect();
+    void Status();
+
+    void sendToID(QString message, int ID);     //Отправка личных сообщений
+    void NewUser(QTcpSocket *client, QString _user);
+    void PrivateMessage(QTcpSocket *client, QString _message);
+    void SendingFile(QTcpSocket *client, qint16 _blocksize);
+    void LogIn(QTcpSocket *client, QString &U, QString &C, QString &P, QString &A, QString &S);
 
 private:
     Ui::Server *ui;
     SQLiteDB *sqlitedb;
     QTcpServer *tcpServer;
-    QList<QTcpSocket*> clientConnections;       //Список подключений
-    std::map<const int, QString> userList;      //Список пользователей
-    void updateStatus(QString message);
-    void sendToID(QString message, int ID);     //Отправка личных сообщений
-    QTcpSocket* getSocket(int ID);              //Соединение к клиенту
-    QString getUsername(int ID);                //Получить ник пользователя
+    QList<User*> clientConnections;       //Список подключений
+
     QString timeconnect();                      //Время соединения
-    void doCommand(QString command, int ID);
     quint16 nextBlockSize;
-    QString find_User;
-    QHash<QTcpSocket*, QByteArray*> buffers; //We need a buffer to store data until block has completely received
-    QHash<QTcpSocket*, qint32*> sizes; //We need to store the size to verify if a block has received completely
+    QHash<QTcpSocket*, QByteArray*> buffers;
+    QHash<QTcpSocket*, qint32*> sizes;
     QTimer *timer;
 };
 

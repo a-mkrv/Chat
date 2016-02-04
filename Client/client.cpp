@@ -315,7 +315,7 @@ void Client::getMessage()
         item->setData(Qt::DisplayRole, message);
         item->setData(Qt::ToolTipRole, QDateTime::currentDateTime().toString("dd.MM.yy hh:mm"));
 
-        if(QStringRef(&message, 0, 3)=="You")
+        if(QStringRef(&message, 0, 3)=="*To")
         {
             QListWidgetItem *item = new QListWidgetItem();
             item->setData(Qt::UserRole + 1, "TO");
@@ -327,6 +327,7 @@ void Client::getMessage()
         else
         {
             fromname.chop(1);
+            qDebug()  << fromname;
             if (!vec.empty())
             {
                 for(int i=0; i<vec.size(); i++)
@@ -428,7 +429,7 @@ void Client::send_personal_data()
         out << quint16(0) << QTime::currentTime() << command;
         out << username;
         tcpSocket->write(block);
-        reg_window->hide();
+        reg_window->close();
     }
 }
 

@@ -14,9 +14,11 @@ TEMPLATE = app
 
 SOURCES += main.cpp\
         server.cpp \
-    sqlitedb.cpp
+    sqlitedb.cpp \
+    user.cpp
 
 HEADERS  += server.h \
-    sqlitedb.h
+    sqlitedb.h \
+    user.h
 
 FORMS    += server.ui

@@ -14,6 +14,7 @@ registration::registration(QWidget *parent) :
 
     connect(ui->pushButton, SIGNAL(clicked()), this, SLOT(onButtonSendUser()));
     connect(socket, SIGNAL(readyRead()), this, SLOT(getMessage()));
+    connect(socket, SIGNAL(disconnected()), this, SLOT(close()));
     connect(reg, SIGNAL(sendData(QString)), this, SLOT(recieveData(QString)));
 
     ui->error_label->hide();
@@ -81,9 +82,8 @@ void registration::getMessage()
     else if(received_message == "LogInOK!" && !ui->username_enter->text().simplified().isEmpty() && !ui->pass_enter->text().simplified().isEmpty())
     {
         emit sendData(ui->username_enter->text().simplified(), ui->pass_enter->text().simplified());
-        connect(socket, SIGNAL(disconnected()), this, SLOT());
-        //socket->close();
-        this->close();
+        socket->close();
+        socket->disconnectFromHost();
     }
 }
 
@@ -95,7 +95,6 @@ void registration::keyReleaseEvent(QKeyEvent *event)
         if(!ui->username_enter->text().simplified().isEmpty() && !ui->pass_enter->text().simplified().isNull())
         {
             emit sendData(ui->username_enter->text().simplified(), ui->pass_enter->text().simplified());
-            socket->deleteLater();
             this->hide();
         }
         break;
