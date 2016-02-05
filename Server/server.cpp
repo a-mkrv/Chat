@@ -93,7 +93,7 @@ void Server::getMessage()
     }
 
     in >> time >> typePacket;
-
+    qDebug() << typePacket;
     int command = 0;
     // 0 - пусто,
     // 1 - имя пользователя,
@@ -122,6 +122,7 @@ void Server::getMessage()
 
     switch (command)
     {
+
     case 1:
     {
         QString newUser;
@@ -140,21 +141,20 @@ void Server::getMessage()
 
     case 3:
     {
-        QString findUser;
-        in >> findUser;
-        QString result = sqlitedb->FindInDB(findUser);
+        QString findUser, whoFind;
+        in >> findUser >> whoFind;
+        QString result = sqlitedb->FindInDB(findUser, whoFind);
 
         if (result!="false")
             sendToID("_FIN_ OKFIN " + result, client->socketDescriptor());
         else
             sendToID("_FIN_ NOFIN", client->socketDescriptor() );
-
         break;
     }
 
     case 4:
     {
-        SendingFile(client, nextBlockSize);
+        SendingFile(client);
         nextBlockSize = 0;
         break;
     }
@@ -170,6 +170,7 @@ void Server::getMessage()
 
     case 6:
     {
+        qDebug() << "LOG";
         QString Login, Password;
         in >> Login >> Password;
 
@@ -222,6 +223,16 @@ void Server::NewUser(QTcpSocket *client, QString _user)
     QString TMPName = UserName;
     bool AlreadyName = true;
     int numInc = 0;
+
+    QByteArray block;
+    QDataStream out(&block, QIODevice::WriteOnly);
+    out.setVersion(QDataStream::Qt_5_4);
+
+    QVector <QPair<QString, QString>> lst;
+    lst = sqlitedb->FriendList(UserName);
+    qDebug() << lst;
+    out << QString("FRLST") << lst;
+    client->write(block);
 
     while (AlreadyName)
     {
@@ -288,12 +299,12 @@ void Server::PrivateMessage(QTcpSocket *client, QString _message)
     }
 }
 
-void Server::SendingFile(QTcpSocket *client, qint16 _blocksize)
+void Server::SendingFile(QTcpSocket *client)
 {
-    QDataStream in(client);
+    QTcpSocket* mClientSocket = (QTcpSocket*)sender();
+    QDataStream in(mClientSocket);
     in.setVersion(QDataStream::Qt_5_4);
 
-    nextBlockSize = _blocksize;
     QByteArray buffer;
     QString fileName;
     qint64 fileSize;
@@ -309,7 +320,7 @@ void Server::SendingFile(QTcpSocket *client, qint16 _blocksize)
     {
         if (!nextBlockSize) {
 
-            if (quint16(client->bytesAvailable()) < sizeof(quint16)) {
+            if (quint16(mClientSocket->bytesAvailable()) < sizeof(quint16)) {
                 break;
             }
             in >> nextBlockSize;
@@ -319,7 +330,7 @@ void Server::SendingFile(QTcpSocket *client, qint16 _blocksize)
 
         //sendToClient(mClientSocket, "SC_FILE_TRANSFER_ASK", fileName);
 
-        if (client->bytesAvailable() < nextBlockSize) {
+        if (mClientSocket->bytesAvailable() < nextBlockSize) {
             break;
         }
     }
@@ -330,6 +341,7 @@ void Server::SendingFile(QTcpSocket *client, qint16 _blocksize)
     receiveFile.close();
     buffer.clear();
     return;
+    nextBlockSize = 0;
 }
 
 
@@ -344,12 +356,13 @@ void Server::LogIn(QTcpSocket *client, QString &U, QString &C, QString &P, QStri
         out << QString("PassEmpty");
         client->write(block);
     }
-    else if(sqlitedb->FindInDB(U)=="false")
+    else if(sqlitedb->FindInDB(U, 0)=="false")
     {
         if(C.isEmpty())
             C="Unknown";
         sqlitedb->AddContact(U, S, A.toInt(), C, P);
         qDebug() << "Новый пользователь: " << U;
+
 
         out << QString("Welcome!");
         client->write(block);

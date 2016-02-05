@@ -28,6 +28,7 @@
 #include <QMouseEvent>
 #include <QPoint>
 #include <QTime>
+#include <QPair>
 
 namespace Ui {
 class Client;
@@ -80,11 +81,8 @@ private slots:
     void on_pushButton_2_clicked();
 
     void on_userList_clicked(const QModelIndex &index);
-
     void on_pushButton_3_clicked();
-
     void on_pushButton_5_clicked();
-
     void on_comboBox_currentIndexChanged(int index);
 
 public slots:

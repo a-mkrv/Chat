@@ -21,15 +21,10 @@ QString gl_fname; //Поиск человека
 // При добавлении в список друзей просматривать Пол, и в зависимости от этого ставить аватар.   -- Сделано
 // Отправку сообщения по текущему диалогу, а не по команде msg User     --Сделано
 // Добавлены уведомления в углу экрана.
-
-
-
-// ЗАВТРА. 1) Пофиксить log in/out. 2) Сохранение контактов.
+// Дисконнект из-за доп.сокетов и соединений при авторизации. (Правильно прикрутить закрытие сокета) -- Сделано
 
 
 // Основное:
-// Выявить падения при дисконнекте  (при добавлении и переписки - ок, как только кто выходит - падает сервер, что-то с итератором)
-// -- Дисконнект из-за доп.сокетов и соединений при авторизации. (Правильно прикрутить закрытие сокета)
 
 // Устойчивая отправка файлов до клииента           -- Не смотрел.
 // СОХРАНЕНИЕ ПОЛЬЗОВАТЕЛЕЙ Друг у Друга (Либо через БД, либо пока через файл. Заголовок - Ник, а в файле список друзей)
@@ -215,31 +210,70 @@ void Client::insertEmoticon(QString symbol)
 
 void Client::getMessage()
 {
+    QString message;
     QDataStream in(tcpSocket);
     in.setVersion(QDataStream::Qt_5_4);
-
-    QString message;
     in >> message;
-    qDebug() << message;
 
     QStringList commandList;
-    commandList = message.split(" ", QString::SkipEmptyParts);
-    if(commandList.at(1)==name)
-        return;
-    QString fromname = commandList.at(1);
+    QString fromname;
+
     enum class COMMAND { NONE, USERLIST, FINDUSER, INVITE};
     COMMAND cmd = COMMAND::NONE;
 
-    QStringRef checkCmd(&message, 0, 5);        //Создание строки из заданного диапозона пришедшего сообщения
-    if (checkCmd == "_LST_")
+    if (message=="FRLST")
         cmd = COMMAND::USERLIST;
-    if (checkCmd == "_FIN_")
-        cmd = COMMAND::FINDUSER;
-    if (checkCmd == "_INV_")
-        cmd = COMMAND::INVITE;
+    else
+    {
+        commandList = message.split(" ", QString::SkipEmptyParts);
+        if(commandList.at(1)==name)
+            return;
+        fromname = commandList.at(1);
+
+        QStringRef checkCmd(&message, 0, 5);        //Создание строки из заданного диапозона пришедшего сообщения
+        if (checkCmd == "_FIN_")
+            cmd = COMMAND::FINDUSER;
+        if (checkCmd == "_INV_")
+            cmd = COMMAND::INVITE;
+    }
 
     switch (cmd)
     {
+     case COMMAND::USERLIST:
+    {
+        QVector <QPair<QString, QString>> lst;
+        in >> lst;
+
+        for(int i=0; i<lst.size(); i++)
+        {
+            int rand_avatar;
+            QString sex = lst.at(i).second;
+
+            if(sex=="Man")
+                rand_avatar = rand()%18+1;
+            else if(sex=="Woman")
+                rand_avatar = rand()%13+19;
+            else if(sex=="Unknown")
+                rand_avatar = rand()%20+32;
+
+            QIcon pic(":/Avatars/Resource/Avatars/"+QString::number(rand_avatar)+".jpg");
+
+            QListWidgetItem *item = new QListWidgetItem();
+            QListWidget *chatlist = new QListWidget();
+            chatlist->setItemDelegate(new ChatListDelegate(chatlist));
+            ui->stackedWidget_2->addWidget(chatlist);
+
+            item->setData(Qt::DisplayRole, lst.at(i).first);
+            item->setData(Qt::ToolTipRole, QDateTime::currentDateTime().toString("dd.MM.yy hh:mm"));
+            item->setData(Qt::UserRole + 1, "New User.");
+            item->setData(Qt::DecorationRole, pic);
+
+            vec.push_back(item);
+            chatvec.push_back(chatlist);
+            ui->userList->addItem(item);
+        }
+        break;
+    }
     case COMMAND::FINDUSER:
     {
         QString find_user = commandList.at(1);
@@ -259,15 +293,11 @@ void Client::getMessage()
 
             QIcon pic(":/Avatars/Resource/Avatars/"+QString::number(rand_avatar)+".jpg");
 
-            qDebug() << sex;
             if (!vec.empty())
             {
                 for(int i=0; i<vec.size(); i++)
                     if(vec.at(i)->data(Qt::DisplayRole)==gl_fname)
-                    {
                         return;
-                    }
-
             }
 
             QListWidgetItem *item = new QListWidgetItem();
@@ -307,6 +337,7 @@ void Client::getMessage()
         ui->userList->addItem(item);
         break;
     }
+
     default:                                                // Получение обычного текстового сообщения. Звук и добавление в ЧатЛист
         if(ui->ChBox_PSound->isChecked())
             QSound::play(":/new/prefix1/Resource/from.wav");
@@ -507,7 +538,7 @@ void Client::findtoserv(QString name_user)
         QDataStream out(&msg, QIODevice::WriteOnly);
         out.setVersion(QDataStream::Qt_5_4);
 
-        out << quint16(0) << QTime::currentTime() << QString("_FND_") << name_user;
+        out << quint16(0) << QTime::currentTime() << QString("_FND_") << name_user << name;
         tcpSocket->write(msg);
         tmp=false;
     }
@@ -669,7 +700,6 @@ void Client::on_pushButton_2_clicked()
     if (filePatch.isEmpty())
         return;
 
-
     QByteArray  arrBlock;
     qint64 fileSize;
     QDataStream out(&arrBlock, QIODevice::WriteOnly);
@@ -690,9 +720,8 @@ void Client::on_pushButton_2_clicked()
 
     out.device()->seek(0);
     out << quint16(arrBlock.size() - sizeof(quint16));
-
+    qDebug() << arrBlock.size();
     tcpSocket->write(arrBlock);
-    tcpSocket->abort();
 }
 
 void Client::on_userList_clicked(const QModelIndex &index)
@@ -796,3 +825,4 @@ Client::~Client()
 {
     delete ui;
 }
+

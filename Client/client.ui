@@ -964,13 +964,6 @@ border:none;</string>
         </property>
        </item>
       </widget>
-      <zorder>checkBox_3</zorder>
-      <zorder>label_3</zorder>
-      <zorder>Download_path_PB</zorder>
-      <zorder>label_6</zorder>
-      <zorder>label_2</zorder>
-      <zorder>comboBox</zorder>
-      <zorder>widget</zorder>
      </widget>
      <widget class="QWidget" name="page_2">
       <widget class="QWidget" name="layoutWidget">
@@ -1430,6 +1423,7 @@ p, li { white-space: pre-wrap; }
      <bool>false</bool>
     </property>
    </widget>
+   <zorder>widget_2</zorder>
    <zorder>line</zorder>
    <zorder>userList</zorder>
    <zorder>background_inder_list</zorder>
@@ -1446,7 +1440,6 @@ p, li { white-space: pre-wrap; }
    <zorder>textBrowser</zorder>
    <zorder>stackedWidget_2</zorder>
    <zorder>search_label</zorder>
-   <zorder>widget_2</zorder>
   </widget>
   <action name="actionShowHideWindow">
    <property name="text">

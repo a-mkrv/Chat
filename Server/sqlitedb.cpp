@@ -26,7 +26,6 @@ SQLiteDB::~SQLiteDB()
 
 void SQLiteDB::AddContact(QString UserName, QString Sex, int Age, QString City, QString Pas)
 {
-    qDebug() << "Add";
     QSqlQuery query(myDB);
     query.prepare("INSERT INTO Users (UserName, Sex, Age, City, Password) VALUES (:UserName, :Sex, :Age, :City, :Password)");
     query.bindValue(":UserName", UserName);
@@ -35,17 +34,28 @@ void SQLiteDB::AddContact(QString UserName, QString Sex, int Age, QString City, 
     query.bindValue(":City", City);
     query.bindValue(":Password", Pas);
     query.exec();
+
+    QSqlQuery queryCreate(myDB);
+    queryCreate.exec("CREATE TABLE Friend" + UserName + " (name text NOT NULL, sex text NOT NULL)");
 }
 
-QString SQLiteDB::FindInDB(QString UserName)
+QString SQLiteDB::FindInDB(QString UserName, QString whoFind)
 {
-    qDebug() << "Поиск в БД: " << UserName;
-
     QSqlQuery query(myDB);
     if(query.exec("SELECT UserName, Sex FROM Users WHERE UserName=\'" +UserName+ "\'"))
         if(query.next())
             if (query.value(0).toString()==UserName)
+            {
+                if(!whoFind.isEmpty())
+                {
+                       QSqlQuery queryAdFr(myDB);
+                       queryAdFr.prepare("INSERT INTO Friend"+whoFind+" (name, sex) VALUES (:UserName, :Sex)");
+                       queryAdFr.bindValue(":UserName", UserName);
+                       queryAdFr.bindValue(":Sex", query.value(1).toString());
+                       queryAdFr.exec();
+                }
                 return query.value(1).toString();
+            }
 
     query.exec();
     return "false";
@@ -53,8 +63,6 @@ QString SQLiteDB::FindInDB(QString UserName)
 
 bool SQLiteDB::CorrectInput(QString _login, QString _password)
 {
-    qDebug() << "Проверка Логина/Пароля";
-
     QSqlQuery query(myDB);
     if(query.exec("SELECT UserName, Password FROM Users WHERE UserName=\'" +_login+ "\' AND Password=\'"+_password+ "\'"))
         if(query.next())
@@ -63,4 +71,16 @@ bool SQLiteDB::CorrectInput(QString _login, QString _password)
 
     query.exec();
     return false;
+}
+
+QVector <QPair<QString, QString>> SQLiteDB::FriendList(QString user)
+{
+    QSqlQuery query(myDB);
+    QVector <QPair <QString, QString>> FriendSex;
+
+    if(query.exec("SELECT name, sex FROM Friend" + user))
+        while (query.next())
+            FriendSex.push_back(qMakePair(query.value(0).toString(), query.value(1).toString()));
+
+    return FriendSex;
 }
