@@ -285,7 +285,7 @@ void Client::getMessage()
             findcont->~findcontacts();
         }
         else
-            findcont->SetErrorLayout(true);
+            findcont->SetErrorLayout(1);
         break;
     }
 
@@ -431,7 +431,7 @@ void Client::send_personal_data()
 
 void Client::onDisconnect()
 {
-    ui->userList->clear();
+    //ui->userList->clear();
     personDates = false;
 }
 
@@ -461,11 +461,11 @@ void Client::on_close_setting_button_clicked()
 void Client::whisperOnClick(QListWidgetItem* user)
 {
     QString section = user->text();
-    if (section == "Profile" || section == "Профиль")
+    if (section == "Profile" || section == "Профиль" || section == "Profil")
         ui->stackedWidget->setCurrentIndex(0);
-    else if(section=="General" || section == "Основное")
+    else if(section=="General" || section == "Основное" || section == "Principal")
         ui->stackedWidget->setCurrentIndex(1);
-    else if (section == "Chat options" || section == "Опции чата")
+    else if (section == "Chat options" || section == "Опции чата" || section == "Options du Chat" )
         ui->stackedWidget->setCurrentIndex(2);
     else
         ui->stackedWidget->setCurrentIndex(3);
@@ -493,14 +493,21 @@ void Client::showFindCont()
 
 void Client::findtoserv(QString name_user)
 {
-    gl_fname=name_user;
+    gl_fname = name_user;
     static bool tmp = true;
 
     if(name==gl_fname)
     {
-        findcont->SetErrorLayout(false);
+        findcont->SetErrorLayout(0);
         return;
     }
+
+    for(int i=0; i<vec.size(); i++)
+        if (vec.at(i)->data(Qt::DisplayRole)== gl_fname)
+        {
+            findcont->SetErrorLayout(2);
+            return;
+        }
 
     if(tmp)
     {
@@ -704,26 +711,26 @@ void Client::on_comboBox_currentIndexChanged(int index)
     switch (index) {
     case 0:
     {
-        ui->checkBox_3->setText("Загрузка при старте системы");
-        ui->label_2->setText("Язык: ");
-        ui->label_3->setText("Загрузочный путь: ");
-        ui->RB_sendEnter->setText("Отправка по \"Enter\"");
-        ui->RB_send_CEnter->setText("Отправка по \"Ctrl + Enter\"");
-        ui->ChBox_Notif->setText("Уведомления");
-        ui->ChBox_PSound->setText("Звук");
-        ui->label_7->setText("Выбор фона");
-        ui->PB_SelColor->setText("Выбрать из палитры:");
-        ui->PB_LoadFileBackground->setText("Загрузить из файла:");
-        ui->username_label->setText("Имя пользователя: ");
-        ui->radioButton->setText("По умолчанию");
-        ui->radioButton_2->setText("Загрузить");
-        ui->groupBox->setTitle("Аватар");
-        ui->userList_3->item(0)->setText("Профиль");
-        ui->userList_3->item(1)->setText("Основное");
-        ui->userList_3->item(2)->setText("Опции чата");
-        ui->userList_3->item(3)->setText("Сеть");
-        ui->search_line_edit->setPlaceholderText("Поиск");
-        ui->editText->setPlaceholderText("Введите сообщение..");
+        ui->checkBox_3->setText("Launch when system starts");
+        ui->label_2->setText("Language: ");
+        ui->label_3->setText("Download path: ");
+        ui->RB_sendEnter->setText("Send by Enter");
+        ui->RB_send_CEnter->setText("Send by Ctrl + Enter");
+        ui->ChBox_Notif->setText("Notification");
+        ui->ChBox_PSound->setText("Play Sound");
+        ui->label_7->setText("Chat background:");
+        ui->PB_SelColor->setText("Select color:");
+        ui->PB_LoadFileBackground->setText(" Load from file:");
+        ui->username_label->setText("Username: ");
+        ui->radioButton->setText("Default");
+        ui->radioButton_2->setText("Choose");
+        ui->groupBox->setTitle("Avatar:");
+        ui->userList_3->item(0)->setText("Profile");
+        ui->userList_3->item(1)->setText("General");
+        ui->userList_3->item(2)->setText("Chat options");
+        ui->userList_3->item(3)->setText("Network");
+        ui->search_line_edit->setPlaceholderText("Search");
+        ui->editText->setPlaceholderText("Write a message..");
         break;
     }
     case 1:
@@ -735,13 +742,13 @@ void Client::on_comboBox_currentIndexChanged(int index)
         ui->RB_send_CEnter->setText("Отправка по \"Ctrl + Enter\"");
         ui->ChBox_Notif->setText("Уведомления");
         ui->ChBox_PSound->setText("Звук");
-        ui->label_7->setText("Выбор фона");
+        ui->label_7->setText("Выбор фона:");
         ui->PB_SelColor->setText("Выбрать из палитры:");
         ui->PB_LoadFileBackground->setText("Загрузить из файла:");
         ui->username_label->setText("Имя пользователя: ");
         ui->radioButton->setText("По умолчанию");
         ui->radioButton_2->setText("Загрузить");
-        ui->groupBox->setTitle("Аватар");
+        ui->groupBox->setTitle("Аватар:");
         ui->userList_3->item(0)->setText("Профиль");
         ui->userList_3->item(1)->setText("Основное");
         ui->userList_3->item(2)->setText("Опции чата");

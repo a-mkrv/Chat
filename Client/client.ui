@@ -11,7 +11,11 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Client</string>
+   <string>Whisper</string>
+  </property>
+  <property name="windowIcon">
+   <iconset resource="image.qrc">
+    <normaloff>:/new/prefix1/Resource/logo.png</normaloff>:/new/prefix1/Resource/logo.png</iconset>
   </property>
   <property name="styleSheet">
    <string notr="true"/>
@@ -674,7 +678,7 @@ background-color: rgb(99, 137, 168);</string>
       <string notr="true">background-color: rgb(255, 255, 255);</string>
      </property>
      <property name="currentIndex">
-      <number>2</number>
+      <number>1</number>
      </property>
      <widget class="QWidget" name="page">
       <widget class="QGroupBox" name="groupBox">
@@ -732,7 +736,7 @@ background-color: rgb(99, 137, 168);</string>
           <x>180</x>
           <y>20</y>
           <width>120</width>
-          <height>111</height>
+          <height>120</height>
          </rect>
         </property>
         <property name="maximumSize">
@@ -857,52 +861,6 @@ color: rgb(96, 125, 139);</string>
         <string>Launch when system starts</string>
        </property>
       </widget>
-      <widget class="QLabel" name="label_3">
-       <property name="geometry">
-        <rect>
-         <x>40</x>
-         <y>140</y>
-         <width>161</width>
-         <height>21</height>
-        </rect>
-       </property>
-       <property name="font">
-        <font>
-         <pointsize>10</pointsize>
-        </font>
-       </property>
-       <property name="text">
-        <string>Download path:</string>
-       </property>
-      </widget>
-      <widget class="QPushButton" name="Download_path_PB">
-       <property name="geometry">
-        <rect>
-         <x>200</x>
-         <y>130</y>
-         <width>81</width>
-         <height>41</height>
-        </rect>
-       </property>
-       <property name="font">
-        <font>
-         <pointsize>10</pointsize>
-         <weight>50</weight>
-         <italic>false</italic>
-         <bold>false</bold>
-        </font>
-       </property>
-       <property name="styleSheet">
-        <string notr="true">color: rgb(96, 125, 139);
-border:none;</string>
-       </property>
-       <property name="text">
-        <string>Change</string>
-       </property>
-       <property name="flat">
-        <bool>true</bool>
-       </property>
-      </widget>
       <widget class="QLabel" name="label_6">
        <property name="geometry">
         <rect>
@@ -963,6 +921,52 @@ border:none;</string>
          <string>French</string>
         </property>
        </item>
+      </widget>
+      <widget class="QWidget" name="">
+       <property name="geometry">
+        <rect>
+         <x>41</x>
+         <y>130</y>
+         <width>271</width>
+         <height>23</height>
+        </rect>
+       </property>
+       <layout class="QHBoxLayout" name="horizontalLayout_2">
+        <item>
+         <widget class="QLabel" name="label_3">
+          <property name="font">
+           <font>
+            <pointsize>10</pointsize>
+           </font>
+          </property>
+          <property name="text">
+           <string>Download path:</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="Download_path_PB">
+          <property name="font">
+           <font>
+            <pointsize>10</pointsize>
+            <weight>50</weight>
+            <italic>false</italic>
+            <bold>false</bold>
+           </font>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">color: rgb(96, 125, 139);
+border:none;</string>
+          </property>
+          <property name="text">
+           <string>Change</string>
+          </property>
+          <property name="flat">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+       </layout>
       </widget>
      </widget>
      <widget class="QWidget" name="page_2">
@@ -1284,11 +1288,24 @@ border:none;</string>
       <height>31</height>
      </rect>
     </property>
+    <property name="font">
+     <font>
+      <family>Sitka Text</family>
+      <weight>50</weight>
+      <italic>false</italic>
+      <bold>false</bold>
+      <strikeout>false</strikeout>
+     </font>
+    </property>
     <property name="styleSheet">
-     <string notr="true">background-color: rgb(99, 137, 168);</string>
+     <string notr="true">background-color: rgb(99, 137, 168);
+color: rgb(255, 255, 255);</string>
     </property>
     <property name="text">
-     <string/>
+     <string>W H I S P E R</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
     </property>
    </widget>
    <widget class="QPushButton" name="pushButton_3">
@@ -1423,7 +1440,6 @@ p, li { white-space: pre-wrap; }
      <bool>false</bool>
     </property>
    </widget>
-   <zorder>widget_2</zorder>
    <zorder>line</zorder>
    <zorder>userList</zorder>
    <zorder>background_inder_list</zorder>
@@ -1440,6 +1456,7 @@ p, li { white-space: pre-wrap; }
    <zorder>textBrowser</zorder>
    <zorder>stackedWidget_2</zorder>
    <zorder>search_label</zorder>
+   <zorder>widget_2</zorder>
   </widget>
   <action name="actionShowHideWindow">
    <property name="text">

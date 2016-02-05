@@ -31,6 +31,7 @@
         <file>Resource/sendfile.png</file>
         <file>Resource/smiling.png</file>
         <file>Resource/add40 (1).png</file>
+        <file>Resource/logo.png</file>
     </qresource>
     <qresource prefix="/Avatars">
         <file>Resource/Avatars/1.jpg</file>

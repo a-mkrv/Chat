@@ -6,6 +6,7 @@ NewContact::NewContact(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::NewContact)
 {
+    this->setWindowFlags(Qt::Window | Qt::FramelessWindowHint | Qt::CustomizeWindowHint);
     socket = new QTcpSocket();
 
     ui->setupUi(this);

@@ -18,7 +18,7 @@ public:
 
     Ui::findcontacts *ui;
     QString username;
-    void SetErrorLayout(bool _show);
+    void SetErrorLayout(int _show);
 
     ~findcontacts();
 

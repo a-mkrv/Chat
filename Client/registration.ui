@@ -11,7 +11,11 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Form</string>
+   <string notr="true">Whisper - LogIn</string>
+  </property>
+  <property name="windowIcon">
+   <iconset resource="image.qrc">
+    <normaloff>:/new/prefix1/Resource/logo.png</normaloff>:/new/prefix1/Resource/logo.png</iconset>
   </property>
   <property name="styleSheet">
    <string notr="true">background-color: rgb(255, 255, 255);</string>
@@ -182,7 +186,7 @@ background-color: rgb(255, 255, 255,0);
 color: rgb(168, 185, 196);</string>
    </property>
    <property name="text">
-    <string>LOG IN</string>
+    <string>W H I S P E R</string>
    </property>
    <property name="alignment">
     <set>Qt::AlignCenter</set>

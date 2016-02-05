@@ -11,7 +11,11 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Form</string>
+   <string notr="true">Whisper - Registration</string>
+  </property>
+  <property name="windowIcon">
+   <iconset resource="image.qrc">
+    <normaloff>:/new/prefix1/Resource/logo.png</normaloff>:/new/prefix1/Resource/logo.png</iconset>
   </property>
   <widget class="QLabel" name="label_6">
    <property name="geometry">

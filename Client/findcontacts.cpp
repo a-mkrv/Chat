@@ -32,17 +32,21 @@ void findcontacts::on_invite_cont_button_clicked()
     emit findUsers(username);
 }
 
-void findcontacts::SetErrorLayout(bool _show)
+void findcontacts::SetErrorLayout(int _show)
 {
-    if (_show)
-    {
-        ui->error_lay->setText("User is not found..");
-        ui->error_lay->show();
-    }
-    else
-    {
+    switch (_show) {
+    case 0:
         ui->error_lay->setText("You can not add yourself..");
         ui->error_lay->show();
+        break;
+    case 1:
+        ui->error_lay->setText("User is not found..");
+        ui->error_lay->show();
+        break;
+    case 2:
+        ui->error_lay->setText("User is already added..");
+        ui->error_lay->show();
+        break;
     }
 }
 

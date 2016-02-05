@@ -33,7 +33,6 @@ void Server::NewConnect()
     connect(newSocket, SIGNAL(readyRead()), this, SLOT(getMessage()));
     clientConnections.append(newUser);
 
-
     qDebug() << "Новое соединение" << newSocket->socketDescriptor();
 
     QByteArray *buffer = new QByteArray();
@@ -45,7 +44,7 @@ void Server::NewConnect()
 void Server::onDisconnect()
 {
     QTcpSocket *socket = qobject_cast<QTcpSocket*>(sender());
-    qDebug() << "Start Disconnect - " << socket->socketDescriptor();
+    qDebug() << "Start Disconnect";
 
     User* disconnectedUser;
     for (auto i : clientConnections)
@@ -53,6 +52,16 @@ void Server::onDisconnect()
         if (i->getSocket() == socket)
         {
             disconnectedUser = i;
+
+            if(!ui->userList->size().isEmpty())
+            {
+                for(int j=0; j<ui->userList->count(); j++)
+                    if(ui->userList->item(j)->data(Qt::DisplayRole)== disconnectedUser->getUserName())
+                    {
+                        ui->userList->removeItemWidget(ui->userList->takeItem(j));
+                        ui->chatDialog->addItem(timeconnect() + " - " + disconnectedUser->getUserName() + " disconnected ");
+                    }
+            }
         }
     }
     clientConnections.removeAll(disconnectedUser);
@@ -146,7 +155,10 @@ void Server::getMessage()
         QString result = sqlitedb->FindInDB(findUser, whoFind);
 
         if (result!="false")
+        {
             sendToID("_FIN_ OKFIN " + result, client->socketDescriptor());
+            ui->chatDialog->addItem(timeconnect() + " - " + whoFind + " added " + findUser );
+        }
         else
             sendToID("_FIN_ NOFIN", client->socketDescriptor() );
         break;
@@ -195,9 +207,6 @@ void Server::getMessage()
 
     default:
         qDebug() << "Default";
-        //std::map<int, QString>::iterator it;
-        //it = userList.find(client->socketDescriptor());
-        //updateStatus("MSG: (" + it->second + ") " + typePacket);
     }
 }
 
@@ -253,8 +262,11 @@ void Server::NewUser(QTcpSocket *client, QString _user)
 
     for (auto i : clientConnections)
         if (i->getSocket() == client)
+        {
             i->setUserName(UserName);
-
+            ui->userList->addItem(i->getUserName());
+            ui->chatDialog->addItem(timeconnect() + " - " + i->getUserName() + " is online (" + QString::number(client->socketDescriptor()) + ")");
+        }
 }
 
 void Server::PrivateMessage(QTcpSocket *client, QString _message)
@@ -296,6 +308,8 @@ void Server::PrivateMessage(QTcpSocket *client, QString _message)
         newMessage.clear();
         newMessage = "*From: " + fromUser->getUserName() + ": " + text;
         sendToID(newMessage, toUser->getSocket()->socketDescriptor());
+
+        ui->chatDialog->addItem(timeconnect() + " - PM: " + fromUser->getUserName() + " -> " + toUser->getUserName() + ":  " + text);
     }
 }
 
@@ -361,6 +375,7 @@ void Server::LogIn(QTcpSocket *client, QString &U, QString &C, QString &P, QStri
         if(C.isEmpty())
             C="Unknown";
         sqlitedb->AddContact(U, S, A.toInt(), C, P);
+        ui->chatDialog->addItem(timeconnect() + " - User registration: " + U);
         qDebug() << "Новый пользователь: " << U;
 
 
