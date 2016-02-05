@@ -84,7 +84,7 @@ private slots:
     void on_pushButton_3_clicked();
     void on_pushButton_5_clicked();
     void on_comboBox_currentIndexChanged(int index);
-
+    void AddUser_Chat(QString, QString, QString);
 public slots:
     void recieveData(QString str, QString pas);
 
@@ -117,7 +117,6 @@ private:
     QString name;
     QString download_path;
     bool personDates;
-    int t;
 };
 
 #endif // CLIENT_H

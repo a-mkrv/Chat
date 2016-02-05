@@ -18,6 +18,8 @@ public:
 
     Ui::findcontacts *ui;
     QString username;
+    void SetErrorLayout(bool _show);
+
     ~findcontacts();
 
 signals:

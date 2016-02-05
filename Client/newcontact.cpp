@@ -28,17 +28,14 @@ void NewContact::getMessagee()
         ui->Error_label->hide();
         ui->Error_label_2->show();
     }
-    if(received_message == "Already!")
+    else if(received_message == "Already!")
     {
         ui->Error_label_2->hide();
         ui->Error_label->show();
     }
-    if(received_message == "Welcome!")
-    {
-        emit sendData(QString("Show"));
-        socket->close();
-        this->close();
-    }
+
+    else if(received_message == "Welcome!")
+        on_pushButton_clicked();
 }
 
 
@@ -51,7 +48,9 @@ void NewContact::on_accept_button_clicked()
     QDataStream out(&block, QIODevice::WriteOnly);
     out.setVersion(QDataStream::Qt_5_4);
 
-    out << quint16(0) << QTime::currentTime() << QString("_REG_") << ui->enter_user_name->text() << ui->enter_city->text() << ui->enter_password->text() << ui->age->text() << ui->sex_person->currentText();
+    out << quint16(0) << QTime::currentTime() << QString("_REG_") << ui->enter_user_name->text()
+        << ui->enter_city->text() << ui->enter_password->text()
+        << ui->age->text() << ui->sex_person->currentText();
 
     socket->write(block);
 }

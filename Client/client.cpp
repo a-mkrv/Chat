@@ -22,12 +22,11 @@ QString gl_fname; //Поиск человека
 // Отправку сообщения по текущему диалогу, а не по команде msg User     --Сделано
 // Добавлены уведомления в углу экрана.
 // Дисконнект из-за доп.сокетов и соединений при авторизации. (Правильно прикрутить закрытие сокета) -- Сделано
+// СОХРАНЕНИЕ ПОЛЬЗОВАТЕЛЕЙ Друг у Друга (Через SQLite) --Сделано
 
 
 // Основное:
-
-// Устойчивая отправка файлов до клииента           -- Не смотрел.
-// СОХРАНЕНИЕ ПОЛЬЗОВАТЕЛЕЙ Друг у Друга (Либо через БД, либо пока через файл. Заголовок - Ник, а в файле список друзей)
+// Устойчивая отправка файлов до клииента           -- Временно не работате =(
 
 
 // Второй план:
@@ -37,50 +36,47 @@ QString gl_fname; //Поиск человека
 
 
 
-Client::Client(QWidget *parent) : QMainWindow(parent), ui(new Ui::Client)
+Client::Client(QWidget *parent) : QMainWindow(parent), download_path("(C:/...)"), personDates(false), ui(new Ui::Client)
 {
     srand((time(NULL)));
     ui->setupUi(this);
-    frameEmoji = new EmojiFrame();
-    emojiMan = new EmojiManager();
     this->setWindowFlags(Qt::Window | Qt::FramelessWindowHint | Qt::CustomizeWindowHint);
 
-    notice = new Notification();
-    reg_window = new registration();
-    connect(reg_window, SIGNAL(sendData(QString, QString)), this, SLOT(recieveData(QString, QString)));
+    frameEmoji      = new EmojiFrame();
+    emojiMan        = new EmojiManager();
+    notice          = new Notification();
+    reg_window      = new registration();
+    trayIcon        = new TrayIcon(this);
+    stackchat       = new QStackedWidget;
+    trayIconMenu    = new QMenu(this);
+    tcpSocket       = new QTcpSocket(this);
+
 
     ui->RB_sendEnter->setChecked(true);
-    download_path="(C:/...)";
-    stackchat = new QStackedWidget;
-    t=0;
-    trayIcon = new TrayIcon(this);
-    trayIconMenu = new QMenu(this);
+    ui->userList->setItemDelegate(new ListDelegate(ui->userList));
+    ui->widget_2->hide();
+
     trayIconMenu->addAction(ui->actionShowHideWindow);
     trayIconMenu->addSeparator();
     trayIconMenu->addAction(ui->actionExit);
     trayIcon->setContextMenu(trayIconMenu);
-    connect(trayIcon, SIGNAL(activated(QSystemTrayIcon::ActivationReason)), this, SLOT(iconActivated(QSystemTrayIcon::ActivationReason)));
     trayIcon->hide();
 
-    ui->chat_back_lab->setStyleSheet("background-color: rgb(255, 255, 235)");
-
-    personDates = false;
-    ui->widget_2->hide();
-
-    tcpSocket = new QTcpSocket(this);
-
+    connect(trayIcon, SIGNAL(activated(QSystemTrayIcon::ActivationReason)), this, SLOT(iconActivated(QSystemTrayIcon::ActivationReason)));
+    connect(reg_window, SIGNAL(sendData(QString, QString)), this, SLOT(recieveData(QString, QString)));
     connect(frameEmoji, SIGNAL(sendEmoji(QString)), this, SLOT(insertEmoticon(QString)));
+
     connect(tcpSocket, SIGNAL(readyRead()), this, SLOT(getMessage()));
     connect(tcpSocket, SIGNAL(error(QAbstractSocket::SocketError)), this, SLOT(show_Error(QAbstractSocket::SocketError)));
     connect(tcpSocket, SIGNAL(connected()), this, SLOT(send_personal_data()));
     connect(tcpSocket, SIGNAL(disconnected()), this, SLOT(onDisconnect()));
+
     connect(ui->userSetting_button, SIGNAL(clicked()), this, SLOT(on_userSetting_clicked()));
     connect(ui->close_setting_button_2, SIGNAL(clicked()), this, SLOT(on_close_setting_button_clicked()));
     connect(ui->userList_3, SIGNAL(itemClicked(QListWidgetItem*)), SLOT(whisperOnClick(QListWidgetItem*)));
     connect(ui->userList, SIGNAL(itemDoubleClicked(QListWidgetItem*)), SLOT(whisperOnClickUsers(QListWidgetItem*)));
     connect(ui->userList, SIGNAL(itemClicked(QListWidgetItem*)), SLOT(whisperOnClickSelectUsers(QListWidgetItem*)));
     connect(ui->actionExit, SIGNAL(triggered()), this, SLOT(close()));
-    ui->userList->setItemDelegate(new ListDelegate(ui->userList));
 }
 
 void Client::keyReleaseEvent(QKeyEvent *event)
@@ -101,16 +97,10 @@ void Client::keyReleaseEvent(QKeyEvent *event)
     }
 
     if(ui->RB_send_CEnter->isChecked())
-    {
         if(event->modifiers()==Qt::ControlModifier)
-        {
             if(event->key() == Qt::Key_Return)
-            {
                 if(ui->widget_2->isHidden() && ui->RB_send_CEnter->isChecked())
                     on_sendMessage_clicked();
-            }
-        }
-    }
 }
 
 void Client::recieveData(QString str, QString pas)
@@ -208,6 +198,40 @@ void Client::insertEmoticon(QString symbol)
     }
 }
 
+void Client::AddUser_Chat(QString _username, QString _sex, QString _message)
+{
+    int rand_avatar;
+    QString sex = _sex;
+
+    if(sex=="Man")
+        rand_avatar = rand()%18+1;
+    else if(sex=="Woman")
+        rand_avatar = rand()%13+19;
+    else if(sex=="Unknown")
+        rand_avatar = rand()%20+32;
+
+    QIcon pic(":/Avatars/Resource/Avatars/"+QString::number(rand_avatar)+".jpg");
+
+    if (!vec.empty())
+        for(int i=0; i<vec.size(); i++)
+            if(vec.at(i)->data(Qt::DisplayRole)==_username)
+                return;
+
+    QListWidgetItem *item = new QListWidgetItem();
+    QListWidget *chatlist = new QListWidget();
+    chatlist->setItemDelegate(new ChatListDelegate(chatlist));
+    ui->stackedWidget_2->addWidget(chatlist);
+
+    item->setData(Qt::DisplayRole, _username);
+    item->setData(Qt::ToolTipRole, QDateTime::currentDateTime().toString("dd.MM.yy hh:mm"));
+    item->setData(Qt::UserRole + 1, _message);
+    item->setData(Qt::DecorationRole, pic);
+
+    vec.push_back(item);
+    chatvec.push_back(chatlist);
+    ui->userList->addItem(item);
+}
+
 void Client::getMessage()
 {
     QString message;
@@ -239,83 +263,29 @@ void Client::getMessage()
 
     switch (cmd)
     {
-     case COMMAND::USERLIST:
+
+    case COMMAND::USERLIST:
     {
         QVector <QPair<QString, QString>> lst;
         in >> lst;
 
         for(int i=0; i<lst.size(); i++)
-        {
-            int rand_avatar;
-            QString sex = lst.at(i).second;
+            AddUser_Chat(lst.at(i).first, lst.at(i).second, "New User.");
 
-            if(sex=="Man")
-                rand_avatar = rand()%18+1;
-            else if(sex=="Woman")
-                rand_avatar = rand()%13+19;
-            else if(sex=="Unknown")
-                rand_avatar = rand()%20+32;
-
-            QIcon pic(":/Avatars/Resource/Avatars/"+QString::number(rand_avatar)+".jpg");
-
-            QListWidgetItem *item = new QListWidgetItem();
-            QListWidget *chatlist = new QListWidget();
-            chatlist->setItemDelegate(new ChatListDelegate(chatlist));
-            ui->stackedWidget_2->addWidget(chatlist);
-
-            item->setData(Qt::DisplayRole, lst.at(i).first);
-            item->setData(Qt::ToolTipRole, QDateTime::currentDateTime().toString("dd.MM.yy hh:mm"));
-            item->setData(Qt::UserRole + 1, "New User.");
-            item->setData(Qt::DecorationRole, pic);
-
-            vec.push_back(item);
-            chatvec.push_back(chatlist);
-            ui->userList->addItem(item);
-        }
         break;
     }
+
     case COMMAND::FINDUSER:
     {
         QString find_user = commandList.at(1);
 
-        if(gl_fname==name)
-            break;
         if(find_user=="OKFIN" && gl_fname!=name)
         {
-            int rand_avatar;
-            QString sex = commandList.at(2);
-            if(sex=="Man")
-                rand_avatar = rand()%18+1;
-            else if(sex=="Woman")
-                rand_avatar = rand()%13+19;
-            else if(sex=="Unknown")
-                rand_avatar = rand()%20+32;
-
-            QIcon pic(":/Avatars/Resource/Avatars/"+QString::number(rand_avatar)+".jpg");
-
-            if (!vec.empty())
-            {
-                for(int i=0; i<vec.size(); i++)
-                    if(vec.at(i)->data(Qt::DisplayRole)==gl_fname)
-                        return;
-            }
-
-            QListWidgetItem *item = new QListWidgetItem();
-            QListWidget *chatlist = new QListWidget();
-            chatlist->setItemDelegate(new ChatListDelegate(chatlist));
-            ui->stackedWidget_2->addWidget(chatlist);
-
-            item->setData(Qt::DisplayRole, gl_fname);
-            item->setData(Qt::ToolTipRole, QDateTime::currentDateTime().toString("dd.MM.yy hh:mm"));
-            item->setData(Qt::UserRole + 1, "New User.");
-            item->setData(Qt::DecorationRole, pic);
-
-            vec.push_back(item);
-            chatvec.push_back(chatlist);
-
-            ui->userList->addItem(item);
+            AddUser_Chat(gl_fname, commandList.at(2), "New User.");
             findcont->~findcontacts();
         }
+        else
+            findcont->SetErrorLayout(true);
         break;
     }
 
@@ -324,9 +294,6 @@ void Client::getMessage()
         // Пока без предложения дружбы.
         // Не знаю, нужно ли автоматически добавлять в друзья на той стороне.
 
-        qDebug() << "Invite";
-        if(gl_fname==name)
-            break;
         QString find_user = commandList.at(1);
         QListWidgetItem *item = new QListWidgetItem();
         item->setData(Qt::DisplayRole, gl_fname);
@@ -384,8 +351,6 @@ void Client::getMessage()
                         break;
                     }
             }
-
-            item->setData(Qt::UserRole + 1, "FROM");
         }
     }
 }
@@ -508,7 +473,6 @@ void Client::whisperOnClick(QListWidgetItem* user)
 
 void Client::on_pushButton_clicked()
 {
-
     showEmoji();
 }
 
@@ -522,7 +486,7 @@ void Client::showEmoji()
 void Client::showFindCont()
 {
     QPoint p = QCursor::pos();
-    findcont->setGeometry(p.x() +380, p.y() +70, 320, 350);
+    findcont->setGeometry(p.x() +380, p.y() +70, 310, 350);
     findcont->show();
     connect(findcont, SIGNAL(findUsers(QString)), this, SLOT(findtoserv(QString)));
 }
@@ -531,6 +495,12 @@ void Client::findtoserv(QString name_user)
 {
     gl_fname=name_user;
     static bool tmp = true;
+
+    if(name==gl_fname)
+    {
+        findcont->SetErrorLayout(false);
+        return;
+    }
 
     if(tmp)
     {
@@ -617,12 +587,7 @@ void Client::on_PB_SelColor_clicked()
 
 void Client::on_PB_LoadFileBackground_clicked()
 {
-    QString files = QFileDialog::getOpenFileName
-            (
-                this,
-                tr("Select Images"),"",
-                tr("Images (*.jpg *jpeg *.png)")
-                );
+    QString files = QFileDialog::getOpenFileName(this, tr("Select Images"), "" , tr("Images (*.jpg *jpeg *.png)"));
 
     if(QString::compare(files, QString())!=0)
     {
@@ -643,12 +608,7 @@ void Client::on_PB_LoadFileBackground_clicked()
 
 void Client::on_radioButton_2_clicked()
 {
-    QString files = QFileDialog::getOpenFileName
-            (
-                this,
-                tr("Select Images"),"",
-                tr("Images (*.jpg *jpeg *.png)")
-                );
+    QString files = QFileDialog::getOpenFileName(this, tr("Select Images"), "" , tr("Images (*.jpg *jpeg *.png)"));
 
     if(QString::compare(files, QString())!=0)
     {
@@ -676,11 +636,8 @@ void Client::on_radioButton_clicked()
 
 void Client::on_Download_path_PB_clicked()
 {
-    QString path = QFileDialog::getExistingDirectory
-            (
-                this,
-                tr("Select Images"),""
-                );
+    QString path = QFileDialog::getExistingDirectory(this, tr("Select Images"), "");
+
     if(QString::compare(path, QString())!=0)
     {
         download_path = path;
@@ -693,7 +650,6 @@ void Client::on_Download_path_PB_clicked()
 
 void Client::on_pushButton_2_clicked()
 {
-
     QString filePatch = QFileDialog::getOpenFileName(this,
                                                      QObject::trUtf8("Выбор файла для отправки"), "",
                                                      QObject::trUtf8("(*.*)"));
