@@ -157,6 +157,7 @@ void Server::getMessage()
         if (result!="false")
         {
             sendToID("_FIN_ OKFIN " + result, client->socketDescriptor());
+            sqlitedb->addChatTable(whoFind, findUser);
             ui->chatDialog->addItem(timeconnect() + " - " + whoFind + " added " + findUser );
         }
         else
@@ -238,9 +239,11 @@ void Server::NewUser(QTcpSocket *client, QString _user)
     out.setVersion(QDataStream::Qt_5_4);
 
     QVector <QPair<QString, QString>> lst;
-    lst = sqlitedb->FriendList(UserName);
-    qDebug() << lst;
-    out << QString("FRLST") << lst;
+    ChatListVector chatlst;
+
+    lst = sqlitedb->FriendList(UserName, chatlst);
+
+    out << QString("FRLST") << lst << chatlst;
     client->write(block);
 
     while (AlreadyName)
@@ -310,6 +313,8 @@ void Server::PrivateMessage(QTcpSocket *client, QString _message)
         sendToID(newMessage, toUser->getSocket()->socketDescriptor());
 
         ui->chatDialog->addItem(timeconnect() + " - PM: " + fromUser->getUserName() + " -> " + toUser->getUserName() + ":  " + text);
+        sqlitedb->addMessInChat(fromUser->getUserName(), toUser->getUserName(), text, QString("To"));
+        sqlitedb->addMessInChat(toUser->getUserName(), fromUser->getUserName(),  text, QString("From"));
     }
 }
 

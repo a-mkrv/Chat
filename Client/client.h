@@ -30,6 +30,9 @@
 #include <QTime>
 #include <QPair>
 
+typedef QVector <QPair <QString, QVector<QPair <QString, QString>>>> ChatListVector;
+
+
 namespace Ui {
 class Client;
 }
@@ -84,7 +87,8 @@ private slots:
     void on_pushButton_3_clicked();
     void on_pushButton_5_clicked();
     void on_comboBox_currentIndexChanged(int index);
-    void AddUser_Chat(QString, QString, QString);
+    void AddUser_Chat(QString, QString, QVector<QPair<QString, QString>>, int);
+
 public slots:
     void recieveData(QString str, QString pas);
 

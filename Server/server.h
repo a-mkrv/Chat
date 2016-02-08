@@ -9,9 +9,11 @@
 #include <QDateTime>
 #include <QList>
 #include <QFile>
+#include <QPair>
 
 #include "sqlitedb.h"
 #include "user.h"
+
 
 namespace Ui {
 class Server;

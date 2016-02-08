@@ -23,7 +23,8 @@ QString gl_fname; //Поиск человека
 // Добавлены уведомления в углу экрана.
 // Дисконнект из-за доп.сокетов и соединений при авторизации. (Правильно прикрутить закрытие сокета) -- Сделано
 // СОХРАНЕНИЕ ПОЛЬЗОВАТЕЛЕЙ Друг у Друга (Через SQLite) --Сделано
-
+// Сохранение и загрузка личных сообщений. -- Сделано
+// Демо вариант.
 
 // Основное:
 // Устойчивая отправка файлов до клииента           -- Временно не работате =(
@@ -198,10 +199,12 @@ void Client::insertEmoticon(QString symbol)
     }
 }
 
-void Client::AddUser_Chat(QString _username, QString _sex, QString _message)
+void Client::AddUser_Chat(QString _username, QString _sex, QVector<QPair<QString, QString>> lst, int count)
 {
     int rand_avatar;
     QString sex = _sex;
+
+    // В зависимости от пола рандомно устаналиваю аватар из списка.
 
     if(sex=="Man")
         rand_avatar = rand()%18+1;
@@ -212,23 +215,71 @@ void Client::AddUser_Chat(QString _username, QString _sex, QString _message)
 
     QIcon pic(":/Avatars/Resource/Avatars/"+QString::number(rand_avatar)+".jpg");
 
+
+    // Проверка на повторное добавление человека в список - выходим.
     if (!vec.empty())
         for(int i=0; i<vec.size(); i++)
             if(vec.at(i)->data(Qt::DisplayRole)==_username)
                 return;
+
+    //Создание Списка на каждую страницу стека, для отдельного отображения чат переписки и через делегат управляю свойством Item'a
 
     QListWidgetItem *item = new QListWidgetItem();
     QListWidget *chatlist = new QListWidget();
     chatlist->setItemDelegate(new ChatListDelegate(chatlist));
     ui->stackedWidget_2->addWidget(chatlist);
 
+    // Добавление нового пользователя через Поиск.
+    if (count==-1)
+    {
+        item->setData(Qt::DisplayRole, _username);
+        item->setData(Qt::ToolTipRole, QDateTime::currentDateTime().toString("dd.MM.yy hh:mm"));
+        item->setData(Qt::UserRole + 1, "New User");
+        item->setData(Qt::DecorationRole, pic);
+
+        vec.push_back(item);
+        chatvec.push_back(chatlist);
+        ui->userList->addItem(item);
+
+        return;
+    }
+
+    // Добавление пользователя(друга) из БД
     item->setData(Qt::DisplayRole, _username);
     item->setData(Qt::ToolTipRole, QDateTime::currentDateTime().toString("dd.MM.yy hh:mm"));
-    item->setData(Qt::UserRole + 1, _message);
     item->setData(Qt::DecorationRole, pic);
-
     vec.push_back(item);
     chatvec.push_back(chatlist);
+
+    // Загрузка Вашей переписки.
+    for(int i=0; i<lst.size(); i++)
+    {
+        QListWidgetItem *item2 = new QListWidgetItem();
+        QString msg = lst.at(i).first;
+        QString timeStr = (lst.at(i).first);
+        timeStr.remove(14, lst.at(i).first.size());
+
+        msg.remove(0,14);
+        if(lst.at(i).second == "From")
+        {
+            item2->setData(Qt::UserRole + 1, "FROM");
+            item2->setData(Qt::DisplayRole, msg);
+            item2->setData(Qt::ToolTipRole, timeStr);
+            item->setData(Qt::ToolTipRole, timeStr);
+            item->setData(Qt::UserRole + 1, msg);
+        }
+        else if (lst.at(i).second == "To")
+        {
+            item2->setData(Qt::UserRole + 1, "TO");
+            item2->setData(Qt::DisplayRole, msg);
+            item2->setData(Qt::ToolTipRole, timeStr);
+        }
+
+        chatvec.at(count)->addItem(item2);
+    }
+
+    ui->userList->clearSelection();
+    ui->stackedWidget_2->hide();
     ui->userList->addItem(item);
 }
 
@@ -267,10 +318,11 @@ void Client::getMessage()
     case COMMAND::USERLIST:
     {
         QVector <QPair<QString, QString>> lst;
-        in >> lst;
+        ChatListVector chatList;
+        in >> lst >> chatList;
 
         for(int i=0; i<lst.size(); i++)
-            AddUser_Chat(lst.at(i).first, lst.at(i).second, "New User.");
+            AddUser_Chat(lst.at(i).first, lst.at(i).second, chatList.at(i).second, i);
 
         break;
     }
@@ -281,7 +333,8 @@ void Client::getMessage()
 
         if(find_user=="OKFIN" && gl_fname!=name)
         {
-            AddUser_Chat(gl_fname, commandList.at(2), "New User.");
+            QVector<QPair<QString, QString>> a;
+            AddUser_Chat(gl_fname, commandList.at(2), a , -1);
             findcont->~findcontacts();
         }
         else
@@ -689,8 +742,12 @@ void Client::on_pushButton_2_clicked()
 
 void Client::on_userList_clicked(const QModelIndex &index)
 {
+
     if (!vec.empty())
+    {
+        ui->stackedWidget_2->show();
         ui->stackedWidget_2->setCurrentIndex(index.row());
+    }
 }
 
 void Client::on_pushButton_3_clicked()

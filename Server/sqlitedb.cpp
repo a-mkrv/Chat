@@ -14,7 +14,6 @@ SQLiteDB::SQLiteDB(QObject *parent) : QObject(parent)
 
         else
             qDebug() <<"[!] Database File does not exist";
-
 }
 
 
@@ -48,11 +47,11 @@ QString SQLiteDB::FindInDB(QString UserName, QString whoFind)
             {
                 if(!whoFind.isEmpty())
                 {
-                       QSqlQuery queryAdFr(myDB);
-                       queryAdFr.prepare("INSERT INTO Friend"+whoFind+" (name, sex) VALUES (:UserName, :Sex)");
-                       queryAdFr.bindValue(":UserName", UserName);
-                       queryAdFr.bindValue(":Sex", query.value(1).toString());
-                       queryAdFr.exec();
+                    QSqlQuery queryAdFr(myDB);
+                    queryAdFr.prepare("INSERT INTO Friend"+whoFind+" (name, sex) VALUES (:UserName, :Sex)");
+                    queryAdFr.bindValue(":UserName", UserName);
+                    queryAdFr.bindValue(":Sex", query.value(1).toString());
+                    queryAdFr.exec();
                 }
                 return query.value(1).toString();
             }
@@ -67,20 +66,50 @@ bool SQLiteDB::CorrectInput(QString _login, QString _password)
     if(query.exec("SELECT UserName, Password FROM Users WHERE UserName=\'" +_login+ "\' AND Password=\'"+_password+ "\'"))
         if(query.next())
             if (query.value(0).toString()== _login && query.value(1).toString()==_password)
-                return true;   
+                return true;
 
     query.exec();
     return false;
 }
 
-QVector <QPair<QString, QString>> SQLiteDB::FriendList(QString user)
+QVector <QPair<QString, QString>> SQLiteDB::FriendList(QString user, ChatListVector &lst)
 {
     QSqlQuery query(myDB);
     QVector <QPair <QString, QString>> FriendSex;
 
     if(query.exec("SELECT name, sex FROM Friend" + user))
         while (query.next())
+        {
             FriendSex.push_back(qMakePair(query.value(0).toString(), query.value(1).toString()));
+            LoadChatList(user, query.value(0).toString(), lst);
+        }
 
     return FriendSex;
+}
+
+void SQLiteDB::LoadChatList(QString who, QString find, ChatListVector &lst)
+{
+
+    QVector <QPair <QString, QString>> msg;
+    QSqlQuery query(myDB);
+    if(query.exec("SELECT Message, Who, Time FROM Chat" + who + find))
+        while (query.next())
+            msg.push_back(qMakePair(query.value(2).toString() + query.value(0).toString(), query.value(1).toString()));
+    lst.push_back(qMakePair(find, msg));
+}
+
+void SQLiteDB::addChatTable(QString who, QString find)
+{
+    QSqlQuery queryCreate(myDB);
+    queryCreate.exec("CREATE TABLE Chat" + who + find + " (Message text NOT NULL, Who text NOT NULL, Time text NOT NULL)");
+}
+
+void SQLiteDB::addMessInChat(QString who, QString find, QString message, QString log)
+{
+    QSqlQuery query(myDB);
+    query.prepare("INSERT INTO Chat" + who + find +  " (Message, Who, Time) VALUES (:Mes, :Who, :Time)");
+    query.bindValue(":Mes", message);
+    query.bindValue(":Who", log);
+    query.bindValue(":Time", QDateTime::currentDateTime().toString("dd.MM.yy hh:mm"));
+    query.exec();
 }
