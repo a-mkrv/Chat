@@ -6,7 +6,7 @@
 #include <QTcpSocket>
 #include "newcontact.h"
 #include <QTime>
-#include <QMouseEvent>
+
 
 namespace Ui {
 class registration;

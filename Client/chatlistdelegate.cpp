@@ -1,17 +1,14 @@
 #include "chatlistdelegate.h"
 #include <QDebug>
 
-ChatListDelegate::ChatListDelegate(QObject *parent)
+ChatListDelegate::ChatListDelegate(QObject *parent, QString _color)
 {
-
+color = _color;
+qDebug() << color;
 }
 
 void ChatListDelegate::paint ( QPainter * painter, const QStyleOptionViewItem & option, const QModelIndex & index ) const{
     QRect r = option.rect;
-    QPen linePen(QColor::fromRgb(211,211,211), 1, Qt::SolidLine);
-    QPen lineMarkedPen(QColor::fromRgb(0,90,131), 1, Qt::SolidLine);
-    QPen fontPen(QColor::fromRgb(51,51,51), 1, Qt::SolidLine);
-    QPen fontMarkedPen(Qt::white, 1, Qt::SolidLine);
 
     //GET TITLE, DESCRIPTION AND ICON
     QIcon ic = QIcon(qvariant_cast<QIcon>(index.data(Qt::DecorationRole)));
@@ -21,42 +18,44 @@ void ChatListDelegate::paint ( QPainter * painter, const QStyleOptionViewItem & 
 
     if(option.state & QStyle::State_Selected){
 
-        QLinearGradient gradientSelected(r.left(),r.top(),r.left(),r.height()+r.top());
+        QLinearGradient gradientSelected(r.left(),r.top()+3,r.width(),r.height() - 6);
         gradientSelected.setColorAt(0.0, QColor::fromRgb(195,213,255));
         gradientSelected.setColorAt(1.0, QColor::fromRgb(177,215,246));
         painter->setBrush(gradientSelected);
-        painter->drawRect(r);
+        painter->drawRoundedRect(r.left(), r.top()+3, r.width(), r.height() - 6, 5, 5);
 
-        //BORDER
-        painter->setPen(lineMarkedPen);
-        painter->drawLine(r.topLeft(),r.topRight());
-        painter->drawLine(r.topRight(),r.bottomRight());
-        painter->drawLine(r.bottomLeft(),r.bottomRight());
-        painter->drawLine(r.topLeft(),r.bottomLeft());
-
-        painter->setPen(fontMarkedPen);
 
     } else {
 
         //BACKGROUND
+        painter->setRenderHint(QPainter::Antialiasing);
+
+        //painter->setPen("#dbdcff" );
+        int SizeMesBox = 0;
+        if(title.size() >= 25 && title.size() <=35)
+            SizeMesBox = title.size()+320;
+        else if(title.size()<25)
+            SizeMesBox = title.size()+170;
+        else if(title.size()> 45)
+            SizeMesBox = r.width()-15;
+        else if(title.size()> 35)
+            SizeMesBox = title.size() + 400;
+
+        painter->setPen(Qt::white);
+
+        // Установка окна для сообщения.
+
         if(description=="FROM")
+        {
             painter->setBrush(QColor("#eeefff"));
+            painter->drawRoundedRect(r.left()+2, r.top()+3, SizeMesBox, r.height() - 6, 5, 5);
+        }
         else if (description=="TO")
-            painter->setBrush(QColor(255,255,235));
-
-        painter->drawRect(r);
-
-        //BORDER
-        painter->setPen(linePen);
-        painter->drawLine(r.topLeft(),r.topRight());
-        painter->drawLine(r.topRight(),r.bottomRight());
-        painter->drawLine(r.bottomLeft(),r.bottomRight());
-        painter->drawLine(r.topLeft(),r.bottomLeft());
-
-        painter->setPen(fontPen);
+        {
+            painter->setBrush(QColor("#effdde"));
+            painter->drawRoundedRect(r.right()-SizeMesBox, r.top()+3, SizeMesBox-2, r.height() - 6, 5, 5);
+        }
     }
-
-
 
     int imageSpace = 10;
     if (!ic.isNull()) {
@@ -65,6 +64,7 @@ void ChatListDelegate::paint ( QPainter * painter, const QStyleOptionViewItem & 
         imageSpace = 85;
     }
 
+    painter->setPen( Qt::black );
     if(description=="FROM")
     {
         //TITLE
@@ -85,8 +85,9 @@ void ChatListDelegate::paint ( QPainter * painter, const QStyleOptionViewItem & 
         // TIME
         r = option.rect.adjusted(imageSpace, 10, -10, -27);
         painter->setFont( QFont( "Lucida Grande", 8, QFont::Normal ) );
-        painter->drawText(r.left(), r.top()+10, r.width(), r.height(), Qt::AlignBottom|Qt::AlignRight, time , &r);
+        painter->drawText(r.left()-3, r.top()+10, r.width(), r.height(), Qt::AlignBottom|Qt::AlignRight, time , &r);
     }
+
 }
 
 QSize ChatListDelegate::sizeHint ( const QStyleOptionViewItem & option, const QModelIndex & index ) const{

@@ -56,6 +56,22 @@ void NewContact::on_accept_button_clicked()
     socket->write(block);
 }
 
+void NewContact::mouseMoveEvent(QMouseEvent *event)
+{
+    if (event->buttons() && Qt::LeftButton) {
+        move(event->globalPos() - m_dragPosition);
+        event->accept();
+    }
+}
+
+void NewContact::mousePressEvent(QMouseEvent *event)
+{
+    if (event->button() == Qt::LeftButton) {
+        m_dragPosition = event->globalPos() - frameGeometry().topLeft();
+        event->accept();
+    }
+}
+
 void NewContact::on_pushButton_clicked()
 {
     ui->enter_city->setText("");
@@ -71,4 +87,14 @@ void NewContact::on_pushButton_clicked()
 NewContact::~NewContact()
 {
     delete ui;
+}
+
+void NewContact::on_closeregBut_clicked()
+{
+    this->close();
+}
+
+void NewContact::on_minimazregBut_clicked()
+{
+    this->showMinimized();
 }

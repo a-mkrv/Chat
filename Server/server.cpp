@@ -238,7 +238,7 @@ void Server::NewUser(QTcpSocket *client, QString _user)
     QDataStream out(&block, QIODevice::WriteOnly);
     out.setVersion(QDataStream::Qt_5_4);
 
-    QVector <QPair<QString, QString>> lst;
+    QList <QPair<QString, QString>> lst;
     ChatListVector chatlst;
 
     lst = sqlitedb->FriendList(UserName, chatlst);
@@ -287,27 +287,28 @@ void Server::PrivateMessage(QTcpSocket *client, QString _message)
         if (i->getSocket() == client)
             fromUser = i;
 
-    if (!WordList.isEmpty())
+
+    QString recipient = WordList.takeFirst();
+
+    QString text;
+    text.clear();
+    for (auto i : WordList)
     {
-        QString recipient = WordList.takeFirst();
+        text += i;
+        text += " ";
+    }
+
+
+    if (!WordList.isEmpty())
         for (auto i : clientConnections)
             if (i->getUserName() == recipient)
                 toUser = i;
-    }
+
+    QString newMessage = "*To: " + recipient + ": " + text;
+    sendToID(newMessage, fromUser->getSocket()->socketDescriptor());
 
     if (toUser != nullptr)
     {
-        QString text;
-        text.clear();
-        for (auto i : WordList)
-        {
-            text += i;
-            text += " ";
-        }
-
-        QString newMessage = "*To: " + toUser->getUserName() + ": " + text;
-        sendToID(newMessage, fromUser->getSocket()->socketDescriptor());
-
         newMessage.clear();
         newMessage = "*From: " + fromUser->getUserName() + ": " + text;
         sendToID(newMessage, toUser->getSocket()->socketDescriptor());
@@ -315,6 +316,11 @@ void Server::PrivateMessage(QTcpSocket *client, QString _message)
         ui->chatDialog->addItem(timeconnect() + " - PM: " + fromUser->getUserName() + " -> " + toUser->getUserName() + ":  " + text);
         sqlitedb->addMessInChat(fromUser->getUserName(), toUser->getUserName(), text, QString("To"));
         sqlitedb->addMessInChat(toUser->getUserName(), fromUser->getUserName(),  text, QString("From"));
+    }
+    else
+    {
+        sqlitedb->addMessInChat(fromUser->getUserName(), recipient, text, QString("To"));
+        sqlitedb->addMessInChat(recipient, fromUser->getUserName(),  text, QString("From"));
     }
 }
 

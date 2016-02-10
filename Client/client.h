@@ -30,7 +30,7 @@
 #include <QTime>
 #include <QPair>
 
-typedef QVector <QPair <QString, QVector<QPair <QString, QString>>>> ChatListVector;
+typedef QList <QPair <QString, QList<QPair <QString, QString>>>> ChatListVector;
 
 
 namespace Ui {
@@ -77,7 +77,7 @@ private slots:
     void on_PB_LoadFileBackground_clicked();
     void findtoserv(QString str);
     void whisperOnClickUsers(QListWidgetItem* user);
-    void whisperOnClickSelectUsers(QListWidgetItem* user);
+
     void on_radioButton_2_clicked();
     void on_radioButton_clicked();
     void on_Download_path_PB_clicked();
@@ -87,7 +87,7 @@ private slots:
     void on_pushButton_3_clicked();
     void on_pushButton_5_clicked();
     void on_comboBox_currentIndexChanged(int index);
-    void AddUser_Chat(QString, QString, QVector<QPair<QString, QString>>, int);
+    void AddUser_Chat(QString, QString, QList<QPair<QString, QString>>, int);
 
 public slots:
     void recieveData(QString str, QString pas);
@@ -120,6 +120,7 @@ private:
     QFile *sendFile;
     QString name;
     QString download_path;
+    QString colorchat;
     bool personDates;
 };
 

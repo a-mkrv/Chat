@@ -92,11 +92,7 @@ void registration::keyReleaseEvent(QKeyEvent *event)
 {
     switch(event->key()) {
     case Qt::Key_Return:
-        if(!ui->username_enter->text().simplified().isEmpty() && !ui->pass_enter->text().simplified().isNull())
-        {
-            emit sendData(ui->username_enter->text().simplified(), ui->pass_enter->text().simplified());
-            this->hide();
-        }
+        on_pushButton_clicked();
         break;
     }
 }

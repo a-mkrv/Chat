@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>651</width>
-    <height>549</height>
+    <height>574</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -21,7 +21,7 @@
    <property name="geometry">
     <rect>
      <x>110</x>
-     <y>44</y>
+     <y>82</y>
      <width>431</width>
      <height>61</height>
     </rect>
@@ -40,7 +40,7 @@ border-radius: 8px;
    <property name="geometry">
     <rect>
      <x>110</x>
-     <y>414</y>
+     <y>452</y>
      <width>431</width>
      <height>71</height>
     </rect>
@@ -62,7 +62,7 @@ border-radius: 8px;
    <property name="geometry">
     <rect>
      <x>110</x>
-     <y>104</y>
+     <y>142</y>
      <width>431</width>
      <height>331</height>
     </rect>
@@ -80,7 +80,7 @@ border-radius: 8px;
    <property name="geometry">
     <rect>
      <x>110</x>
-     <y>54</y>
+     <y>92</y>
      <width>431</width>
      <height>41</height>
     </rect>
@@ -110,7 +110,7 @@ background-color: rgb(255, 255, 255,0);
    <property name="geometry">
     <rect>
      <x>0</x>
-     <y>-11</y>
+     <y>22</y>
      <width>651</width>
      <height>561</height>
     </rect>
@@ -129,7 +129,7 @@ background-color: rgb(255, 255, 255,0);
    <property name="geometry">
     <rect>
      <x>260</x>
-     <y>430</y>
+     <y>468</y>
      <width>151</width>
      <height>41</height>
     </rect>
@@ -175,7 +175,7 @@ border-width: 1px;
    <property name="geometry">
     <rect>
      <x>152</x>
-     <y>196</y>
+     <y>234</y>
      <width>32</width>
      <height>21</height>
     </rect>
@@ -193,7 +193,7 @@ border-width: 1px;
    <property name="geometry">
     <rect>
      <x>152</x>
-     <y>242</y>
+     <y>280</y>
      <width>35</width>
      <height>21</height>
     </rect>
@@ -211,7 +211,7 @@ border-width: 1px;
    <property name="geometry">
     <rect>
      <x>152</x>
-     <y>288</y>
+     <y>326</y>
      <width>34</width>
      <height>21</height>
     </rect>
@@ -229,7 +229,7 @@ border-width: 1px;
    <property name="geometry">
     <rect>
      <x>152</x>
-     <y>337</y>
+     <y>375</y>
      <width>77</width>
      <height>21</height>
     </rect>
@@ -247,7 +247,7 @@ border-width: 1px;
    <property name="geometry">
     <rect>
      <x>152</x>
-     <y>147</y>
+     <y>185</y>
      <width>88</width>
      <height>21</height>
     </rect>
@@ -265,7 +265,7 @@ border-width: 1px;
    <property name="geometry">
     <rect>
      <x>251</x>
-     <y>147</y>
+     <y>185</y>
      <width>221</width>
      <height>25</height>
     </rect>
@@ -288,12 +288,18 @@ border-width: 1px;
      border-style: solid;
      border-color:  rgb(255, 255, 255, 200);</string>
    </property>
+   <property name="maxLength">
+    <number>14</number>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
+   </property>
   </widget>
   <widget class="QComboBox" name="sex_person">
    <property name="geometry">
     <rect>
      <x>251</x>
-     <y>196</y>
+     <y>234</y>
      <width>80</width>
      <height>22</height>
     </rect>
@@ -305,7 +311,10 @@ border-width: 1px;
     </size>
    </property>
    <property name="autoFillBackground">
-    <bool>true</bool>
+    <bool>false</bool>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">background-color: rgb(161, 188, 199);</string>
    </property>
    <property name="editable">
     <bool>false</bool>
@@ -314,7 +323,7 @@ border-width: 1px;
     <number>0</number>
    </property>
    <property name="frame">
-    <bool>false</bool>
+    <bool>true</bool>
    </property>
    <item>
     <property name="text">
@@ -336,7 +345,7 @@ border-width: 1px;
    <property name="geometry">
     <rect>
      <x>251</x>
-     <y>242</y>
+     <y>280</y>
      <width>80</width>
      <height>22</height>
     </rect>
@@ -352,7 +361,7 @@ border-width: 1px;
    <property name="geometry">
     <rect>
      <x>251</x>
-     <y>288</y>
+     <y>326</y>
      <width>221</width>
      <height>25</height>
     </rect>
@@ -374,13 +383,19 @@ background-color: rgb(22, 0, 200,10);
 border-width: 1px;
      border-style: solid;
      border-color:  rgb(255, 255, 255, 200);</string>
+   </property>
+   <property name="maxLength">
+    <number>20</number>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
    </property>
   </widget>
   <widget class="QLineEdit" name="enter_password">
    <property name="geometry">
     <rect>
      <x>251</x>
-     <y>337</y>
+     <y>375</y>
      <width>221</width>
      <height>25</height>
     </rect>
@@ -403,12 +418,21 @@ border-width: 1px;
      border-style: solid;
      border-color:  rgb(255, 255, 255, 200);</string>
    </property>
+   <property name="maxLength">
+    <number>14</number>
+   </property>
+   <property name="echoMode">
+    <enum>QLineEdit::Password</enum>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
+   </property>
   </widget>
   <widget class="QLabel" name="Error_label">
    <property name="geometry">
     <rect>
      <x>251</x>
-     <y>171</y>
+     <y>209</y>
      <width>221</width>
      <height>16</height>
     </rect>
@@ -424,7 +448,7 @@ border-width: 1px;
    <property name="geometry">
     <rect>
      <x>250</x>
-     <y>370</y>
+     <y>408</y>
      <width>221</width>
      <height>16</height>
     </rect>
@@ -440,7 +464,7 @@ border-width: 1px;
    <property name="geometry">
     <rect>
      <x>120</x>
-     <y>424</y>
+     <y>462</y>
      <width>61</width>
      <height>51</height>
     </rect>
@@ -465,6 +489,65 @@ border-style: solid;
     </size>
    </property>
   </widget>
+  <widget class="QLabel" name="label_9">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>652</width>
+     <height>23</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+   <property name="pixmap">
+    <pixmap resource="image.qrc">:/new/prefix1/Resource/123.jpg</pixmap>
+   </property>
+   <property name="scaledContents">
+    <bool>true</bool>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="minimazregBut">
+   <property name="geometry">
+    <rect>
+     <x>591</x>
+     <y>0</y>
+     <width>21</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+   <property name="icon">
+    <iconset resource="image.qrc">
+     <normaloff>:/new/prefix1/Resource/minbt.png</normaloff>:/new/prefix1/Resource/minbt.png</iconset>
+   </property>
+   <property name="flat">
+    <bool>true</bool>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="closeregBut">
+   <property name="geometry">
+    <rect>
+     <x>625</x>
+     <y>3</y>
+     <width>21</width>
+     <height>18</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+   <property name="icon">
+    <iconset resource="image.qrc">
+     <normaloff>:/new/prefix1/Resource/clbt.png</normaloff>:/new/prefix1/Resource/clbt.png</iconset>
+   </property>
+   <property name="flat">
+    <bool>true</bool>
+   </property>
+  </widget>
   <zorder>label</zorder>
   <zorder>label_4</zorder>
   <zorder>label_6</zorder>
@@ -484,6 +567,9 @@ border-style: solid;
   <zorder>Error_label</zorder>
   <zorder>Error_label_2</zorder>
   <zorder>pushButton</zorder>
+  <zorder>label_9</zorder>
+  <zorder>minimazregBut</zorder>
+  <zorder>closeregBut</zorder>
  </widget>
  <resources>
   <include location="image.qrc"/>

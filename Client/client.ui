@@ -678,7 +678,7 @@ background-color: rgb(99, 137, 168);</string>
       <string notr="true">background-color: rgb(255, 255, 255);</string>
      </property>
      <property name="currentIndex">
-      <number>1</number>
+      <number>0</number>
      </property>
      <widget class="QWidget" name="page">
       <widget class="QGroupBox" name="groupBox">
@@ -1440,6 +1440,23 @@ p, li { white-space: pre-wrap; }
      <bool>false</bool>
     </property>
    </widget>
+   <widget class="QPushButton" name="pushButton_6">
+    <property name="geometry">
+     <rect>
+      <x>384</x>
+      <y>30</y>
+      <width>681</width>
+      <height>61</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>PushButton</string>
+    </property>
+    <property name="flat">
+     <bool>true</bool>
+    </property>
+   </widget>
+   <zorder>widget_2</zorder>
    <zorder>line</zorder>
    <zorder>userList</zorder>
    <zorder>background_inder_list</zorder>
@@ -1454,9 +1471,9 @@ p, li { white-space: pre-wrap; }
    <zorder>pushButton_4</zorder>
    <zorder>pushButton_5</zorder>
    <zorder>textBrowser</zorder>
-   <zorder>stackedWidget_2</zorder>
    <zorder>search_label</zorder>
-   <zorder>widget_2</zorder>
+   <zorder>pushButton_6</zorder>
+   <zorder>stackedWidget_2</zorder>
   </widget>
   <action name="actionShowHideWindow">
    <property name="text">

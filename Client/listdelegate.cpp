@@ -75,6 +75,12 @@ void ListDelegate::paint ( QPainter * painter, const QStyleOptionViewItem & opti
     //DESCRIPTION
     r = option.rect.adjusted(imageSpace, 35, -10, 10);
     painter->setFont( QFont( "Lucida Grande", 8, QFont::Normal ) );
+
+    if(description.size()>30)
+    {
+        description.remove(30,description.size());
+        description.append("...");
+    }
     painter->drawText(r.left(), r.top(), r.width(), r.height(), Qt::AlignLeft, description, &r);
 
         }

@@ -25,19 +25,17 @@ QString gl_fname; //Поиск человека
 // СОХРАНЕНИЕ ПОЛЬЗОВАТЕЛЕЙ Друг у Друга (Через SQLite) --Сделано
 // Сохранение и загрузка личных сообщений. -- Сделано
 // Демо вариант.
+// Возможно исправить делегата, сделав сообщения пузырьком. -- Сделано
+
 
 // Основное:
 // Устойчивая отправка файлов до клииента           -- Временно не работате =(
 
-
 // Второй план:
-// Разбить код по доп классам, функциям (УБРАТЬ НАСТРОЙКИ В ДРУГОЕ МЕСТО!!!!!))
-// Возможно исправить делегата, сделав сообщения пузырьком.
 // Т.к есть структура со всей инфой о человеке(город, пол и т.д), мб добавлю Информационное окно, где-то нужно инфу разместить в общем.
 
 
-
-Client::Client(QWidget *parent) : QMainWindow(parent), download_path("(C:/...)"), personDates(false), ui(new Ui::Client)
+Client::Client(QWidget *parent) : QMainWindow(parent), download_path("(C:/...)"), personDates(false),ui(new Ui::Client)
 {
     srand((time(NULL)));
     ui->setupUi(this);
@@ -52,7 +50,8 @@ Client::Client(QWidget *parent) : QMainWindow(parent), download_path("(C:/...)")
     trayIconMenu    = new QMenu(this);
     tcpSocket       = new QTcpSocket(this);
 
-
+    QColor defaulcolor(Qt::white);
+    colorchat = defaulcolor.name();
     ui->RB_sendEnter->setChecked(true);
     ui->userList->setItemDelegate(new ListDelegate(ui->userList));
     ui->widget_2->hide();
@@ -199,7 +198,7 @@ void Client::insertEmoticon(QString symbol)
     }
 }
 
-void Client::AddUser_Chat(QString _username, QString _sex, QVector<QPair<QString, QString>> lst, int count)
+void Client::AddUser_Chat(QString _username, QString _sex, QList<QPair<QString, QString>> lst, int count)
 {
     int rand_avatar;
     QString sex = _sex;
@@ -226,7 +225,7 @@ void Client::AddUser_Chat(QString _username, QString _sex, QVector<QPair<QString
 
     QListWidgetItem *item = new QListWidgetItem();
     QListWidget *chatlist = new QListWidget();
-    chatlist->setItemDelegate(new ChatListDelegate(chatlist));
+    chatlist->setItemDelegate(new ChatListDelegate(chatlist, colorchat));
     ui->stackedWidget_2->addWidget(chatlist);
 
     // Добавление нового пользователя через Поиск.
@@ -240,6 +239,7 @@ void Client::AddUser_Chat(QString _username, QString _sex, QVector<QPair<QString
         vec.push_back(item);
         chatvec.push_back(chatlist);
         ui->userList->addItem(item);
+        ui->userList->scrollToBottom();
 
         return;
     }
@@ -277,7 +277,7 @@ void Client::AddUser_Chat(QString _username, QString _sex, QVector<QPair<QString
 
         chatvec.at(count)->addItem(item2);
     }
-
+    chatvec.at(count)->scrollToBottom();
     ui->userList->clearSelection();
     ui->stackedWidget_2->hide();
     ui->userList->addItem(item);
@@ -317,13 +317,12 @@ void Client::getMessage()
 
     case COMMAND::USERLIST:
     {
-        QVector <QPair<QString, QString>> lst;
+        QList <QPair<QString, QString>> lst;
         ChatListVector chatList;
         in >> lst >> chatList;
 
         for(int i=0; i<lst.size(); i++)
             AddUser_Chat(lst.at(i).first, lst.at(i).second, chatList.at(i).second, i);
-
         break;
     }
 
@@ -333,7 +332,7 @@ void Client::getMessage()
 
         if(find_user=="OKFIN" && gl_fname!=name)
         {
-            QVector<QPair<QString, QString>> a;
+            QList <QPair<QString, QString>> a;
             AddUser_Chat(gl_fname, commandList.at(2), a , -1);
             findcont->~findcontacts();
         }
@@ -359,8 +358,6 @@ void Client::getMessage()
     }
 
     default:                                                // Получение обычного текстового сообщения. Звук и добавление в ЧатЛист
-        if(ui->ChBox_PSound->isChecked())
-            QSound::play(":/new/prefix1/Resource/from.wav");
 
         QListWidgetItem *item = new QListWidgetItem();
         item->setData(Qt::DisplayRole, message);
@@ -373,12 +370,15 @@ void Client::getMessage()
             item->setData(Qt::DisplayRole, message.remove(0, 6+fromname.size()));
             item->setData(Qt::ToolTipRole, QDateTime::currentDateTime().toString("dd.MM.yy hh:mm"));
             chatvec.at(ui->stackedWidget_2->currentIndex())->addItem(item);
-            //item->setData(Qt::UserRole + 1, "TO");
+            chatvec.at(ui->stackedWidget_2->currentIndex())->scrollToBottom();
+
         }
         else
         {
+            if(ui->ChBox_PSound->isChecked())
+                QSound::play(":/new/prefix1/Resource/from.wav");
+
             fromname.chop(1);
-            qDebug()  << fromname;
             if (!vec.empty())
             {
                 for(int i=0; i<vec.size(); i++)
@@ -398,6 +398,7 @@ void Client::getMessage()
                             notice->show();
                         }
                         chatvec.at(i)->addItem(item);
+                        chatvec.at(i)->scrollToBottom();
                         vec.at(i)->setSelected(true);
                         ui->stackedWidget_2->setCurrentIndex(i);
 
@@ -415,11 +416,6 @@ void Client::whisperOnClickUsers(QListWidgetItem* user)
     QString insert = "/msg " + user->text() + " ";
     ui->editText->setText(insert);
     ui->editText->setFocus();
-}
-
-void Client::whisperOnClickSelectUsers(QListWidgetItem* user)
-{
-
 }
 
 void Client::mouseMoveEvent(QMouseEvent *event)
@@ -633,7 +629,7 @@ void Client::closeEvent(QCloseEvent *event)
 void Client::on_PB_SelColor_clicked()
 {
     QColor color = QColorDialog::getColor(Qt::black, this, "Text Color",  QColorDialog::DontUseNativeDialog);
-    QString textColorName = color.name();
+    colorchat = color.name();
 
     QPixmap pixmap(16,16);
     QPainter painter;
@@ -689,7 +685,7 @@ void Client::on_radioButton_2_clicked()
 
 void Client::on_radioButton_clicked()
 {
-    QImage image(":/new/prefix1/Resource/users53.png");
+    QImage image(":/Avatars/Resource/Avatars/5.jpg");
     ui->avatar_label->setPixmap(QPixmap::fromImage(image));
     ui->avatar_label->setFixedSize(120,120);
 }

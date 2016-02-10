@@ -3,6 +3,7 @@
 
 #include <QWidget>
 #include <QTcpSocket>
+#include <QMouseEvent>
 
 namespace Ui {
 class NewContact;
@@ -16,10 +17,16 @@ public:
     explicit NewContact(QWidget *parent = 0);
     ~NewContact();
 
+protected:
+    void mouseMoveEvent(QMouseEvent *event);
+    void mousePressEvent(QMouseEvent *event);
+
 private slots:
     void on_accept_button_clicked();
     void getMessagee();
     void on_pushButton_clicked();
+    void on_closeregBut_clicked();
+    void on_minimazregBut_clicked();
 
 signals:
     void sendData(QString str);
@@ -27,6 +34,7 @@ signals:
 private:
     QTcpSocket *socket;
     Ui::NewContact *ui;
+    QPoint m_dragPosition;
 };
 
 #endif // NEWCONTACT_H

@@ -72,10 +72,10 @@ bool SQLiteDB::CorrectInput(QString _login, QString _password)
     return false;
 }
 
-QVector <QPair<QString, QString>> SQLiteDB::FriendList(QString user, ChatListVector &lst)
+QList <QPair<QString, QString>> SQLiteDB::FriendList(QString user, ChatListVector &lst)
 {
     QSqlQuery query(myDB);
-    QVector <QPair <QString, QString>> FriendSex;
+    QList <QPair <QString, QString>> FriendSex;
 
     if(query.exec("SELECT name, sex FROM Friend" + user))
         while (query.next())
@@ -90,7 +90,7 @@ QVector <QPair<QString, QString>> SQLiteDB::FriendList(QString user, ChatListVec
 void SQLiteDB::LoadChatList(QString who, QString find, ChatListVector &lst)
 {
 
-    QVector <QPair <QString, QString>> msg;
+    QList <QPair <QString, QString>> msg;
     QSqlQuery query(myDB);
     if(query.exec("SELECT Message, Who, Time FROM Chat" + who + find))
         while (query.next())
