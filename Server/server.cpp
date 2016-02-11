@@ -3,7 +3,7 @@
 #include <QDir>
 
 Server::Server(QWidget *parent) :
-    QMainWindow(parent), nextBlockSize(0),
+    QMainWindow(parent), nextBlockSize(0), nextBlockSize2(0),
     ui(new Ui::Server)
 {
     ui->setupUi(this);
@@ -21,7 +21,7 @@ Server::Server(QWidget *parent) :
     }
 
     connect(tcpServer, SIGNAL(newConnection()), this, SLOT(NewConnect()));
-    connect(this, SIGNAL(NewConnect()), this, SLOT(getMessage()));
+   // connect(this, SIGNAL(NewConnect()), this, SLOT(getMessage()));
 }
 
 void Server::NewConnect()
@@ -86,10 +86,11 @@ void Server::getMessage()
     QTime   time;
     QString typePacket;
 
-    QTcpSocket *client = qobject_cast<QTcpSocket*>(sender());
+    QTcpSocket *client = (QTcpSocket*)(sender());
     QDataStream in(client);
     in.setVersion(QDataStream::Qt_5_4);
 
+    qDebug() << client->bytesAvailable();
     if (!nextBlockSize) {
         if (quint16(client->bytesAvailable()) < sizeof(quint16)) {
             return;
@@ -158,10 +159,18 @@ void Server::getMessage()
         {
             sendToID("_FIN_ OKFIN " + result, client->socketDescriptor());
             sqlitedb->addChatTable(whoFind, findUser);
-            ui->chatDialog->addItem(timeconnect() + " - " + whoFind + " added " + findUser );
+            sqlitedb->addChatTable(findUser, whoFind);  // Инвайт
+            sqlitedb->FindInDB(whoFind, findUser);      // инвайт
+            ui->chatDialog->addItem(timeconnect() + " - " + whoFind + " and " + findUser + " are now friends" );
+
+            for (auto i : clientConnections)
+                if (i->getUserName() == findUser)
+                    sendToID("_INV_ " + whoFind + " " + result, i->getSocket()->socketDescriptor());
+
         }
         else
             sendToID("_FIN_ NOFIN", client->socketDescriptor() );
+
         break;
     }
 
@@ -206,8 +215,8 @@ void Server::getMessage()
         break;
     }
 
-    default:
-        qDebug() << "Default";
+//    default:
+//        qDebug() << "Default";
     }
 }
 
@@ -337,35 +346,38 @@ void Server::SendingFile(QTcpSocket *client)
     QString dirDownloads = QDir::homePath() + "/op/";
     QDir(dirDownloads).mkdir(dirDownloads);
 
+
     in >> fileName >> fileSize;
     qDebug() << fileName;
     qDebug() << fileSize;
+    QThread::sleep(2);
 
-    forever
-    {
-        if (!nextBlockSize) {
+        forever
+        {
+            if (!nextBlockSize) {
 
-            if (quint16(mClientSocket->bytesAvailable()) < sizeof(quint16)) {
+                if (quint16(mClientSocket->bytesAvailable()) < sizeof(quint16)) {
+                    break;
+                }
+                in >> nextBlockSize;
+            }
+
+            in >> buffer;
+
+            //sendToClient(mClientSocket, "SC_FILE_TRANSFER_ASK", fileName);
+
+            if (mClientSocket->bytesAvailable() < nextBlockSize) {
                 break;
             }
-            in >> nextBlockSize;
         }
 
-        in >> buffer;
+        QFile receiveFile(dirDownloads + fileName);
+        receiveFile.open(QIODevice::ReadWrite);
+        receiveFile.write(buffer);
+        receiveFile.close();
+        buffer.clear();
 
-        //sendToClient(mClientSocket, "SC_FILE_TRANSFER_ASK", fileName);
 
-        if (mClientSocket->bytesAvailable() < nextBlockSize) {
-            break;
-        }
-    }
-
-    QFile receiveFile(dirDownloads + fileName);
-    receiveFile.open(QIODevice::ReadWrite);
-    receiveFile.write(buffer);
-    receiveFile.close();
-    buffer.clear();
-    return;
     nextBlockSize = 0;
 }
 

@@ -47,6 +47,7 @@ private:
 
     QString timeconnect();                      //Время соединения
     quint16 nextBlockSize;
+    quint32 nextBlockSize2;
     QHash<QTcpSocket*, QByteArray*> buffers;
     QHash<QTcpSocket*, qint32*> sizes;
     QTimer *timer;

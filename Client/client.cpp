@@ -229,11 +229,20 @@ void Client::AddUser_Chat(QString _username, QString _sex, QList<QPair<QString, 
     ui->stackedWidget_2->addWidget(chatlist);
 
     // Добавление нового пользователя через Поиск.
-    if (count==-1)
+    if (count==-1 || count == -2)
     {
         item->setData(Qt::DisplayRole, _username);
         item->setData(Qt::ToolTipRole, QDateTime::currentDateTime().toString("dd.MM.yy hh:mm"));
-        item->setData(Qt::UserRole + 1, "New User");
+        if (count==-2)
+        {   QListWidgetItem *item2 = new QListWidgetItem();
+            item->setData(Qt::UserRole + 1, "You added a user");
+            item2->setData(Qt::UserRole + 1, "FROM");
+            item2->setData(Qt::DisplayRole, "Hey, let me add you to the list of contacts?");
+            item2->setData(Qt::ToolTipRole, QDateTime::currentDateTime().toString("dd.MM.yy hh:mm"));
+            chatlist->addItem(item2);
+        }
+        else
+            item->setData(Qt::UserRole + 1, "New User");
         item->setData(Qt::DecorationRole, pic);
 
         vec.push_back(item);
@@ -241,6 +250,14 @@ void Client::AddUser_Chat(QString _username, QString _sex, QList<QPair<QString, 
         ui->userList->addItem(item);
         ui->userList->scrollToBottom();
 
+        if(count==-2)
+        {
+            ui->stackedWidget_2->show();
+            ui->stackedWidget_2->setCurrentIndex(chatvec.size()-1);
+            ui->userList->clearSelection();
+            vec.at(vec.size()-1)->setSelected(true);
+            whisperOnClickUsers(vec.at(vec.size()-1));
+        }
         return;
     }
 
@@ -343,17 +360,8 @@ void Client::getMessage()
 
     case COMMAND::INVITE:
     {
-        // Пока без предложения дружбы.
-        // Не знаю, нужно ли автоматически добавлять в друзья на той стороне.
-
-        QString find_user = commandList.at(1);
-        QListWidgetItem *item = new QListWidgetItem();
-        item->setData(Qt::DisplayRole, gl_fname);
-        item->setData(Qt::ToolTipRole, QDateTime::currentDateTime().toString("dd.MM.yy hh:mm"));
-        item->setData(Qt::UserRole + 1, "New User.");
-        //item->setData(Qt::DecorationRole, pic);
-        vec.push_back(item);
-        ui->userList->addItem(item);
+        QList <QPair<QString, QString>> a;
+        AddUser_Chat(commandList.at(1), commandList.at(2), a , -2);
         break;
     }
 
@@ -400,6 +408,7 @@ void Client::getMessage()
                         chatvec.at(i)->addItem(item);
                         chatvec.at(i)->scrollToBottom();
                         vec.at(i)->setSelected(true);
+                        whisperOnClickUsers(vec.at(i));
                         ui->stackedWidget_2->setCurrentIndex(i);
 
                         break;
@@ -706,6 +715,8 @@ void Client::on_Download_path_PB_clicked()
 
 void Client::on_pushButton_2_clicked()
 {
+    if(ui->stackedWidget_2->isHidden())
+        return;
     QString filePatch = QFileDialog::getOpenFileName(this,
                                                      QObject::trUtf8("Выбор файла для отправки"), "",
                                                      QObject::trUtf8("(*.*)"));
@@ -732,8 +743,29 @@ void Client::on_pushButton_2_clicked()
 
     out.device()->seek(0);
     out << quint16(arrBlock.size() - sizeof(quint16));
-    qDebug() << arrBlock.size();
+
     tcpSocket->write(arrBlock);
+    //    qint64 x = 0;
+    //        while (x < arrBlock.size()) {
+    //            qint64 y = tcpSocket->write(arrBlock);
+
+    //            ui->progressBar->setValue((int)x);
+    //            x += y;
+    //            //qDebug() << x;    // summary size you send, so you can check recieved and replied sizes
+    //        }
+}
+
+void Client::sendPartOfFile() {
+    char block[64];
+    if(!sendFile->atEnd()){
+        qint64 in = sendFile->read(block, sizeof(block));
+        qint64 send = tcpSocket->write(block, in);
+    } else{
+        sendFile->close();
+        sendFile = NULL;
+        disconnect(tcpSocket, SIGNAL(bytesWritten(qint64)), this, SLOT(sendPartOfFile()));
+
+    }
 }
 
 void Client::on_userList_clicked(const QModelIndex &index)
@@ -841,4 +873,5 @@ Client::~Client()
 {
     delete ui;
 }
+
 

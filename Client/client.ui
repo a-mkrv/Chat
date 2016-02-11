@@ -62,9 +62,9 @@
     <property name="geometry">
      <rect>
       <x>385</x>
-      <y>510</y>
+      <y>540</y>
       <width>678</width>
-      <height>111</height>
+      <height>81</height>
      </rect>
     </property>
     <property name="styleSheet">
@@ -77,7 +77,7 @@ background-color: rgb(74, 107, 142);</string>
      <property name="geometry">
       <rect>
        <x>607</x>
-       <y>31</y>
+       <y>16</y>
        <width>51</width>
        <height>51</height>
       </rect>
@@ -108,7 +108,7 @@ background-color: rgb(74, 107, 142);</string>
      <property name="geometry">
       <rect>
        <x>230</x>
-       <y>40</y>
+       <y>21</y>
        <width>201</width>
        <height>41</height>
       </rect>
@@ -130,7 +130,7 @@ background-color: rgb(74, 107, 142);</string>
      <property name="geometry">
       <rect>
        <x>536</x>
-       <y>31</y>
+       <y>16</y>
        <width>51</width>
        <height>51</height>
       </rect>
@@ -172,7 +172,7 @@ background-color: rgb(74, 107, 142);</string>
      <property name="geometry">
       <rect>
        <x>70</x>
-       <y>30</y>
+       <y>15</y>
        <width>461</width>
        <height>51</height>
       </rect>
@@ -194,7 +194,7 @@ background-color: rgb(74, 107, 142);</string>
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>31</y>
+       <y>16</y>
        <width>51</width>
        <height>51</height>
       </rect>
@@ -1247,13 +1247,13 @@ border:none;</string>
       <x>385</x>
       <y>91</y>
       <width>677</width>
-      <height>421</height>
+      <height>450</height>
      </rect>
     </property>
     <property name="maximumSize">
      <size>
       <width>677</width>
-      <height>421</height>
+      <height>450</height>
      </size>
     </property>
     <property name="styleSheet">
@@ -1274,8 +1274,8 @@ border:none;</string>
      <rect>
       <x>385</x>
       <y>91</y>
-      <width>678</width>
-      <height>421</height>
+      <width>677</width>
+      <height>448</height>
      </rect>
     </property>
    </widget>
@@ -1372,7 +1372,7 @@ color: rgb(255, 255, 255);</string>
     <property name="geometry">
      <rect>
       <x>550</x>
-      <y>260</y>
+      <y>274</y>
       <width>371</width>
       <height>66</height>
      </rect>
@@ -1440,22 +1440,6 @@ p, li { white-space: pre-wrap; }
      <bool>false</bool>
     </property>
    </widget>
-   <widget class="QPushButton" name="pushButton_6">
-    <property name="geometry">
-     <rect>
-      <x>384</x>
-      <y>30</y>
-      <width>681</width>
-      <height>61</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>PushButton</string>
-    </property>
-    <property name="flat">
-     <bool>true</bool>
-    </property>
-   </widget>
    <zorder>widget_2</zorder>
    <zorder>line</zorder>
    <zorder>userList</zorder>
@@ -1472,7 +1456,6 @@ p, li { white-space: pre-wrap; }
    <zorder>pushButton_5</zorder>
    <zorder>textBrowser</zorder>
    <zorder>search_label</zorder>
-   <zorder>pushButton_6</zorder>
    <zorder>stackedWidget_2</zorder>
   </widget>
   <action name="actionShowHideWindow">

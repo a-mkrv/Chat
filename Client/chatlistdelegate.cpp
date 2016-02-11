@@ -4,7 +4,6 @@
 ChatListDelegate::ChatListDelegate(QObject *parent, QString _color)
 {
 color = _color;
-qDebug() << color;
 }
 
 void ChatListDelegate::paint ( QPainter * painter, const QStyleOptionViewItem & option, const QModelIndex & index ) const{
