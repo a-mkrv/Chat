@@ -77,7 +77,6 @@ private slots:
     void on_PB_LoadFileBackground_clicked();
     void findtoserv(QString str);
     void whisperOnClickUsers(QListWidgetItem* user);
-    void sendPartOfFile();
     void on_radioButton_2_clicked();
     void on_radioButton_clicked();
     void on_Download_path_PB_clicked();
@@ -104,7 +103,8 @@ private:
     QMenu *trayIconMenu;
     QStackedLayout *layout;
     QTcpSocket *tcpSocket;
-    quint16 blockSize;
+    quint32 blockSize;
+    quint32 nextBlockSize;
     QString getIP();
     EmojiManager *emojiMan;
     EmojiFrame *frameEmoji;

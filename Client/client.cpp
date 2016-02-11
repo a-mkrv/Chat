@@ -50,11 +50,14 @@ Client::Client(QWidget *parent) : QMainWindow(parent), download_path("(C:/...)")
     trayIconMenu    = new QMenu(this);
     tcpSocket       = new QTcpSocket(this);
 
+
     QColor defaulcolor(Qt::white);
     colorchat = defaulcolor.name();
     ui->RB_sendEnter->setChecked(true);
     ui->userList->setItemDelegate(new ListDelegate(ui->userList));
+    ui->label_6->setText(QDir::homePath() + "/Whisper/");
     ui->widget_2->hide();
+    nextBlockSize = 0;
 
     trayIconMenu->addAction(ui->actionShowHideWindow);
     trayIconMenu->addSeparator();
@@ -112,7 +115,7 @@ void Client::recieveData(QString str, QString pas)
         ui->usernameEdit->setText(name);
 
         QString hostname = "127.0.0.1";
-        quint16 port = 55155;
+        quint32 port = 55155;
         tcpSocket->abort();
         tcpSocket->connectToHost(hostname, port);
 
@@ -305,16 +308,30 @@ void Client::getMessage()
     QString message;
     QDataStream in(tcpSocket);
     in.setVersion(QDataStream::Qt_5_4);
-    in >> message;
 
+    if (!nextBlockSize) {
+        if (quint32(tcpSocket->bytesAvailable()) < sizeof(quint32)) {
+            return;
+        }
+        in >> nextBlockSize;
+    }
+    if (tcpSocket->bytesAvailable() < nextBlockSize) {
+        return;
+    }
+
+    in >> message;
     QStringList commandList;
     QString fromname;
 
-    enum class COMMAND { NONE, USERLIST, FINDUSER, INVITE};
+    enum class COMMAND { NONE, USERLIST, FINDUSER, INVITE, GETFILE};
     COMMAND cmd = COMMAND::NONE;
 
     if (message=="FRLST")
         cmd = COMMAND::USERLIST;
+
+    else if(message=="_GetFILE_")
+        cmd = COMMAND::GETFILE;
+
     else
     {
         commandList = message.split(" ", QString::SkipEmptyParts);
@@ -365,6 +382,73 @@ void Client::getMessage()
         break;
     }
 
+    case COMMAND::GETFILE:
+    {
+        QByteArray buffer;
+        QString filename;
+        qint64 fileSize;
+
+        QString dirDownloads = ui->label_6->text();
+        QDir(dirDownloads).mkdir(dirDownloads);
+
+        in >> fromname >> filename >> fileSize;
+
+        QThread::sleep(2);
+        forever
+        {
+            if (!nextBlockSize) {
+
+                if (quint32(tcpSocket->bytesAvailable()) < sizeof(quint32)) {
+                    break;
+                }
+                in >> nextBlockSize;
+            }
+            in >> buffer;
+            if (tcpSocket->bytesAvailable() < nextBlockSize) {
+                break;
+            }
+        }
+
+        QFile receiveFile(dirDownloads + filename);
+        receiveFile.open(QIODevice::ReadWrite);
+        receiveFile.write(buffer);
+        receiveFile.close();
+        buffer.clear();
+
+        QIcon pic(":/new/prefix1/Resource/sendfiles.png");
+        if (!vec.empty())
+        {
+            for(int i=0; i<vec.size(); i++)
+                if(vec.at(i)->data(Qt::DisplayRole)==fromname)
+                {
+                    QListWidgetItem *item = new QListWidgetItem();
+                    item->setData(Qt::UserRole + 1, "FROMF");
+                    item->setData(Qt::DisplayRole, filename);
+                    item->setData(Qt::ToolTipRole, QString::number((float)fileSize/1024, 'f', 2)  + " KB  " +  QDateTime::currentDateTime().toString("dd.MM.yy hh:mm"));
+                    item->setData(Qt::DecorationRole, pic);
+                    vec.at(i)->setData(Qt::UserRole + 1, "File: " + filename);
+                    vec.at(i)->setData(Qt::ToolTipRole, QDateTime::currentDateTime().toString("dd.MM.yy hh:mm"));
+
+                    if(!this->isVisible())
+                    {
+                        notice->setPopupText("New message (" + fromname + "):\n" + "File: " + filename);
+                        notice->show();
+                    }
+
+                    chatvec.at(i)->addItem(item);
+                    chatvec.at(i)->scrollToBottom();
+                    vec.at(i)->setSelected(true);
+                    whisperOnClickUsers(vec.at(i));
+                    ui->stackedWidget_2->show();
+                    ui->stackedWidget_2->setCurrentIndex(i);
+
+                    break;
+                }
+        }
+        nextBlockSize = 0;
+
+        break;
+    }
     default:                                                // Получение обычного текстового сообщения. Звук и добавление в ЧатЛист
 
         QListWidgetItem *item = new QListWidgetItem();
@@ -409,6 +493,7 @@ void Client::getMessage()
                         chatvec.at(i)->scrollToBottom();
                         vec.at(i)->setSelected(true);
                         whisperOnClickUsers(vec.at(i));
+                        ui->stackedWidget_2->show();
                         ui->stackedWidget_2->setCurrentIndex(i);
 
                         break;
@@ -480,7 +565,7 @@ void Client::send_personal_data()
 
         QString command = "_USR_";
         QString username = ui->usernameEdit->text();
-        out << quint16(0) << QTime::currentTime() << command;
+        out << quint32(0) << QTime::currentTime() << command;
         out << username;
         tcpSocket->write(block);
         reg_window->close();
@@ -489,7 +574,6 @@ void Client::send_personal_data()
 
 void Client::onDisconnect()
 {
-    //ui->userList->clear();
     personDates = false;
 }
 
@@ -499,7 +583,7 @@ void Client::sendUserCommand(QString command)
     QDataStream out(&msg, QIODevice::WriteOnly);
     out.setVersion(QDataStream::Qt_5_4);
 
-    out << quint16(0) << QTime::currentTime() << QString("_UCD_") << command;
+    out << quint32(0) << QTime::currentTime() << QString("_UCD_") << command;
     tcpSocket->write(msg);
 }
 
@@ -573,7 +657,7 @@ void Client::findtoserv(QString name_user)
         QDataStream out(&msg, QIODevice::WriteOnly);
         out.setVersion(QDataStream::Qt_5_4);
 
-        out << quint16(0) << QTime::currentTime() << QString("_FND_") << name_user << name;
+        out << quint32(0) << QTime::currentTime() << QString("_FND_") << name_user << name;
         tcpSocket->write(msg);
         tmp=false;
     }
@@ -717,6 +801,7 @@ void Client::on_pushButton_2_clicked()
 {
     if(ui->stackedWidget_2->isHidden())
         return;
+
     QString filePatch = QFileDialog::getOpenFileName(this,
                                                      QObject::trUtf8("Выбор файла для отправки"), "",
                                                      QObject::trUtf8("(*.*)"));
@@ -737,36 +822,40 @@ void Client::on_pushButton_2_clicked()
     fileSize = fi.size();
 
     QByteArray buffer = sendFile->readAll();
+    QString receiver_name = vec.at(ui->userList->currentRow())->data(Qt::DisplayRole).toString();
 
-    out << quint16(0) << QTime::currentTime() << QString("_FILE_")
+    out << quint32(0) << QTime::currentTime() << QString("_FILE_") << receiver_name
         << fileName << fileSize << buffer;
 
     out.device()->seek(0);
-    out << quint16(arrBlock.size() - sizeof(quint16));
+    out << quint32(arrBlock.size() - sizeof(quint32));
 
     tcpSocket->write(arrBlock);
-    //    qint64 x = 0;
-    //        while (x < arrBlock.size()) {
-    //            qint64 y = tcpSocket->write(arrBlock);
 
-    //            ui->progressBar->setValue((int)x);
-    //            x += y;
-    //            //qDebug() << x;    // summary size you send, so you can check recieved and replied sizes
-    //        }
-}
+    QIcon pic(":/new/prefix1/Resource/sendfiles.png");
+    int pos;
+    QListWidgetItem *item = new QListWidgetItem();
+    item->setData(Qt::UserRole + 1, "TOF");
 
-void Client::sendPartOfFile() {
-    char block[64];
-    if(!sendFile->atEnd()){
-        qint64 in = sendFile->read(block, sizeof(block));
-        qint64 send = tcpSocket->write(block, in);
-    } else{
-        sendFile->close();
-        sendFile = NULL;
-        disconnect(tcpSocket, SIGNAL(bytesWritten(qint64)), this, SLOT(sendPartOfFile()));
-
+    if(fileName.size()>20)
+    {
+        for(int i=fileName.size()-1; i>=0; i--)
+            if(fileName.at(i)==".")
+            {
+                pos = i;
+                break;
+            }
+        qDebug() << pos;
+        fileName.remove(16, pos);
     }
+
+    item->setData(Qt::DisplayRole, fileName);
+    item->setData(Qt::ToolTipRole, QString::number((float)fileSize/1024, 'f', 2)  + " KB  " + QDateTime::currentDateTime().toString("dd.MM.yy hh:mm"));
+    item->setData(Qt::DecorationRole, pic);
+    chatvec.at(ui->stackedWidget_2->currentIndex())->addItem(item);
+    chatvec.at(ui->stackedWidget_2->currentIndex())->scrollToBottom();
 }
+
 
 void Client::on_userList_clicked(const QModelIndex &index)
 {

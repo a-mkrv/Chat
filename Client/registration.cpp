@@ -62,7 +62,7 @@ void registration::on_pushButton_clicked()
         QDataStream out(&block, QIODevice::WriteOnly);
         out.setVersion(QDataStream::Qt_5_4);
 
-        out << quint16(0) << QTime::currentTime() << QString("_LOG_IN_") << login << password;
+        out << quint32(0) << QTime::currentTime() << QString("_LOG_IN_") << login << password;
         socket->write(block);
     }
 }
@@ -74,7 +74,8 @@ void registration::getMessage()
 
     QDataStream in(socket);
     in.setVersion(QDataStream::Qt_5_4);
-    in >> received_message;
+
+    in  >> received_message;
 
     if(received_message == "Error_Login_Pass")
         ui->error_label->show();

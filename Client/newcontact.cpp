@@ -49,7 +49,7 @@ void NewContact::on_accept_button_clicked()
     QDataStream out(&block, QIODevice::WriteOnly);
     out.setVersion(QDataStream::Qt_5_4);
 
-    out << quint16(0) << QTime::currentTime() << QString("_REG_") << ui->enter_user_name->text()
+    out << quint32(0) << QTime::currentTime() << QString("_REG_") << ui->enter_user_name->text()
         << ui->enter_city->text() << ui->enter_password->text()
         << ui->age->text() << ui->sex_person->currentText();
 

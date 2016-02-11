@@ -21,7 +21,7 @@ Server::Server(QWidget *parent) :
     }
 
     connect(tcpServer, SIGNAL(newConnection()), this, SLOT(NewConnect()));
-   // connect(this, SIGNAL(NewConnect()), this, SLOT(getMessage()));
+    // connect(this, SIGNAL(NewConnect()), this, SLOT(getMessage()));
 }
 
 void Server::NewConnect()
@@ -74,7 +74,7 @@ void Server::sendToID(QString message, int ID)
     QByteArray msg;
     QDataStream out(&msg, QIODevice::WriteOnly);
     out.setVersion(QDataStream::Qt_5_4);
-    out << message;
+    out << quint32(0) << message;
 
     for (auto i : clientConnections)
         if (i->getSocket()->socketDescriptor() == ID)
@@ -92,7 +92,7 @@ void Server::getMessage()
 
     qDebug() << client->bytesAvailable();
     if (!nextBlockSize) {
-        if (quint16(client->bytesAvailable()) < sizeof(quint16)) {
+        if (quint32(client->bytesAvailable()) < sizeof(quint32)) {
             return;
         }
         in >> nextBlockSize;
@@ -202,38 +202,21 @@ void Server::getMessage()
 
         if(!sqlitedb->CorrectInput(Login, Password))
         {
-            out << QString("Error_Login_Pass");
+            out << quint32(0) <<  QString("Error_Login_Pass");
             client->write(block);
         }
         else
         {
             QString message = "LogInOK!";
-            out << message;
+            out << quint32(0) << message;
             client->write(block);
         }
 
         break;
     }
 
-//    default:
-//        qDebug() << "Default";
     }
 }
-
-//void Server::sendToClient(QTcpSocket* mSocket, const QString& typePacket, QString report)
-//{
-//    QByteArray  arrBlock;
-//    QDataStream out(&arrBlock, QIODevice::WriteOnly);
-
-//    out.setVersion(QDataStream::Qt_4_7);
-//    out << quint16(0) << QTime::currentTime() << typePacket << report;
-
-//    out.device()->seek(0);
-//    out << quint16(arrBlock.size() - sizeof(quint16));
-
-//    mSocket->write(arrBlock);
-//}
-
 
 
 void Server::NewUser(QTcpSocket *client, QString _user)
@@ -252,7 +235,7 @@ void Server::NewUser(QTcpSocket *client, QString _user)
 
     lst = sqlitedb->FriendList(UserName, chatlst);
 
-    out << QString("FRLST") << lst << chatlst;
+    out << quint32(0) << QString("FRLST") << lst << chatlst;
     client->write(block);
 
     while (AlreadyName)
@@ -341,46 +324,84 @@ void Server::SendingFile(QTcpSocket *client)
 
     QByteArray buffer;
     QString fileName;
+    QString receiver_name;
+    QString from_name;
     qint64 fileSize;
 
     QString dirDownloads = QDir::homePath() + "/op/";
     QDir(dirDownloads).mkdir(dirDownloads);
 
 
-    in >> fileName >> fileSize;
+    in >> receiver_name >> fileName >> fileSize;
+    qDebug() << receiver_name;
     qDebug() << fileName;
     qDebug() << fileSize;
+
     QThread::sleep(2);
 
-        forever
-        {
-            if (!nextBlockSize) {
+    forever
+    {
+        if (!nextBlockSize) {
 
-                if (quint16(mClientSocket->bytesAvailable()) < sizeof(quint16)) {
-                    break;
-                }
-                in >> nextBlockSize;
-            }
-
-            in >> buffer;
-
-            //sendToClient(mClientSocket, "SC_FILE_TRANSFER_ASK", fileName);
-
-            if (mClientSocket->bytesAvailable() < nextBlockSize) {
+            if (quint32(mClientSocket->bytesAvailable()) < sizeof(quint32)) {
                 break;
             }
+            in >> nextBlockSize;
         }
 
-        QFile receiveFile(dirDownloads + fileName);
-        receiveFile.open(QIODevice::ReadWrite);
-        receiveFile.write(buffer);
-        receiveFile.close();
-        buffer.clear();
+        in >> buffer;
+
+
+        for (auto i : clientConnections)
+            if (i->getUserName() == receiver_name)
+            {
+                for (auto i : clientConnections)
+                    if (i->getSocket() == client)
+                        from_name = i->getUserName();
+
+                QByteArray  arrBlock;
+                QDataStream out(&arrBlock, QIODevice::WriteOnly);
+                out.setVersion(QDataStream::Qt_5_4);
+
+                out << quint32(0) << QString("_GetFILE_") << from_name
+                    << fileName << fileSize << buffer;
+
+                out.device()->seek(0);
+                out << quint32(arrBlock.size() - sizeof(quint32));
+
+               i->getSocket()->write(arrBlock);
+
+               // sendToClient(i->getSocket(), "_GetFILE_", fileName);
+            }
+        if (mClientSocket->bytesAvailable() < nextBlockSize) {
+            break;
+        }
+    }
+
+    QFile receiveFile(dirDownloads + fileName);
+    receiveFile.open(QIODevice::ReadWrite);
+    receiveFile.write(buffer);
+    receiveFile.close();
+    buffer.clear();
 
 
     nextBlockSize = 0;
 }
 
+void Server::sendToClient(QTcpSocket* mSocket, const QString& typePacket, QString report)
+{
+    QByteArray  arrBlock;
+    QDataStream out(&arrBlock, QIODevice::WriteOnly);
+
+    out.setVersion(QDataStream::Qt_5_4);
+    out << quint32(0) << QTime::currentTime() << typePacket << report;
+
+    out.device()->seek(0);
+    out << quint32(arrBlock.size() - sizeof(quint32));
+
+    qDebug() << arrBlock.size();
+    //mSocket->write(arrBlock);
+}
 
 void Server::LogIn(QTcpSocket *client, QString &U, QString &C, QString &P, QString &A, QString &S)
 {
@@ -402,12 +423,12 @@ void Server::LogIn(QTcpSocket *client, QString &U, QString &C, QString &P, QStri
         qDebug() << "Новый пользователь: " << U;
 
 
-        out << QString("Welcome!");
+        out  << QString("Welcome!");
         client->write(block);
     }
     else
     {
-        out << QString("Already!");
+        out  << QString("Already!");
         client->write(block);
     }
 }
