@@ -353,11 +353,12 @@ void Server::SendingFile(QTcpSocket *client)
 
 
         for (auto i : clientConnections)
+            if (i->getSocket() == client)
+                from_name = i->getUserName();
+
+        for (auto i : clientConnections)
             if (i->getUserName() == receiver_name)
             {
-                for (auto i : clientConnections)
-                    if (i->getSocket() == client)
-                        from_name = i->getUserName();
 
                 QByteArray  arrBlock;
                 QDataStream out(&arrBlock, QIODevice::WriteOnly);
@@ -370,13 +371,16 @@ void Server::SendingFile(QTcpSocket *client)
                 out << quint32(arrBlock.size() - sizeof(quint32));
 
                i->getSocket()->write(arrBlock);
-
-               // sendToClient(i->getSocket(), "_GetFILE_", fileName);
             }
         if (mClientSocket->bytesAvailable() < nextBlockSize) {
             break;
         }
     }
+
+
+    ui->chatDialog->addItem(timeconnect() + " - PM: " + from_name + " -> " + receiver_name + ":  " + "FILE " + fileName);
+    sqlitedb->addMessInChat(from_name, receiver_name, "FILE " + fileName, QString("To") + " " + QString::number((float)fileSize/1024, 'f', 2)  + " KB");
+    sqlitedb->addMessInChat(receiver_name, from_name,  "FILE " + fileName, QString("From") + " " + QString::number((float)fileSize/1024, 'f', 2)  + " KB");
 
     QFile receiveFile(dirDownloads + fileName);
     receiveFile.open(QIODevice::ReadWrite);
@@ -384,24 +388,10 @@ void Server::SendingFile(QTcpSocket *client)
     receiveFile.close();
     buffer.clear();
 
-
     nextBlockSize = 0;
 }
 
-void Server::sendToClient(QTcpSocket* mSocket, const QString& typePacket, QString report)
-{
-    QByteArray  arrBlock;
-    QDataStream out(&arrBlock, QIODevice::WriteOnly);
 
-    out.setVersion(QDataStream::Qt_5_4);
-    out << quint32(0) << QTime::currentTime() << typePacket << report;
-
-    out.device()->seek(0);
-    out << quint32(arrBlock.size() - sizeof(quint32));
-
-    qDebug() << arrBlock.size();
-    //mSocket->write(arrBlock);
-}
 
 void Server::LogIn(QTcpSocket *client, QString &U, QString &C, QString &P, QString &A, QString &S)
 {

@@ -23,17 +23,16 @@ QString gl_fname; //Поиск человека
 // Добавлены уведомления в углу экрана.
 // Дисконнект из-за доп.сокетов и соединений при авторизации. (Правильно прикрутить закрытие сокета) -- Сделано
 // СОХРАНЕНИЕ ПОЛЬЗОВАТЕЛЕЙ Друг у Друга (Через SQLite) --Сделано
-// Сохранение и загрузка личных сообщений. -- Сделано
+// Сохранение и загрузка личных сообщений(включая файлы, размер, и отдельную иконку). -- Сделано
 // Демо вариант.
 // Возможно исправить делегата, сделав сообщения пузырьком. -- Сделано
+// Устойчивая отправка файлов до клииента                   -- СДЕЛАНО
 
-
-// Основное:
-// Устойчивая отправка файлов до клииента           -- Временно не работате =(
 
 // Второй план:
 // Т.к есть структура со всей инфой о человеке(город, пол и т.д), мб добавлю Информационное окно, где-то нужно инфу разместить в общем.
 
+// Завтра попробую RSA.
 
 Client::Client(QWidget *parent) : QMainWindow(parent), download_path("(C:/...)"), personDates(false),ui(new Ui::Client)
 {
@@ -280,19 +279,47 @@ void Client::AddUser_Chat(QString _username, QString _sex, QList<QPair<QString, 
         timeStr.remove(14, lst.at(i).first.size());
 
         msg.remove(0,14);
-        if(lst.at(i).second == "From")
+        QString TFile = msg.left(4);
+
+        if(lst.at(i).second.left(1) == "F")
         {
+            if(TFile=="FILE")
+            {
+                msg.remove(0,5);
+                QString fsize = lst.at(i).second;
+                QIcon pic(":/new/prefix1/Resource/sendfiles.png");
+                item2->setData(Qt::ToolTipRole, fsize.remove(0,5) +  "  " +timeStr);
+                item2->setData(Qt::UserRole + 1, "FROMF");
+                item2->setData(Qt::DecorationRole, pic);
+                item->setData(Qt::UserRole + 1, "File: " + msg);
+            }
+            else
+            {
             item2->setData(Qt::UserRole + 1, "FROM");
-            item2->setData(Qt::DisplayRole, msg);
             item2->setData(Qt::ToolTipRole, timeStr);
-            item->setData(Qt::ToolTipRole, timeStr);
             item->setData(Qt::UserRole + 1, msg);
-        }
-        else if (lst.at(i).second == "To")
-        {
-            item2->setData(Qt::UserRole + 1, "TO");
+            }
             item2->setData(Qt::DisplayRole, msg);
+            item->setData(Qt::ToolTipRole, timeStr);
+
+        }
+        else if (lst.at(i).second.left(1) == "T")
+        {
+            if(TFile=="FILE")
+            {
+                msg.remove(0,5);
+                QString fsize = lst.at(i).second;
+                QIcon pic(":/new/prefix1/Resource/sendfiles.png");
+                item2->setData(Qt::ToolTipRole, fsize.remove(0,3) + "  " + timeStr);
+                item2->setData(Qt::UserRole + 1, "TOF");
+                item2->setData(Qt::DecorationRole, pic);
+            }
+            else
+            {
+                item2->setData(Qt::UserRole + 1, "TO");
             item2->setData(Qt::ToolTipRole, timeStr);
+            }
+            item2->setData(Qt::DisplayRole, msg);
         }
 
         chatvec.at(count)->addItem(item2);

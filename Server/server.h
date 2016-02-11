@@ -37,7 +37,6 @@ private slots:
     void NewUser(QTcpSocket *client, QString _user);
     void PrivateMessage(QTcpSocket *client, QString _message);
     void SendingFile(QTcpSocket *client);
-    void sendToClient(QTcpSocket* mSocket, const QString& typePacket, QString report);
     void LogIn(QTcpSocket *client, QString &U, QString &C, QString &P, QString &A, QString &S);
 
 private:
