@@ -378,7 +378,7 @@ void Client::getMessage()
 
     case COMMAND::USERLIST:
     {
-        QList <QPair<QString, QString>> lst;
+        QList <QPair<QString, QString> > lst;
         ChatListVector chatList;
         in >> lst >> chatList;
 
@@ -393,7 +393,7 @@ void Client::getMessage()
 
         if(find_user=="OKFIN" && gl_fname!=name)
         {
-            QList <QPair<QString, QString>> a;
+            QList <QPair<QString, QString> > a;
             AddUser_Chat(gl_fname, commandList.at(2), a , -1);
             findcont->~findcontacts();
         }
@@ -404,7 +404,7 @@ void Client::getMessage()
 
     case COMMAND::INVITE:
     {
-        QList <QPair<QString, QString>> a;
+        QList <QPair<QString, QString> > a;
         AddUser_Chat(commandList.at(1), commandList.at(2), a , -2);
         break;
     }
@@ -867,7 +867,7 @@ void Client::on_pushButton_2_clicked()
     if(fileName.size()>20)
     {
         for(int i=fileName.size()-1; i>=0; i--)
-            if(fileName.at(i)==".")
+            if(fileName.at(i) == '.')
             {
                 pos = i;
                 break;

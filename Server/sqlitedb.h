@@ -5,7 +5,7 @@
 #include <QtSql>
 #include <QPair>
 
-typedef QList <QPair <QString, QList<QPair <QString, QString>>>> ChatListVector;
+typedef QList <QPair <QString, QList<QPair <QString, QString> > > > ChatListVector;
 
 class SQLiteDB : public QObject
 {
@@ -20,7 +20,7 @@ private:
 public slots:
     void AddContact(QString, QString, int, QString, QString);
     void addMessInChat(QString, QString, QString, QString);
-    QList <QPair <QString, QString>> FriendList(QString, ChatListVector&);
+    QList <QPair <QString, QString> > FriendList(QString, ChatListVector&);
     void LoadChatList(QString, QString, ChatListVector&);
     void addChatTable(QString, QString);
     QString FindInDB(QString, QString);

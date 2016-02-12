@@ -11,9 +11,9 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 TARGET = Client
 TEMPLATE = app
+CONFIG += c++11
 
-
-SOURCES += main.cpp\
+SOURCES +=\
         client.cpp \
     emojiframe.cpp \
     setting.cpp \
@@ -27,7 +27,9 @@ SOURCES += main.cpp\
     newcontact.cpp \
     chatlistdelegate.cpp \
     aboutdialog.cpp \
-    notification.cpp
+    notification.cpp \
+    main.cpp \
+    rsacrypt.cpp
 
 HEADERS  += client.h \
     emojiframe.h \
@@ -42,7 +44,8 @@ HEADERS  += client.h \
     newcontact.h \
     chatlistdelegate.h \
     aboutdialog.h \
-    notification.h
+    notification.h \
+    rsacrypt.h
 
 FORMS    += client.ui \
     emojiframe.ui \
@@ -54,3 +57,5 @@ FORMS    += client.ui \
 
 RESOURCES += \
     image.qrc
+
+
