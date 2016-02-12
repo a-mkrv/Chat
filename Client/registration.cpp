@@ -71,17 +71,20 @@ void registration::on_pushButton_clicked()
 void registration::getMessage()
 {
     QString received_message;
+    QString myPrivateKey;
     QDataStream in(socket);
     in.setVersion(QDataStream::Qt_5_4);
 
     in  >> received_message;
-qDebug() << "Get" << received_message;
+    in >> myPrivateKey;
+
+    qDebug() << "Get" << received_message;
     if(received_message == "Error_Login_Pass")
         ui->error_label->show();
 
     else if(received_message == "LogInOK!" && !ui->username_enter->text().simplified().isEmpty() && !ui->pass_enter->text().simplified().isEmpty())
     {
-        emit sendData(ui->username_enter->text().simplified(), ui->pass_enter->text().simplified());
+        emit sendData(ui->username_enter->text().simplified(), ui->pass_enter->text().simplified(), myPrivateKey);
         socket->close();
         socket->disconnectFromHost();
     }

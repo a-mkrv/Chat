@@ -1,4 +1,5 @@
 #include "rsacrypt.h"
+#include <QDebug>
 
 RSACrypt::RSACrypt()
 {
@@ -70,20 +71,20 @@ int RSACrypt::NOD(int p, int q)
     return p | q;
 }
 
-void RSACrypt::encodeText(QString text)
+QString RSACrypt::encodeText(QString text, int _e, int _module)
 {
     QString EncodeText = text;
     int EnTextSize = text.size();
     int EncodeInt[EnTextSize];
-
     QString tmpText;
     for(int i=0;i<EnTextSize;i++){
-        EncodeInt[i]=modExp(EncodeText[i].unicode(),e,module);
+        EncodeInt[i]=modExp(EncodeText[i].unicode(), _e, _module);
         tmpText.append(QString::number(EncodeInt[i])+" ");
     }
+    return tmpText;
 }
 
-void RSACrypt::decodeText(QString text)
+QString RSACrypt::decodeText(QString text, int _d, int _module)
 {
     QStringList DecryptText = text.split(" ");
     int DecTextSize=DecryptText.size()-1;
@@ -92,9 +93,10 @@ void RSACrypt::decodeText(QString text)
     QString normalText;
     for(int i=0;i<DecTextSize;i++){
         DecryptInt[i]=DecryptText[i].toInt();
-        DecryptInt[i]=modExp(DecryptInt[i],d,module);
+        DecryptInt[i]=modExp(DecryptInt[i], _d, _module);
         normalText.append(QChar(DecryptInt[i]));
     }
+    return normalText;
 }
 
 

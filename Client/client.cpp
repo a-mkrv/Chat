@@ -27,12 +27,13 @@ QString gl_fname; //Поиск человека
 // Демо вариант.
 // Возможно исправить делегата, сделав сообщения пузырьком. -- Сделано
 // Устойчивая отправка файлов до клииента                   -- СДЕЛАНО
+// RSA - Осталась отправка. Шифрование сделано.             -- (Почти)
 
 
 // Второй план:
 // Т.к есть структура со всей инфой о человеке(город, пол и т.д), мб добавлю Информационное окно, где-то нужно инфу разместить в общем.
 
-// Завтра попробую RSA.
+
 
 Client::Client(QWidget *parent) : QMainWindow(parent), download_path("(C:/...)"), personDates(false),ui(new Ui::Client)
 {
@@ -48,7 +49,7 @@ Client::Client(QWidget *parent) : QMainWindow(parent), download_path("(C:/...)")
     stackchat       = new QStackedWidget;
     trayIconMenu    = new QMenu(this);
     tcpSocket       = new QTcpSocket(this);
-
+    rsaCrypt        = new RSACrypt;
 
     QColor defaulcolor(Qt::white);
     colorchat = defaulcolor.name();
@@ -65,7 +66,7 @@ Client::Client(QWidget *parent) : QMainWindow(parent), download_path("(C:/...)")
     trayIcon->hide();
 
     connect(trayIcon, SIGNAL(activated(QSystemTrayIcon::ActivationReason)), this, SLOT(iconActivated(QSystemTrayIcon::ActivationReason)));
-    connect(reg_window, SIGNAL(sendData(QString, QString)), this, SLOT(recieveData(QString, QString)));
+    connect(reg_window, SIGNAL(sendData(QString, QString, QString)), this, SLOT(recieveData(QString, QString, QString)));
     connect(frameEmoji, SIGNAL(sendEmoji(QString)), this, SLOT(insertEmoticon(QString)));
 
     connect(tcpSocket, SIGNAL(readyRead()), this, SLOT(getMessage()));
@@ -105,19 +106,19 @@ void Client::keyReleaseEvent(QKeyEvent *event)
                     on_sendMessage_clicked();
 }
 
-void Client::recieveData(QString str, QString pas)
+void Client::recieveData(QString str, QString pas, QString key)
 {
     if(str!="" && pas!="")
     {
         name = str;
         name.replace(" ", "_");
         ui->usernameEdit->setText(name);
-
+        myPrivateKey = key;
         QString hostname = "127.0.0.1";
         quint32 port = 55155;
         tcpSocket->abort();
         tcpSocket->connectToHost(hostname, port);
-
+        qDebug() << myPrivateKey;
         this->show();
         QPropertyAnimation* animation = new QPropertyAnimation(this, "windowOpacity");
         animation->setDuration(1500);
@@ -135,7 +136,9 @@ void Client::on_sendMessage_clicked()
     QString str = ui->editText->text();                 // Получение сообщения для отправки
     QString message = str;
 
+
     QStringList list;
+    QString encodemsg;
 
     list.clear();
     int pos = 0;
@@ -164,7 +167,27 @@ void Client::on_sendMessage_clicked()
         if(ui->ChBox_PSound->isChecked())
             QSound::play(":/new/prefix1/Resource/to.wav");
 
-        QString new_mes = "/msg " + vec.at(ui->userList->currentRow())->data(Qt::DisplayRole).toString() + " " + message;
+        QListWidgetItem *item = new QListWidgetItem();
+        item->setData(Qt::UserRole + 1, "TO");
+        item->setData(Qt::DisplayRole, message);
+        item->setData(Qt::ToolTipRole, QDateTime::currentDateTime().toString("dd.MM.yy hh:mm"));
+        chatvec.at(ui->stackedWidget_2->currentIndex())->addItem(item);
+        chatvec.at(ui->stackedWidget_2->currentIndex())->scrollToBottom();
+
+        QString RecName = vec.at(ui->userList->currentRow())->data(Qt::DisplayRole).toString();
+        for(int i=0; i<pubFriendKey.size(); i++)
+        {
+            if(RecName==pubFriendKey.at(i).first)
+            {
+                QString user_key = pubFriendKey.at(i).second;
+                QStringList _key;
+                _key = user_key.split(" ", QString::SkipEmptyParts);
+                encodemsg = rsaCrypt->encodeText(message, _key.at(0).toInt(), _key.at(1).toInt());
+            }
+            qDebug() << encodemsg;
+        }
+
+        QString new_mes = "/msg " + vec.at(ui->userList->currentRow())->data(Qt::DisplayRole).toString() + " " + encodemsg;
         sendUserCommand(new_mes);
     }
 }
@@ -295,9 +318,9 @@ void Client::AddUser_Chat(QString _username, QString _sex, QList<QPair<QString, 
             }
             else
             {
-            item2->setData(Qt::UserRole + 1, "FROM");
-            item2->setData(Qt::ToolTipRole, timeStr);
-            item->setData(Qt::UserRole + 1, msg);
+                item2->setData(Qt::UserRole + 1, "FROM");
+                item2->setData(Qt::ToolTipRole, timeStr);
+                item->setData(Qt::UserRole + 1, msg);
             }
             item2->setData(Qt::DisplayRole, msg);
             item->setData(Qt::ToolTipRole, timeStr);
@@ -317,7 +340,7 @@ void Client::AddUser_Chat(QString _username, QString _sex, QList<QPair<QString, 
             else
             {
                 item2->setData(Qt::UserRole + 1, "TO");
-            item2->setData(Qt::ToolTipRole, timeStr);
+                item2->setData(Qt::ToolTipRole, timeStr);
             }
             item2->setData(Qt::DisplayRole, msg);
         }
@@ -329,16 +352,6 @@ void Client::AddUser_Chat(QString _username, QString _sex, QList<QPair<QString, 
     ui->stackedWidget_2->hide();
     ui->userList->addItem(item);
 
-    if(!vec.isEmpty())
-    {
-        QByteArray block;
-        QDataStream out(&block, QIODevice::WriteOnly);
-        out.setVersion(QDataStream::Qt_5_4);
-
-        QString command = "_KEYS_";
-        out << quint32(0) << QTime::currentTime() << command << name;
-        tcpSocket->write(block);
-    }
 }
 
 void Client::getMessage()
@@ -361,14 +374,11 @@ void Client::getMessage()
     QStringList commandList;
     QString fromname;
 
-    enum class COMMAND { NONE, USERLIST, FINDUSER, INVITE, GETFILE, KEYS};
+    enum class COMMAND { NONE, USERLIST, FINDUSER, INVITE, GETFILE};
     COMMAND cmd = COMMAND::NONE;
 
     if (message=="FRLST")
         cmd = COMMAND::USERLIST;
-
-    else if(message=="_KEYS_")
-        cmd = COMMAND::KEYS;
 
     else if(message=="_GetFILE_")
         cmd = COMMAND::GETFILE;
@@ -392,12 +402,18 @@ void Client::getMessage()
 
     case COMMAND::USERLIST:
     {
+        QList <QPair <QString, QString>> FriendKey;
         QList <QPair<QString, QString> > lst;
         ChatListVector chatList;
-        in >> lst >> chatList;
 
+        in >> FriendKey >> lst >> chatList; ;
+
+        for(int i=0; i<FriendKey.size(); i++)
+            pubFriendKey.push_back(qMakePair(FriendKey.at(i).first, FriendKey.at(i).second));
+        qDebug() << "Key: " << pubFriendKey;
         for(int i=0; i<lst.size(); i++)
             AddUser_Chat(lst.at(i).first, lst.at(i).second, chatList.at(i).second, i);
+
         break;
     }
 
@@ -409,7 +425,7 @@ void Client::getMessage()
         if(find_user=="OKFIN" && gl_fname!=name)
         {
             pubFriendKey.push_back(qMakePair(gl_fname, pubKey));
-            qDebug() << pubFriendKey;
+
             QList <QPair<QString, QString> > a;
             AddUser_Chat(gl_fname, commandList.at(2), a , -1);
             findcont->~findcontacts();
@@ -424,20 +440,8 @@ void Client::getMessage()
         QList <QPair<QString, QString> > a;
         QString pubKey = commandList.at(3) + " " + commandList.at(4);
         pubFriendKey.push_back(qMakePair(commandList.at(1), pubKey));
+
         AddUser_Chat(commandList.at(1), commandList.at(2), a , -2);
-        qDebug() << pubFriendKey;
-        break;
-    }
-
-    case COMMAND::KEYS:
-    {
-        QList <QPair <QString, QString>> FriendKey;
-        in >> FriendKey;
-
-        for(int i=0; i<FriendKey.size(); i++)
-            pubFriendKey.push_back(qMakePair(FriendKey.at(i).first, FriendKey.at(i).second));
-
-        qDebug() << pubFriendKey;
         break;
     }
 
@@ -510,21 +514,7 @@ void Client::getMessage()
     }
     default:                                                // Получение обычного текстового сообщения. Звук и добавление в ЧатЛист
 
-        QListWidgetItem *item = new QListWidgetItem();
-        item->setData(Qt::DisplayRole, message);
-        item->setData(Qt::ToolTipRole, QDateTime::currentDateTime().toString("dd.MM.yy hh:mm"));
-
-        if(QStringRef(&message, 0, 3)=="*To")
-        {
-            QListWidgetItem *item = new QListWidgetItem();
-            item->setData(Qt::UserRole + 1, "TO");
-            item->setData(Qt::DisplayRole, message.remove(0, 6+fromname.size()));
-            item->setData(Qt::ToolTipRole, QDateTime::currentDateTime().toString("dd.MM.yy hh:mm"));
-            chatvec.at(ui->stackedWidget_2->currentIndex())->addItem(item);
-            chatvec.at(ui->stackedWidget_2->currentIndex())->scrollToBottom();
-
-        }
-        else
+        if(QStringRef(&message, 0, 5)=="*From")
         {
             if(ui->ChBox_PSound->isChecked())
                 QSound::play(":/new/prefix1/Resource/from.wav");
@@ -535,17 +525,22 @@ void Client::getMessage()
                 for(int i=0; i<vec.size(); i++)
                     if(vec.at(i)->data(Qt::DisplayRole)==fromname)
                     {
+                        QString decodmsg = message.remove(0, 9+fromname.size());
+                        QStringList lst = myPrivateKey.split(" ", QString::SkipEmptyParts);
+                        qDebug() << decodmsg;
+                        decodmsg = rsaCrypt->decodeText(decodmsg, lst.at(0).toInt(), lst.at(1).toInt());
+
                         QListWidgetItem *item = new QListWidgetItem();
                         item->setData(Qt::UserRole + 1, "FROM");
-                        item->setData(Qt::DisplayRole, message.remove(0, 9+fromname.size()));
+                        item->setData(Qt::DisplayRole, decodmsg);
                         item->setData(Qt::ToolTipRole, QDateTime::currentDateTime().toString("dd.MM.yy hh:mm"));
 
-                        vec.at(i)->setData(Qt::UserRole + 1, message);
+                        vec.at(i)->setData(Qt::UserRole + 1, decodmsg);
                         vec.at(i)->setData(Qt::ToolTipRole, QDateTime::currentDateTime().toString("dd.MM.yy hh:mm"));
 
                         if(!this->isVisible())
                         {
-                            notice->setPopupText("New message (" + fromname + "):\n" + message);
+                            notice->setPopupText("New message (" + fromname + "):\n" + decodmsg);
                             notice->show();
                         }
                         chatvec.at(i)->addItem(item);
@@ -566,8 +561,6 @@ void Client::getMessage()
 void Client::whisperOnClickUsers(QListWidgetItem* user)
 {
     ui->editText->clear();
-    QString insert = "/msg " + user->text() + " ";
-    ui->editText->setText(insert);
     ui->editText->setFocus();
 }
 
@@ -624,7 +617,7 @@ void Client::send_personal_data()
 
         QString command = "_USR_";
         QString username = ui->usernameEdit->text();
-        out << quint32(0) << QTime::currentTime() << command << username;
+        out << quint32(0) << QTime::currentTime() << command << username ;
 
         tcpSocket->write(block);
         reg_window->close();

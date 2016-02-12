@@ -63,16 +63,16 @@ QString SQLiteDB::FindInDB(QString UserName, QString whoFind)
     return "false";
 }
 
-bool SQLiteDB::CorrectInput(QString _login, QString _password)
+QString SQLiteDB::CorrectInput(QString _login, QString _password)
 {
     QSqlQuery query(myDB);
-    if(query.exec("SELECT UserName, Password FROM Users WHERE UserName=\'" +_login+ "\' AND Password=\'"+_password+ "\'"))
+    if(query.exec("SELECT UserName, Password, PrivateKey FROM Users WHERE UserName=\'" +_login+ "\' AND Password=\'"+_password+ "\'"))
         if(query.next())
             if (query.value(0).toString()== _login && query.value(1).toString()==_password)
-                return true;
+                return query.value(2).toString();
 
     query.exec();
-    return false;
+    return "false";
 }
 
 QList <QPair<QString, QString>> SQLiteDB::FriendList(QString user, ChatListVector &lst)

@@ -18,11 +18,12 @@ private:
     bool SimpleNumber(int &n, int t);
     int modExp(long long,  long long, long long );
     int NOD(int p, int q);
-    void encodeText(QString);
-    void decodeText(QString);
+
 
 public:
     RSACrypt();
+    QString encodeText(QString, int, int);
+    QString decodeText(QString, int, int);
     void generationKeys();
     int getE();
     int getModule();

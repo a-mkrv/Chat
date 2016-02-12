@@ -129,9 +129,6 @@ void Server::getMessage()
     else if(typePacket == "_LOG_IN_")
         command = 6;
 
-    else if(typePacket == "_KEYS_")
-        command = 7;
-
     switch (command)
     {
 
@@ -200,37 +197,21 @@ void Server::getMessage()
         QDataStream out(&block, QIODevice::WriteOnly);
         out.setVersion(QDataStream::Qt_5_4);
 
-        if(!sqlitedb->CorrectInput(Login, Password))
+        QString result_return = sqlitedb->CorrectInput(Login, Password);
+        if(result_return=="false")
         {
-            out  <<  QString("Error_Login_Pass");
+            out  <<  QString("Error_Login_Pass") << QString("not_key");
             client->write(block);
         }
         else
         {
             QString message = "LogInOK!";
-            out  << message;
+            out  << message << result_return;
             client->write(block);
         }
 
         break;
     }
-
-    case 7:
-    {
-        QByteArray block;
-        QDataStream out(&block, QIODevice::WriteOnly);
-        out.setVersion(QDataStream::Qt_5_4);
-        QString myName;
-
-        in >> myName;
-
-        QList <QPair <QString, QString>> FriendKey;
-        FriendKey = sqlitedb->FriendKeys(myName);
-
-        out << quint32(0) << QString("_KEYS_") << FriendKey;
-        client->write(block);
-    }
-
     }
 }
 
@@ -249,9 +230,12 @@ void Server::NewUser(QTcpSocket *client, QString _user)
     QList <QPair<QString, QString>> lst;
     ChatListVector chatlst;
 
+    QList <QPair <QString, QString>> FriendKey;
+    FriendKey = sqlitedb->FriendKeys(UserName);
+
     lst = sqlitedb->FriendList(UserName, chatlst);
 
-    out << quint32(0) << QString("FRLST") << lst << chatlst;
+    out << quint32(0) << QString("FRLST") << FriendKey << lst << chatlst;
     client->write(block);
 
     while (AlreadyName)
@@ -312,8 +296,8 @@ void Server::PrivateMessage(QTcpSocket *client, QString _message)
             if (i->getUserName() == recipient)
                 toUser = i;
 
-    QString newMessage = "*To: " + recipient + ": " + text;
-    sendToID(newMessage, fromUser->getSocket()->socketDescriptor());
+    
+    QString newMessage;
 
     if (toUser != nullptr)
     {

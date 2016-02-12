@@ -25,6 +25,7 @@
 #include "chatlistdelegate.h"
 #include "aboutdialog.h"
 #include "notification.h"
+#include "rsacrypt.h"
 #include <QMouseEvent>
 #include <QPoint>
 #include <QTime>
@@ -89,7 +90,7 @@ private slots:
 
 
 public slots:
-    void recieveData(QString str, QString pas);
+    void recieveData(QString str, QString pas, QString key);
 
 signals:
     void find_user_Serv(QString str);
@@ -111,6 +112,7 @@ private:
     AboutDialog *aboutdialog;
     registration *reg_window;
     Notification *notice;
+    RSACrypt *rsaCrypt;
     QString myPrivateKey;
     QPoint m_dragPosition;
     QVector<QPair<QString, QString> > pubFriendKey;
