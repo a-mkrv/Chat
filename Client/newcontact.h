@@ -4,6 +4,7 @@
 #include <QWidget>
 #include <QTcpSocket>
 #include <QMouseEvent>
+#include "rsacrypt.h"
 
 namespace Ui {
 class NewContact;
@@ -32,6 +33,7 @@ signals:
     void sendData(QString str);
 
 private:
+    RSACrypt *rsacrypt;
     QTcpSocket *socket;
     Ui::NewContact *ui;
     QPoint m_dragPosition;

@@ -2,6 +2,9 @@
 
 RSACrypt::RSACrypt()
 {
+    QTime time = QTime::currentTime();
+    qsrand((uint)time.msec());
+
     p_simple = 0;
     q_simple = 0;
     d = 0;
@@ -110,4 +113,19 @@ int RSACrypt::modExp(long long base, long long exp, long long module){
         long long res=modExp(base ,exp-1, module);
         return ((base%module)*res)%module;
     }
+}
+
+int RSACrypt::getE()
+{
+    return e;
+}
+
+int RSACrypt::getModule()
+{
+    return module;
+}
+
+int RSACrypt::getD()
+{
+    return d;
 }

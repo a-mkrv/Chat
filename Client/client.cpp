@@ -328,6 +328,17 @@ void Client::AddUser_Chat(QString _username, QString _sex, QList<QPair<QString, 
     ui->userList->clearSelection();
     ui->stackedWidget_2->hide();
     ui->userList->addItem(item);
+
+    if(!vec.isEmpty())
+    {
+        QByteArray block;
+        QDataStream out(&block, QIODevice::WriteOnly);
+        out.setVersion(QDataStream::Qt_5_4);
+
+        QString command = "_KEYS_";
+        out << quint32(0) << QTime::currentTime() << command << name;
+        tcpSocket->write(block);
+    }
 }
 
 void Client::getMessage()
@@ -350,11 +361,14 @@ void Client::getMessage()
     QStringList commandList;
     QString fromname;
 
-    enum class COMMAND { NONE, USERLIST, FINDUSER, INVITE, GETFILE};
+    enum class COMMAND { NONE, USERLIST, FINDUSER, INVITE, GETFILE, KEYS};
     COMMAND cmd = COMMAND::NONE;
 
     if (message=="FRLST")
         cmd = COMMAND::USERLIST;
+
+    else if(message=="_KEYS_")
+        cmd = COMMAND::KEYS;
 
     else if(message=="_GetFILE_")
         cmd = COMMAND::GETFILE;
@@ -390,9 +404,12 @@ void Client::getMessage()
     case COMMAND::FINDUSER:
     {
         QString find_user = commandList.at(1);
+        QString pubKey = commandList.at(3) + " " + commandList.at(4);
 
         if(find_user=="OKFIN" && gl_fname!=name)
         {
+            pubFriendKey.push_back(qMakePair(gl_fname, pubKey));
+            qDebug() << pubFriendKey;
             QList <QPair<QString, QString> > a;
             AddUser_Chat(gl_fname, commandList.at(2), a , -1);
             findcont->~findcontacts();
@@ -405,7 +422,22 @@ void Client::getMessage()
     case COMMAND::INVITE:
     {
         QList <QPair<QString, QString> > a;
+        QString pubKey = commandList.at(3) + " " + commandList.at(4);
+        pubFriendKey.push_back(qMakePair(commandList.at(1), pubKey));
         AddUser_Chat(commandList.at(1), commandList.at(2), a , -2);
+        qDebug() << pubFriendKey;
+        break;
+    }
+
+    case COMMAND::KEYS:
+    {
+        QList <QPair <QString, QString>> FriendKey;
+        in >> FriendKey;
+
+        for(int i=0; i<FriendKey.size(); i++)
+            pubFriendKey.push_back(qMakePair(FriendKey.at(i).first, FriendKey.at(i).second));
+
+        qDebug() << pubFriendKey;
         break;
     }
 
@@ -592,8 +624,8 @@ void Client::send_personal_data()
 
         QString command = "_USR_";
         QString username = ui->usernameEdit->text();
-        out << quint32(0) << QTime::currentTime() << command;
-        out << username;
+        out << quint32(0) << QTime::currentTime() << command << username;
+
         tcpSocket->write(block);
         reg_window->close();
     }

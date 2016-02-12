@@ -23,37 +23,40 @@ SQLiteDB::~SQLiteDB()
     myDB.close();
 }
 
-void SQLiteDB::AddContact(QString UserName, QString Sex, int Age, QString City, QString Pas)
+void SQLiteDB::AddContact(QString UserName, QString Sex, int Age, QString City, QString Pas, QString PubK, QString PrK)
 {
     QSqlQuery query(myDB);
-    query.prepare("INSERT INTO Users (UserName, Sex, Age, City, Password) VALUES (:UserName, :Sex, :Age, :City, :Password)");
+    query.prepare("INSERT INTO Users (UserName, Sex, Age, City, Password, PubKey, PrivateKey) VALUES (:UserName, :Sex, :Age, :City, :Password, :Pub, :Pr)");
     query.bindValue(":UserName", UserName);
     query.bindValue(":Sex", Sex);
     query.bindValue(":Age", Age);
     query.bindValue(":City", City);
     query.bindValue(":Password", Pas);
+    query.bindValue(":Pub", PubK);
+    query.bindValue(":Pr", PrK);
     query.exec();
 
     QSqlQuery queryCreate(myDB);
-    queryCreate.exec("CREATE TABLE Friend" + UserName + " (name text NOT NULL, sex text NOT NULL)");
+    queryCreate.exec("CREATE TABLE Friend" + UserName + " (name text NOT NULL, sex text NOT NULL, key text NOT NULL)");
 }
 
 QString SQLiteDB::FindInDB(QString UserName, QString whoFind)
 {
     QSqlQuery query(myDB);
-    if(query.exec("SELECT UserName, Sex FROM Users WHERE UserName=\'" +UserName+ "\'"))
+    if(query.exec("SELECT UserName, Sex, PubKey FROM Users WHERE UserName=\'" +UserName+ "\'"))
         if(query.next())
             if (query.value(0).toString()==UserName)
             {
                 if(!whoFind.isEmpty())
                 {
                     QSqlQuery queryAdFr(myDB);
-                    queryAdFr.prepare("INSERT INTO Friend"+whoFind+" (name, sex) VALUES (:UserName, :Sex)");
+                    queryAdFr.prepare("INSERT INTO Friend"+whoFind+" (name, sex, key) VALUES (:UserName, :Sex, :Key)");
                     queryAdFr.bindValue(":UserName", UserName);
                     queryAdFr.bindValue(":Sex", query.value(1).toString());
+                    queryAdFr.bindValue(":Key", query.value(2).toString());
                     queryAdFr.exec();
                 }
-                return query.value(1).toString();
+                return query.value(1).toString() + " " + query.value(2).toString();
             }
 
     query.exec();
@@ -85,6 +88,20 @@ QList <QPair<QString, QString>> SQLiteDB::FriendList(QString user, ChatListVecto
         }
 
     return FriendSex;
+}
+
+QList <QPair <QString, QString> > SQLiteDB::FriendKeys(QString user)
+{
+    QSqlQuery query(myDB);
+    QList <QPair <QString, QString>> FriendKey;
+
+    if(query.exec("SELECT name, key FROM Friend" + user))
+        while (query.next())
+        {
+            FriendKey.push_back(qMakePair(query.value(0).toString(), query.value(1).toString()));
+        }
+
+    return FriendKey;
 }
 
 void SQLiteDB::LoadChatList(QString who, QString find, ChatListVector &lst)

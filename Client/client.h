@@ -81,7 +81,6 @@ private slots:
     void on_radioButton_clicked();
     void on_Download_path_PB_clicked();
     void on_pushButton_2_clicked();
-
     void on_userList_clicked(const QModelIndex &index);
     void on_pushButton_3_clicked();
     void on_pushButton_5_clicked();
@@ -112,11 +111,11 @@ private:
     AboutDialog *aboutdialog;
     registration *reg_window;
     Notification *notice;
-
+    QString myPrivateKey;
     QPoint m_dragPosition;
+    QVector<QPair<QString, QString> > pubFriendKey;
     QVector<QListWidgetItem*> vec;
     QVector<QListWidget*> chatvec;
-
     QStackedWidget *stackchat;
     QFile *sendFile;
     QString name;

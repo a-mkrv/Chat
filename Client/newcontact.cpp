@@ -8,10 +8,13 @@ NewContact::NewContact(QWidget *parent) :
 {
     this->setWindowFlags(Qt::Window | Qt::FramelessWindowHint | Qt::CustomizeWindowHint);
     socket = new QTcpSocket();
+    rsacrypt = new RSACrypt();
 
     ui->setupUi(this);
     ui->Error_label->hide();
     ui->Error_label_2->hide();
+
+    rsacrypt->generationKeys();
 
     connect(socket, SIGNAL(readyRead()), this, SLOT(getMessagee()));
 }
@@ -51,7 +54,9 @@ void NewContact::on_accept_button_clicked()
 
     out << quint32(0) << QTime::currentTime() << QString("_REG_") << ui->enter_user_name->text()
         << ui->enter_city->text() << ui->enter_password->text()
-        << ui->age->text() << ui->sex_person->currentText();
+        << ui->age->text() << ui->sex_person->currentText()
+        << QString::number(rsacrypt->getE()) + "  " + QString::number(rsacrypt->getModule())
+        << QString::number(rsacrypt->getD()) + "  " + QString::number(rsacrypt->getModule());
 
     socket->write(block);
 }

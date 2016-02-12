@@ -24,6 +24,9 @@ private:
 public:
     RSACrypt();
     void generationKeys();
+    int getE();
+    int getModule();
+    int getD(); //Временно, для теста.
 };
 
 #endif // RSACRYPT_H

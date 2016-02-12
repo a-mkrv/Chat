@@ -21,7 +21,6 @@ Server::Server(QWidget *parent) :
     }
 
     connect(tcpServer, SIGNAL(newConnection()), this, SLOT(NewConnect()));
-    // connect(this, SIGNAL(NewConnect()), this, SLOT(getMessage()));
 }
 
 void Server::NewConnect()
@@ -130,6 +129,9 @@ void Server::getMessage()
     else if(typePacket == "_LOG_IN_")
         command = 6;
 
+    else if(typePacket == "_KEYS_")
+        command = 7;
+
     switch (command)
     {
 
@@ -183,16 +185,14 @@ void Server::getMessage()
 
     case 5:
     {
-        QString UserName, City, Password, Age, Sex;
-        in >> UserName >> City >> Password >> Age >> Sex;
-        LogIn(client, UserName, City, Password, Age, Sex);
-
+        QString UserName, City, Password, Age, Sex, PublicKey, PrivateKey; /*(Закрытый ключ в последствии убрать, тест)*/
+        in >> UserName >> City >> Password >> Age >> Sex >> PublicKey >> PrivateKey;
+        LogIn(client, UserName, City, Password, Age, Sex, PublicKey, PrivateKey);
         break;
     }
 
     case 6:
     {
-        qDebug() << "LOG";
         QString Login, Password;
         in >> Login >> Password;
 
@@ -202,17 +202,33 @@ void Server::getMessage()
 
         if(!sqlitedb->CorrectInput(Login, Password))
         {
-            out << quint32(0) <<  QString("Error_Login_Pass");
+            out  <<  QString("Error_Login_Pass");
             client->write(block);
         }
         else
         {
             QString message = "LogInOK!";
-            out << quint32(0) << message;
+            out  << message;
             client->write(block);
         }
 
         break;
+    }
+
+    case 7:
+    {
+        QByteArray block;
+        QDataStream out(&block, QIODevice::WriteOnly);
+        out.setVersion(QDataStream::Qt_5_4);
+        QString myName;
+
+        in >> myName;
+
+        QList <QPair <QString, QString>> FriendKey;
+        FriendKey = sqlitedb->FriendKeys(myName);
+
+        out << quint32(0) << QString("_KEYS_") << FriendKey;
+        client->write(block);
     }
 
     }
@@ -370,7 +386,7 @@ void Server::SendingFile(QTcpSocket *client)
                 out.device()->seek(0);
                 out << quint32(arrBlock.size() - sizeof(quint32));
 
-               i->getSocket()->write(arrBlock);
+                i->getSocket()->write(arrBlock);
             }
         if (mClientSocket->bytesAvailable() < nextBlockSize) {
             break;
@@ -393,7 +409,7 @@ void Server::SendingFile(QTcpSocket *client)
 
 
 
-void Server::LogIn(QTcpSocket *client, QString &U, QString &C, QString &P, QString &A, QString &S)
+void Server::LogIn(QTcpSocket *client, QString &U, QString &C, QString &P, QString &A, QString &S, QString &PubK, QString &PrK)
 {
     QByteArray block;
     QDataStream out(&block, QIODevice::WriteOnly);
@@ -408,7 +424,7 @@ void Server::LogIn(QTcpSocket *client, QString &U, QString &C, QString &P, QStri
     {
         if(C.isEmpty())
             C="Unknown";
-        sqlitedb->AddContact(U, S, A.toInt(), C, P);
+        sqlitedb->AddContact(U, S, A.toInt(), C, P, PubK, PrK);
         ui->chatDialog->addItem(timeconnect() + " - User registration: " + U);
         qDebug() << "Новый пользователь: " << U;
 
