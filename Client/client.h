@@ -61,7 +61,7 @@ private slots:
     void show_Error(QAbstractSocket::SocketError errorSocket);  //Их большая часть в коде -_-
     void send_personal_data();          //Отправка сведений о клиенте
     void onDisconnect();                //Отключение
-    void sendUserCommand(QString command);
+    void sendUserCommand(QString command, QString);
     void on_userSetting_clicked();      //Настройки (-)
     void on_close_setting_button_clicked();
     void whisperOnClick(QListWidgetItem* user);

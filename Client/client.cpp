@@ -167,28 +167,30 @@ void Client::on_sendMessage_clicked()
         if(ui->ChBox_PSound->isChecked())
             QSound::play(":/new/prefix1/Resource/to.wav");
 
-        QListWidgetItem *item = new QListWidgetItem();
-        item->setData(Qt::UserRole + 1, "TO");
-        item->setData(Qt::DisplayRole, message);
-        item->setData(Qt::ToolTipRole, QDateTime::currentDateTime().toString("dd.MM.yy hh:mm"));
-        chatvec.at(ui->stackedWidget_2->currentIndex())->addItem(item);
-        chatvec.at(ui->stackedWidget_2->currentIndex())->scrollToBottom();
+        //        QListWidgetItem *item = new QListWidgetItem();
+        //        item->setData(Qt::UserRole + 1, "TO");
+        //        item->setData(Qt::DisplayRole, message);
+        //        item->setData(Qt::ToolTipRole, QDateTime::currentDateTime().toString("dd.MM.yy hh:mm"));
+        //        chatvec.at(ui->stackedWidget_2->currentIndex())->addItem(item);
+        //        chatvec.at(ui->stackedWidget_2->currentIndex())->scrollToBottom();
 
         QString RecName = vec.at(ui->userList->currentRow())->data(Qt::DisplayRole).toString();
+        QStringList lst = myPrivateKey.split(" ", QString::SkipEmptyParts);
+        QString MyMsg = rsaCrypt->encodeText(message, lst.at(0).toInt(), lst.at(1).toInt());
+
         for(int i=0; i<pubFriendKey.size(); i++)
         {
             if(RecName==pubFriendKey.at(i).first)
             {
                 QString user_key = pubFriendKey.at(i).second;
-                QStringList _key;
-                _key = user_key.split(" ", QString::SkipEmptyParts);
+                QStringList _key = user_key.split(" ", QString::SkipEmptyParts);
                 encodemsg = rsaCrypt->encodeText(message, _key.at(0).toInt(), _key.at(1).toInt());
+                break;
             }
-            qDebug() << encodemsg;
         }
 
         QString new_mes = "/msg " + vec.at(ui->userList->currentRow())->data(Qt::DisplayRole).toString() + " " + encodemsg;
-        sendUserCommand(new_mes);
+        sendUserCommand(new_mes, MyMsg);
     }
 }
 
@@ -514,7 +516,20 @@ void Client::getMessage()
     }
     default:                                                // Получение обычного текстового сообщения. Звук и добавление в ЧатЛист
 
-        if(QStringRef(&message, 0, 5)=="*From")
+        if(QStringRef(&message, 0, 3)=="*To")
+        {
+            QString myMsg = message.remove(0, 6+fromname.size());
+            QStringList lst = myPrivateKey.split(" ", QString::SkipEmptyParts);
+            myMsg = rsaCrypt->decodeText(myMsg, lst.at(2).toInt(), lst.at(3).toInt());
+            QListWidgetItem *item = new QListWidgetItem();
+            item->setData(Qt::UserRole + 1, "TO");
+            item->setData(Qt::DisplayRole, myMsg);
+            item->setData(Qt::ToolTipRole, QDateTime::currentDateTime().toString("dd.MM.yy hh:mm"));
+            chatvec.at(ui->stackedWidget_2->currentIndex())->addItem(item);
+            chatvec.at(ui->stackedWidget_2->currentIndex())->scrollToBottom();
+
+        }
+        else
         {
             if(ui->ChBox_PSound->isChecked())
                 QSound::play(":/new/prefix1/Resource/from.wav");
@@ -527,8 +542,7 @@ void Client::getMessage()
                     {
                         QString decodmsg = message.remove(0, 9+fromname.size());
                         QStringList lst = myPrivateKey.split(" ", QString::SkipEmptyParts);
-                        qDebug() << decodmsg;
-                        decodmsg = rsaCrypt->decodeText(decodmsg, lst.at(0).toInt(), lst.at(1).toInt());
+                        decodmsg = rsaCrypt->decodeText(decodmsg, lst.at(2).toInt(), lst.at(3).toInt());
 
                         QListWidgetItem *item = new QListWidgetItem();
                         item->setData(Qt::UserRole + 1, "FROM");
@@ -629,13 +643,13 @@ void Client::onDisconnect()
     personDates = false;
 }
 
-void Client::sendUserCommand(QString command)
+void Client::sendUserCommand(QString command, QString mymsg)
 {
     QByteArray msg;
     QDataStream out(&msg, QIODevice::WriteOnly);
     out.setVersion(QDataStream::Qt_5_4);
 
-    out << quint32(0) << QTime::currentTime() << QString("_UCD_") << command;
+    out << quint32(0) << QTime::currentTime() << QString("_UCD_") << command << mymsg;
     tcpSocket->write(msg);
 }
 
@@ -897,7 +911,6 @@ void Client::on_pushButton_2_clicked()
                 pos = i;
                 break;
             }
-        qDebug() << pos;
         fileName.remove(16, pos);
     }
 

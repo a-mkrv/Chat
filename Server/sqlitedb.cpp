@@ -66,10 +66,10 @@ QString SQLiteDB::FindInDB(QString UserName, QString whoFind)
 QString SQLiteDB::CorrectInput(QString _login, QString _password)
 {
     QSqlQuery query(myDB);
-    if(query.exec("SELECT UserName, Password, PrivateKey FROM Users WHERE UserName=\'" +_login+ "\' AND Password=\'"+_password+ "\'"))
+    if(query.exec("SELECT UserName, Password, PubKey, PrivateKey FROM Users WHERE UserName=\'" +_login+ "\' AND Password=\'"+_password+ "\'"))
         if(query.next())
             if (query.value(0).toString()== _login && query.value(1).toString()==_password)
-                return query.value(2).toString();
+                return query.value(2).toString() + " " + query.value(3).toString();
 
     query.exec();
     return "false";

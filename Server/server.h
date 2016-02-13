@@ -35,7 +35,7 @@ private slots:
 
     void sendToID(QString message, int ID);     //Отправка личных сообщений
     void NewUser(QTcpSocket *client, QString _user);
-    void PrivateMessage(QTcpSocket *client, QString _message);
+    void PrivateMessage(QTcpSocket *client, QString _message, QString);
     void SendingFile(QTcpSocket *client);
     void LogIn(QTcpSocket *client, QString &U, QString &C, QString &P, QString &A, QString &S, QString &PubK, QString &PrK);
 

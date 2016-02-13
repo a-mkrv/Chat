@@ -143,8 +143,9 @@ void Server::getMessage()
     case 2:
     {
         QString newMessage;
-        in >> newMessage;
-        PrivateMessage(client, newMessage);
+        QString MyMsg;
+        in >> newMessage >> MyMsg;
+        PrivateMessage(client, newMessage, MyMsg);
         break;
     }
 
@@ -264,7 +265,7 @@ void Server::NewUser(QTcpSocket *client, QString _user)
         }
 }
 
-void Server::PrivateMessage(QTcpSocket *client, QString _message)
+void Server::PrivateMessage(QTcpSocket *client, QString _message, QString _mymsg)
 {
     User* toUser = nullptr;
     User* fromUser = nullptr;
@@ -296,8 +297,8 @@ void Server::PrivateMessage(QTcpSocket *client, QString _message)
             if (i->getUserName() == recipient)
                 toUser = i;
 
-    
-    QString newMessage;
+    QString newMessage = "*To: " + recipient + ": " + _mymsg;
+       sendToID(newMessage, fromUser->getSocket()->socketDescriptor());
 
     if (toUser != nullptr)
     {
@@ -306,12 +307,12 @@ void Server::PrivateMessage(QTcpSocket *client, QString _message)
         sendToID(newMessage, toUser->getSocket()->socketDescriptor());
 
         ui->chatDialog->addItem(timeconnect() + " - PM: " + fromUser->getUserName() + " -> " + toUser->getUserName() + ":  " + text);
-        sqlitedb->addMessInChat(fromUser->getUserName(), toUser->getUserName(), text, QString("To"));
+        sqlitedb->addMessInChat(fromUser->getUserName(), toUser->getUserName(), _mymsg, QString("To"));
         sqlitedb->addMessInChat(toUser->getUserName(), fromUser->getUserName(),  text, QString("From"));
     }
     else
     {
-        sqlitedb->addMessInChat(fromUser->getUserName(), recipient, text, QString("To"));
+        sqlitedb->addMessInChat(fromUser->getUserName(), recipient, _mymsg, QString("To"));
         sqlitedb->addMessInChat(recipient, fromUser->getUserName(),  text, QString("From"));
     }
 }
