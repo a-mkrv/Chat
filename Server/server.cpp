@@ -165,7 +165,10 @@ void Server::getMessage()
 
             for (auto i : clientConnections)
                 if (i->getUserName() == findUser)
+                {
+                    result = sqlitedb->FindInDB(whoFind, findUser);
                     sendToID("_INV_ " + whoFind + " " + result, i->getSocket()->socketDescriptor());
+                }
 
         }
         else
