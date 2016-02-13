@@ -1440,19 +1440,6 @@ p, li { white-space: pre-wrap; }
      <bool>false</bool>
     </property>
    </widget>
-   <widget class="QProgressBar" name="progressBar">
-    <property name="geometry">
-     <rect>
-      <x>430</x>
-      <y>60</y>
-      <width>301</width>
-      <height>23</height>
-     </rect>
-    </property>
-    <property name="value">
-     <number>24</number>
-    </property>
-   </widget>
    <zorder>line</zorder>
    <zorder>userList</zorder>
    <zorder>background_inder_list</zorder>
@@ -1469,7 +1456,6 @@ p, li { white-space: pre-wrap; }
    <zorder>textBrowser</zorder>
    <zorder>search_label</zorder>
    <zorder>stackedWidget_2</zorder>
-   <zorder>progressBar</zorder>
    <zorder>widget_2</zorder>
   </widget>
   <action name="actionShowHideWindow">

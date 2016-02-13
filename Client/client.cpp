@@ -185,6 +185,7 @@ void Client::on_sendMessage_clicked()
                 QString user_key = pubFriendKey.at(i).second;
                 QStringList _key = user_key.split(" ", QString::SkipEmptyParts);
                 encodemsg = rsaCrypt->encodeText(message, _key.at(0).toInt(), _key.at(1).toInt());
+                qDebug() << "Отправил: " << encodemsg;
                 break;
             }
         }
@@ -308,6 +309,9 @@ void Client::AddUser_Chat(QString _username, QString _sex, QList<QPair<QString, 
 
         if(lst.at(i).second.left(1) == "F")
         {
+            QStringList lstfrom = myPrivateKey.split(" ", QString::SkipEmptyParts);
+            msg = rsaCrypt->decodeText(msg, lstfrom.at(2).toInt(), lstfrom.at(3).toInt());
+
             if(TFile=="FILE")
             {
                 msg.remove(0,5);
@@ -324,6 +328,7 @@ void Client::AddUser_Chat(QString _username, QString _sex, QList<QPair<QString, 
                 item2->setData(Qt::ToolTipRole, timeStr);
                 item->setData(Qt::UserRole + 1, msg);
             }
+
             item2->setData(Qt::DisplayRole, msg);
             item->setData(Qt::ToolTipRole, timeStr);
 
@@ -344,6 +349,9 @@ void Client::AddUser_Chat(QString _username, QString _sex, QList<QPair<QString, 
                 item2->setData(Qt::UserRole + 1, "TO");
                 item2->setData(Qt::ToolTipRole, timeStr);
             }
+
+            QStringList lst = myPrivateKey.split(" ", QString::SkipEmptyParts);
+            msg = rsaCrypt->decodeText(msg, lst.at(2).toInt(), lst.at(3).toInt());
             item2->setData(Qt::DisplayRole, msg);
         }
 
@@ -427,7 +435,7 @@ void Client::getMessage()
         if(find_user=="OKFIN" && gl_fname!=name)
         {
             pubFriendKey.push_back(qMakePair(gl_fname, pubKey));
-
+            qDebug() << pubFriendKey;
             QList <QPair<QString, QString> > a;
             AddUser_Chat(gl_fname, commandList.at(2), a , -1);
             findcont->~findcontacts();
@@ -440,9 +448,10 @@ void Client::getMessage()
     case COMMAND::INVITE:
     {
         QList <QPair<QString, QString> > a;
+        qDebug() << commandList;
         QString pubKey = commandList.at(3) + " " + commandList.at(4);
         pubFriendKey.push_back(qMakePair(commandList.at(1), pubKey));
-
+        qDebug() << pubFriendKey;
         AddUser_Chat(commandList.at(1), commandList.at(2), a , -2);
         break;
     }
@@ -541,6 +550,7 @@ void Client::getMessage()
                     if(vec.at(i)->data(Qt::DisplayRole)==fromname)
                     {
                         QString decodmsg = message.remove(0, 9+fromname.size());
+                        qDebug() << "Принял: " << decodmsg;
                         QStringList lst = myPrivateKey.split(" ", QString::SkipEmptyParts);
                         decodmsg = rsaCrypt->decodeText(decodmsg, lst.at(2).toInt(), lst.at(3).toInt());
 
