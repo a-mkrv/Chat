@@ -678,7 +678,7 @@ background-color: rgb(99, 137, 168);</string>
       <string notr="true">background-color: rgb(255, 255, 255);</string>
      </property>
      <property name="currentIndex">
-      <number>1</number>
+      <number>2</number>
      </property>
      <widget class="QWidget" name="page">
       <widget class="QGroupBox" name="groupBox">
@@ -1082,6 +1082,9 @@ border:none;</string>
           </property>
           <property name="text">
            <string>Notification</string>
+          </property>
+          <property name="checked">
+           <bool>true</bool>
           </property>
          </widget>
         </item>

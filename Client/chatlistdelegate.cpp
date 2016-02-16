@@ -33,7 +33,9 @@ void ChatListDelegate::paint ( QPainter * painter, const QStyleOptionViewItem & 
         //painter->setPen("#dbdcff" );
         if(title.size() >= 25 && title.size() <=35)
             SizeMesBox = title.size()+320;
-        else if(title.size()<25)
+        else if(title.size()<25 && title.size()>15)
+            SizeMesBox = title.size()+235;
+        else if(title.size()<=15)
             SizeMesBox = title.size()+180;
         else if(title.size()> 45)
             SizeMesBox = r.width()-15;
@@ -122,6 +124,7 @@ void ChatListDelegate::paint ( QPainter * painter, const QStyleOptionViewItem & 
         painter->drawText(r.left()-3, r.top()+10, r.width(), r.height(), Qt::AlignBottom|Qt::AlignRight, time , &r);
         }
     }
+    this->sizeHint(option, index);
 
 }
 

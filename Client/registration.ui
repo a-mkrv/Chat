@@ -23,8 +23,8 @@
   <widget class="QPushButton" name="pushButton">
    <property name="geometry">
     <rect>
-     <x>220</x>
-     <y>368</y>
+     <x>272</x>
+     <y>369</y>
      <width>171</width>
      <height>41</height>
     </rect>
@@ -204,9 +204,9 @@ color: rgb(168, 185, 196);</string>
   <widget class="QCheckBox" name="checkBox">
    <property name="geometry">
     <rect>
-     <x>400</x>
-     <y>372</y>
-     <width>91</width>
+     <x>220</x>
+     <y>370</y>
+     <width>81</width>
      <height>31</height>
     </rect>
    </property>
@@ -375,7 +375,7 @@ color: rgb(214, 71, 0);</string>
     <rect>
      <x>220</x>
      <y>400</y>
-     <width>171</width>
+     <width>161</width>
      <height>31</height>
     </rect>
    </property>
@@ -446,6 +446,7 @@ color: rgb(214, 71, 0);</string>
     <bool>true</bool>
    </property>
   </widget>
+  <zorder>checkBox</zorder>
   <zorder>label_3</zorder>
   <zorder>label_4</zorder>
   <zorder>username_enter</zorder>
@@ -456,7 +457,6 @@ color: rgb(214, 71, 0);</string>
   <zorder>label_5</zorder>
   <zorder>label_8</zorder>
   <zorder>pushButton</zorder>
-  <zorder>checkBox</zorder>
   <zorder>label_2</zorder>
   <zorder>reg_button</zorder>
   <zorder>error_label</zorder>

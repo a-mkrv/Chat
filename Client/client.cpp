@@ -167,13 +167,6 @@ void Client::on_sendMessage_clicked()
         if(ui->ChBox_PSound->isChecked())
             QSound::play(":/new/prefix1/Resource/to.wav");
 
-        //        QListWidgetItem *item = new QListWidgetItem();
-        //        item->setData(Qt::UserRole + 1, "TO");
-        //        item->setData(Qt::DisplayRole, message);
-        //        item->setData(Qt::ToolTipRole, QDateTime::currentDateTime().toString("dd.MM.yy hh:mm"));
-        //        chatvec.at(ui->stackedWidget_2->currentIndex())->addItem(item);
-        //        chatvec.at(ui->stackedWidget_2->currentIndex())->scrollToBottom();
-
         QString RecName = vec.at(ui->userList->currentRow())->data(Qt::DisplayRole).toString();
         QStringList lst = myPrivateKey.split(" ", QString::SkipEmptyParts);
         QString MyMsg = rsaCrypt->encodeText(message, lst.at(0).toInt(), lst.at(1).toInt());
@@ -310,7 +303,13 @@ void Client::AddUser_Chat(QString _username, QString _sex, QList<QPair<QString, 
         if(lst.at(i).second.left(1) == "F")
         {
             QStringList lstfrom = myPrivateKey.split(" ", QString::SkipEmptyParts);
-            msg = rsaCrypt->decodeText(msg, lstfrom.at(2).toInt(), lstfrom.at(3).toInt());
+
+            if(msg.left(1)=="F")
+            {
+
+            }
+            else
+                msg = rsaCrypt->decodeText(msg, lstfrom.at(2).toInt(), lstfrom.at(3).toInt());
 
             if(TFile=="FILE")
             {
@@ -335,6 +334,18 @@ void Client::AddUser_Chat(QString _username, QString _sex, QList<QPair<QString, 
         }
         else if (lst.at(i).second.left(1) == "T")
         {
+
+
+            if(msg.left(1)=="F")
+            {
+
+            }
+            else{
+                QStringList lst = myPrivateKey.split(" ", QString::SkipEmptyParts);
+                msg = rsaCrypt->decodeText(msg, lst.at(2).toInt(), lst.at(3).toInt());
+            }
+
+
             if(TFile=="FILE")
             {
                 msg.remove(0,5);
@@ -350,8 +361,6 @@ void Client::AddUser_Chat(QString _username, QString _sex, QList<QPair<QString, 
                 item2->setData(Qt::ToolTipRole, timeStr);
             }
 
-            QStringList lst = myPrivateKey.split(" ", QString::SkipEmptyParts);
-            msg = rsaCrypt->decodeText(msg, lst.at(2).toInt(), lst.at(3).toInt());
             item2->setData(Qt::DisplayRole, msg);
         }
 
@@ -503,7 +512,7 @@ void Client::getMessage()
                     vec.at(i)->setData(Qt::UserRole + 1, "File: " + filename);
                     vec.at(i)->setData(Qt::ToolTipRole, QDateTime::currentDateTime().toString("dd.MM.yy hh:mm"));
 
-                    if(!this->isVisible())
+                    if(!this->isVisible() && ui->ChBox_Notif->isChecked())
                     {
                         notice->setPopupText("New message (" + fromname + "):\n" + "File: " + filename);
                         notice->show();
@@ -530,10 +539,12 @@ void Client::getMessage()
             QString myMsg = message.remove(0, 6+fromname.size());
             QStringList lst = myPrivateKey.split(" ", QString::SkipEmptyParts);
             myMsg = rsaCrypt->decodeText(myMsg, lst.at(2).toInt(), lst.at(3).toInt());
+
             QListWidgetItem *item = new QListWidgetItem();
             item->setData(Qt::UserRole + 1, "TO");
             item->setData(Qt::DisplayRole, myMsg);
             item->setData(Qt::ToolTipRole, QDateTime::currentDateTime().toString("dd.MM.yy hh:mm"));
+
             chatvec.at(ui->stackedWidget_2->currentIndex())->addItem(item);
             chatvec.at(ui->stackedWidget_2->currentIndex())->scrollToBottom();
 
@@ -704,7 +715,7 @@ void Client::showEmoji()
 void Client::showFindCont()
 {
     QPoint p = QCursor::pos();
-    findcont->setGeometry(p.x() +380, p.y() +70, 310, 350);
+    findcont->setGeometry(p.x() + 380, p.y() + 70, 310, 350);
     findcont->show();
     connect(findcont, SIGNAL(findUsers(QString)), this, SLOT(findtoserv(QString)));
 }
@@ -913,15 +924,17 @@ void Client::on_pushButton_2_clicked()
     QListWidgetItem *item = new QListWidgetItem();
     item->setData(Qt::UserRole + 1, "TOF");
 
-    if(fileName.size()>20)
+    if(fileName.size()>55)
     {
         for(int i=fileName.size()-1; i>=0; i--)
             if(fileName.at(i) == '.')
             {
                 pos = i;
+                //fileName.remove(28, pos);
+                QString newfilename = fileName.left(50)+"...."+fileName.right(fileName.size()-pos);
+                fileName = newfilename;
                 break;
             }
-        fileName.remove(16, pos);
     }
 
     item->setData(Qt::DisplayRole, fileName);

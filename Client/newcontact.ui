@@ -88,7 +88,7 @@ border-radius: 8px;
    <property name="font">
     <font>
      <family>AR DESTINE</family>
-     <pointsize>16</pointsize>
+     <pointsize>18</pointsize>
      <weight>50</weight>
      <italic>false</italic>
      <bold>false</bold>
@@ -96,6 +96,7 @@ border-radius: 8px;
    </property>
    <property name="styleSheet">
     <string notr="true">border-radius: 5px;
+color: rgb(151, 184, 201);
 background-color: rgb(255, 255, 255,0);
 </string>
    </property>
@@ -355,6 +356,9 @@ border-width: 1px;
      <width>80</width>
      <height>16777215</height>
     </size>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">background-color: rgb(161, 188, 199);</string>
    </property>
   </widget>
   <widget class="QLineEdit" name="enter_city">
