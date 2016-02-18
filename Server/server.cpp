@@ -188,6 +188,7 @@ void Server::getMessage()
     {
         QString UserName, City, Password, Age, Sex, PublicKey, PrivateKey; /*(Закрытый ключ в последствии убрать, тест)*/
         in >> UserName >> City >> Password >> Age >> Sex >> PublicKey >> PrivateKey;
+        qDebug() << Password;
         LogIn(client, UserName, City, Password, Age, Sex, PublicKey, PrivateKey);
         break;
     }
@@ -332,16 +333,15 @@ void Server::SendingFile(QTcpSocket *client)
     QString from_name;
     qint64 fileSize;
 
-    QString dirDownloads = QDir::homePath() + "/op/";
-    QDir(dirDownloads).mkdir(dirDownloads);
-
-
     in >> receiver_name >> fileName >> fileSize;
     qDebug() << receiver_name;
     qDebug() << fileName;
     qDebug() << fileSize;
 
-    QThread::sleep(2);
+    QString dirDownloads = QDir::homePath() + "/Whisper File Srorage/" + receiver_name + "/";
+    QDir(dirDownloads).mkdir(dirDownloads);
+
+    QThread::sleep(1);
 
     forever
     {

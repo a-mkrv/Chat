@@ -39,7 +39,16 @@ void NewContact::getMessagee()
     }
 
     else if(received_message == "Welcome!")
+    {
+        QString nameKey = QDir::homePath() + "/Whisper Close Key/";
+        QFile *receiveFile = new QFile(nameKey + ui->enter_user_name->text()+".txt");
+
+        QTextStream out(receiveFile);
+        receiveFile->open(QIODevice::Append);
+        out << QString::number(rsacrypt->getD()) + " " + QString::number(rsacrypt->getModule());
+        receiveFile->close();
         on_pushButton_clicked();
+    }
 }
 
 
@@ -51,6 +60,9 @@ void NewContact::on_accept_button_clicked()
     QByteArray block;
     QDataStream out(&block, QIODevice::WriteOnly);
     out.setVersion(QDataStream::Qt_5_4);
+
+    QString pass = rsacrypt->encodeText(ui->enter_password->text(), rsacrypt->getE(), rsacrypt->getModule());
+    qDebug() << pass;
 
     out << quint32(0) << QTime::currentTime() << QString("_REG_") << ui->enter_user_name->text()
         << ui->enter_city->text() << ui->enter_password->text()

@@ -4,6 +4,9 @@
 #include <QWidget>
 #include <QTcpSocket>
 #include <QMouseEvent>
+#include <QFile>
+#include <QDir>
+#include <QTextStream>
 #include "rsacrypt.h"
 
 namespace Ui {

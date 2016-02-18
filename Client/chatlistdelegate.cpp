@@ -3,7 +3,7 @@
 
 ChatListDelegate::ChatListDelegate(QObject *parent, QString _color)
 {
-color = _color;
+    color = _color;
 }
 
 void ChatListDelegate::paint ( QPainter * painter, const QStyleOptionViewItem & option, const QModelIndex & index ) const{
@@ -16,6 +16,11 @@ void ChatListDelegate::paint ( QPainter * painter, const QStyleOptionViewItem & 
     QString time = index.data(Qt::ToolTipRole).toString();
     int SizeMesBox = 0;
 
+    static QString checkitem = 0;
+    static QString tmp_checkitem = 0;
+    QString newtime = 0;
+
+    tmp_checkitem = time;
     if(option.state & QStyle::State_Selected){
 
         QLinearGradient gradientSelected(r.left(),r.top()+3,r.width(),r.height() - 6);
@@ -24,6 +29,11 @@ void ChatListDelegate::paint ( QPainter * painter, const QStyleOptionViewItem & 
         painter->setBrush(gradientSelected);
         painter->drawRoundedRect(r.left(), r.top()+3, r.width(), r.height() - 6, 5, 5);
 
+        if(tmp_checkitem!=checkitem)
+            if(time.size()>14)
+            {    checkitem = time;
+                newtime = checkitem.left(14) + "    Start Download";
+            }
 
     } else {
 
@@ -114,18 +124,17 @@ void ChatListDelegate::paint ( QPainter * painter, const QStyleOptionViewItem & 
         }
         else
         {
-        //TITLE
-        r = option.rect.adjusted(imageSpace, 10, -10, -27);
-        painter->setFont( QFont( "Lucida Grande", 11, QFont::Normal ) );
-        painter->drawText(r.left(), r.top(), r.width(), r.height(), Qt::AlignTop|Qt::AlignRight, title, &r);
-        // TIME
-        r = option.rect.adjusted(imageSpace, 10, -10, -27);
-        painter->setFont( QFont( "Lucida Grande", 8, QFont::Normal ) );
-        painter->drawText(r.left()-3, r.top()+10, r.width(), r.height(), Qt::AlignBottom|Qt::AlignRight, time , &r);
+            //TITLE
+            r = option.rect.adjusted(imageSpace, 10, -10, -27);
+            painter->setFont( QFont( "Lucida Grande", 11, QFont::Normal ) );
+            painter->drawText(r.left(), r.top(), r.width(), r.height(), Qt::AlignTop|Qt::AlignRight, title, &r);
+            // TIME
+            r = option.rect.adjusted(imageSpace, 10, -10, -27);
+            painter->setFont( QFont( "Lucida Grande", 8, QFont::Normal ) );
+            painter->drawText(r.left()-3, r.top()+10, r.width(), r.height(), Qt::AlignBottom|Qt::AlignRight, time , &r);
         }
     }
     this->sizeHint(option, index);
-
 }
 
 QSize ChatListDelegate::sizeHint ( const QStyleOptionViewItem & option, const QModelIndex & index ) const{
