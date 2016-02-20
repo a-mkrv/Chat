@@ -27,8 +27,8 @@ QString gl_fname; //Поиск человека
 // Демо вариант.
 // Возможно исправить делегата, сделав сообщения пузырьком. -- Сделано
 // Устойчивая отправка файлов до клииента                   -- СДЕЛАНО
-// RSA - Осталась отправка. Шифрование сделано.             -- (Почти)
-
+// RSA - Осталась отправка. Шифрование сделано.             -- Сделано
+// MD5+Solt Хэширование - Сделано
 
 // Второй план:
 // Т.к есть структура со всей инфой о человеке(город, пол и т.д), мб добавлю Информационное окно, где-то нужно инфу разместить в общем.
@@ -66,7 +66,7 @@ Client::Client(QWidget *parent) : QMainWindow(parent), download_path("(C:/...)")
     trayIcon->hide();
 
     connect(trayIcon, SIGNAL(activated(QSystemTrayIcon::ActivationReason)), this, SLOT(iconActivated(QSystemTrayIcon::ActivationReason)));
-    connect(reg_window, SIGNAL(sendData(QString, QString)), this, SLOT(recieveData(QString, QString)));
+    connect(reg_window, SIGNAL(sendData(QString, QString, QString)), this, SLOT(recieveData(QString, QString, QString)));
     connect(frameEmoji, SIGNAL(sendEmoji(QString)), this, SLOT(insertEmoticon(QString)));
 
     connect(tcpSocket, SIGNAL(readyRead()), this, SLOT(getMessage()));
@@ -106,7 +106,7 @@ void Client::keyReleaseEvent(QKeyEvent *event)
                     on_sendMessage_clicked();
 }
 
-void Client::recieveData(QString str, QString pas)
+void Client::recieveData(QString str, QString pas, QString pubKey)
 {
     if(str!="" && pas!="")
     {
@@ -117,6 +117,7 @@ void Client::recieveData(QString str, QString pas)
         QDir keyDir = QDir::homePath() + "/Whisper Close Key/";
         QLineEdit m_ptxtMask("*.txt");
         QStringList listFiles = keyDir.entryList(m_ptxtMask.text().split(" "), QDir::Files);
+        myPublicKey = pubKey;
 
         for(int i=0; i<listFiles.size(); i++)
             if(listFiles.at(i)==name+".txt")
@@ -354,7 +355,7 @@ void Client::AddUser_Chat(QString _username, QString _sex, QList<QPair<QString, 
 
             }
             else{
-                QStringList lst = myPrivateKey.split(" ", QString::SkipEmptyParts);
+                QStringList lst = myPublicKey.split(" ", QString::SkipEmptyParts);
                 msg = rsaCrypt->decodeText(msg, lst.at(0).toInt(), lst.at(1).toInt());
             }
 
@@ -443,8 +444,8 @@ void Client::getMessage()
         for(int i=0; i<FriendKey.size(); i++)
             pubFriendKey.push_back(qMakePair(FriendKey.at(i).first, FriendKey.at(i).second));
         qDebug() << "Key: " << pubFriendKey;
-                for(int i=0; i<lst.size(); i++)
-                    AddUser_Chat(lst.at(i).first, lst.at(i).second, chatList.at(i).second, i);
+        for(int i=0; i<lst.size(); i++)
+            AddUser_Chat(lst.at(i).first, lst.at(i).second, chatList.at(i).second, i);
 
         break;
     }
@@ -550,7 +551,7 @@ void Client::getMessage()
         if(QStringRef(&message, 0, 3)=="*To")
         {
             QString myMsg = message.remove(0, 6+fromname.size());
-            QStringList lst = myPrivateKey.split(" ", QString::SkipEmptyParts);
+            QStringList lst = myPublicKey.split(" ", QString::SkipEmptyParts);
             myMsg = rsaCrypt->decodeText(myMsg, lst.at(0).toInt(), lst.at(1).toInt());
 
             QListWidgetItem *item = new QListWidgetItem();

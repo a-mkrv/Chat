@@ -85,14 +85,10 @@ QString SQLiteDB::CorrectInput(QString _login, QString _password)
                 QString Salt = query.value(3).toString();
                 QString _checkpass = CheckPass(_password + Salt);
 
-                qDebug() << Salt << _checkpass;
-
-
                 if(_checkpass == query.value(1).toString())
                     return query.value(2).toString();
                 else return "false";
             }
-
 
     query.exec();
     return "false";

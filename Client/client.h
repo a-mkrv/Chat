@@ -90,7 +90,7 @@ private slots:
 
 
 public slots:
-    void recieveData(QString str, QString pas);
+    void recieveData(QString str, QString pas, QString);
 
 signals:
     void find_user_Serv(QString str);
@@ -114,6 +114,7 @@ private:
     Notification *notice;
     RSACrypt *rsaCrypt;
     QString myPrivateKey;
+    QString myPublicKey;
     QPoint m_dragPosition;
     QVector<QPair<QString, QString> > pubFriendKey;
     QVector<QListWidgetItem*> vec;

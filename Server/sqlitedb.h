@@ -4,8 +4,7 @@
 #include <QObject>
 #include <QtSql>
 #include <QPair>
-#include <QCryptographicHash>
-#include <QTextCodec>
+
 typedef QList <QPair <QString, QList<QPair <QString, QString> > > > ChatListVector;
 
 class SQLiteDB : public QObject

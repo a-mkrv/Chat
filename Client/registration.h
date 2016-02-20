@@ -37,7 +37,7 @@ protected:
     void mousePressEvent(QMouseEvent *event);
 
 signals:
-    void sendData(QString str, QString pas);
+    void sendData(QString str, QString pas, QString pubKey);
     void sendFindContact(QString str);
 
 

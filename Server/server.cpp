@@ -302,7 +302,7 @@ void Server::PrivateMessage(QTcpSocket *client, QString _message, QString _mymsg
                 toUser = i;
 
     QString newMessage = "*To: " + recipient + ": " + _mymsg;
-       sendToID(newMessage, fromUser->getSocket()->socketDescriptor());
+    sendToID(newMessage, fromUser->getSocket()->socketDescriptor());
 
     if (toUser != nullptr)
     {

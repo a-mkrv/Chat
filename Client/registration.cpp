@@ -82,7 +82,7 @@ void registration::getMessage()
 
     else if(received_message == "LogInOK!" && !ui->username_enter->text().simplified().isEmpty() && !ui->pass_enter->text().simplified().isEmpty())
     {
-        emit sendData(ui->username_enter->text().simplified(), ui->pass_enter->text().simplified());
+        emit sendData(ui->username_enter->text().simplified(), ui->pass_enter->text().simplified(), tmp);
         socket->close();
         socket->disconnectFromHost();
     }
