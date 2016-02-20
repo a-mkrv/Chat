@@ -8,6 +8,7 @@ registration::registration(QWidget *parent) :
     ui->setupUi(this);
     socket = new QTcpSocket;
     reg = new NewContact(parent);
+    passhash = new HashMD5;
 
     socket->abort();
     socket->connectToHost("127.0.0.1", 55155);
@@ -54,9 +55,9 @@ void registration::on_pushButton_clicked()
         ui->errorconnect_label->hide();
 
     QString login = ui->username_enter->text().simplified();
-    QString password = ui->pass_enter->text().simplified();
+    QString password = passhash->hashSumPass(ui->pass_enter->text().simplified());
 
-    if(!login.isEmpty() && !password.isEmpty())
+    if(!login.isEmpty() && !ui->pass_enter->text().simplified().isEmpty())
     {
         QByteArray block;
         QDataStream out(&block, QIODevice::WriteOnly);
@@ -71,12 +72,9 @@ void registration::on_pushButton_clicked()
 void registration::getMessage()
 {
     QString received_message;
-    QString myPrivateKey;
     QDataStream in(socket);
     in.setVersion(QDataStream::Qt_5_4);
-
     in  >> received_message;
-    in >> myPrivateKey;
 
     qDebug() << "Get" << received_message;
     if(received_message == "Error_Login_Pass")
@@ -84,7 +82,7 @@ void registration::getMessage()
 
     else if(received_message == "LogInOK!" && !ui->username_enter->text().simplified().isEmpty() && !ui->pass_enter->text().simplified().isEmpty())
     {
-        emit sendData(ui->username_enter->text().simplified(), ui->pass_enter->text().simplified(), myPrivateKey);
+        emit sendData(ui->username_enter->text().simplified(), ui->pass_enter->text().simplified());
         socket->close();
         socket->disconnectFromHost();
     }

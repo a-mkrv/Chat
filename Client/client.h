@@ -90,7 +90,7 @@ private slots:
 
 
 public slots:
-    void recieveData(QString str, QString pas, QString key);
+    void recieveData(QString str, QString pas);
 
 signals:
     void find_user_Serv(QString str);

@@ -66,7 +66,7 @@ Client::Client(QWidget *parent) : QMainWindow(parent), download_path("(C:/...)")
     trayIcon->hide();
 
     connect(trayIcon, SIGNAL(activated(QSystemTrayIcon::ActivationReason)), this, SLOT(iconActivated(QSystemTrayIcon::ActivationReason)));
-    connect(reg_window, SIGNAL(sendData(QString, QString, QString)), this, SLOT(recieveData(QString, QString, QString)));
+    connect(reg_window, SIGNAL(sendData(QString, QString)), this, SLOT(recieveData(QString, QString)));
     connect(frameEmoji, SIGNAL(sendEmoji(QString)), this, SLOT(insertEmoticon(QString)));
 
     connect(tcpSocket, SIGNAL(readyRead()), this, SLOT(getMessage()));
@@ -106,19 +106,32 @@ void Client::keyReleaseEvent(QKeyEvent *event)
                     on_sendMessage_clicked();
 }
 
-void Client::recieveData(QString str, QString pas, QString key)
+void Client::recieveData(QString str, QString pas)
 {
     if(str!="" && pas!="")
     {
         name = str;
         name.replace(" ", "_");
         ui->usernameEdit->setText(name);
-        myPrivateKey = key;
+
+        QDir keyDir = QDir::homePath() + "/Whisper Close Key/";
+        QLineEdit m_ptxtMask("*.txt");
+        QStringList listFiles = keyDir.entryList(m_ptxtMask.text().split(" "), QDir::Files);
+
+        for(int i=0; i<listFiles.size(); i++)
+            if(listFiles.at(i)==name+".txt")
+            {
+                QFile myKey(QDir::homePath() + "/Whisper Close Key/" + name + ".txt");
+                myKey.open(QIODevice::ReadOnly);
+                myPrivateKey = myKey.readAll();
+                break;
+            }
+
         QString hostname = "127.0.0.1";
         quint32 port = 55155;
         tcpSocket->abort();
         tcpSocket->connectToHost(hostname, port);
-        qDebug() << myPrivateKey;
+
         this->show();
         QPropertyAnimation* animation = new QPropertyAnimation(this, "windowOpacity");
         animation->setDuration(1500);
@@ -309,7 +322,7 @@ void Client::AddUser_Chat(QString _username, QString _sex, QList<QPair<QString, 
 
             }
             else
-                msg = rsaCrypt->decodeText(msg, lstfrom.at(2).toInt(), lstfrom.at(3).toInt());
+                msg = rsaCrypt->decodeText(msg, lstfrom.at(0).toInt(), lstfrom.at(1).toInt());
 
             if(TFile=="FILE")
             {
@@ -342,7 +355,7 @@ void Client::AddUser_Chat(QString _username, QString _sex, QList<QPair<QString, 
             }
             else{
                 QStringList lst = myPrivateKey.split(" ", QString::SkipEmptyParts);
-                msg = rsaCrypt->decodeText(msg, lst.at(2).toInt(), lst.at(3).toInt());
+                msg = rsaCrypt->decodeText(msg, lst.at(0).toInt(), lst.at(1).toInt());
             }
 
 
@@ -430,8 +443,8 @@ void Client::getMessage()
         for(int i=0; i<FriendKey.size(); i++)
             pubFriendKey.push_back(qMakePair(FriendKey.at(i).first, FriendKey.at(i).second));
         qDebug() << "Key: " << pubFriendKey;
-        for(int i=0; i<lst.size(); i++)
-            AddUser_Chat(lst.at(i).first, lst.at(i).second, chatList.at(i).second, i);
+                for(int i=0; i<lst.size(); i++)
+                    AddUser_Chat(lst.at(i).first, lst.at(i).second, chatList.at(i).second, i);
 
         break;
     }
@@ -538,7 +551,7 @@ void Client::getMessage()
         {
             QString myMsg = message.remove(0, 6+fromname.size());
             QStringList lst = myPrivateKey.split(" ", QString::SkipEmptyParts);
-            myMsg = rsaCrypt->decodeText(myMsg, lst.at(2).toInt(), lst.at(3).toInt());
+            myMsg = rsaCrypt->decodeText(myMsg, lst.at(0).toInt(), lst.at(1).toInt());
 
             QListWidgetItem *item = new QListWidgetItem();
             item->setData(Qt::UserRole + 1, "TO");
@@ -563,7 +576,7 @@ void Client::getMessage()
                         QString decodmsg = message.remove(0, 9+fromname.size());
                         qDebug() << "Принял: " << decodmsg;
                         QStringList lst = myPrivateKey.split(" ", QString::SkipEmptyParts);
-                        decodmsg = rsaCrypt->decodeText(decodmsg, lst.at(2).toInt(), lst.at(3).toInt());
+                        decodmsg = rsaCrypt->decodeText(decodmsg, lst.at(0).toInt(), lst.at(1).toInt());
 
                         QListWidgetItem *item = new QListWidgetItem();
                         item->setData(Qt::UserRole + 1, "FROM");

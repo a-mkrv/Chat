@@ -27,16 +27,17 @@ public:
     NewContact *reg;
 private:
     QPoint m_dragPosition;
+    HashMD5 *passhash;
 
-     int key;
+    int key;
 
 protected:
-     QTcpSocket *socket;
-     void mouseMoveEvent(QMouseEvent *event);
-     void mousePressEvent(QMouseEvent *event);
+    QTcpSocket *socket;
+    void mouseMoveEvent(QMouseEvent *event);
+    void mousePressEvent(QMouseEvent *event);
 
 signals:
-    void sendData(QString str, QString pas, QString key);
+    void sendData(QString str, QString pas);
     void sendFindContact(QString str);
 
 

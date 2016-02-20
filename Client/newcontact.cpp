@@ -46,6 +46,7 @@ void NewContact::getMessagee()
         QTextStream out(receiveFile);
         receiveFile->open(QIODevice::Append);
         out << QString::number(rsacrypt->getD()) + " " + QString::number(rsacrypt->getModule());
+
         receiveFile->close();
         on_pushButton_clicked();
     }
@@ -62,13 +63,14 @@ void NewContact::on_accept_button_clicked()
     out.setVersion(QDataStream::Qt_5_4);
 
     QString pass = rsacrypt->encodeText(ui->enter_password->text(), rsacrypt->getE(), rsacrypt->getModule());
-    qDebug() << pass;
+    QString passmd5 = hashmd5->hashSumPass(ui->enter_password->text());
+    qDebug() << "rsa: " << pass;
+    qDebug() << "md5: " << passmd5;
 
     out << quint32(0) << QTime::currentTime() << QString("_REG_") << ui->enter_user_name->text()
-        << ui->enter_city->text() << ui->enter_password->text()
+        << ui->enter_city->text() << passmd5
         << ui->age->text() << ui->sex_person->currentText()
-        << QString::number(rsacrypt->getE()) + "  " + QString::number(rsacrypt->getModule())
-        << QString::number(rsacrypt->getD()) + "  " + QString::number(rsacrypt->getModule());
+        << QString::number(rsacrypt->getE()) + "  " + QString::number(rsacrypt->getModule());
 
     socket->write(block);
 }

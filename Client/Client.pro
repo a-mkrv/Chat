@@ -29,7 +29,8 @@ SOURCES +=\
     aboutdialog.cpp \
     notification.cpp \
     main.cpp \
-    rsacrypt.cpp
+    rsacrypt.cpp \
+    hashmd5.cpp
 
 HEADERS  += client.h \
     emojiframe.h \
@@ -45,7 +46,8 @@ HEADERS  += client.h \
     chatlistdelegate.h \
     aboutdialog.h \
     notification.h \
-    rsacrypt.h
+    rsacrypt.h \
+    hashmd5.h
 
 FORMS    += client.ui \
     emojiframe.ui \

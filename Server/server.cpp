@@ -186,10 +186,10 @@ void Server::getMessage()
 
     case 5:
     {
-        QString UserName, City, Password, Age, Sex, PublicKey, PrivateKey; /*(Закрытый ключ в последствии убрать, тест)*/
-        in >> UserName >> City >> Password >> Age >> Sex >> PublicKey >> PrivateKey;
+        QString UserName, City, Password, Age, Sex, PublicKey; /*(Закрытый ключ в последствии убрать, тест)*/
+        in >> UserName >> City >> Password >> Age >> Sex >> PublicKey;
         qDebug() << Password;
-        LogIn(client, UserName, City, Password, Age, Sex, PublicKey, PrivateKey);
+        LogIn(client, UserName, City, Password, Age, Sex, PublicKey);
         break;
     }
 
@@ -397,7 +397,7 @@ void Server::SendingFile(QTcpSocket *client)
 
 
 
-void Server::LogIn(QTcpSocket *client, QString &U, QString &C, QString &P, QString &A, QString &S, QString &PubK, QString &PrK)
+void Server::LogIn(QTcpSocket *client, QString &U, QString &C, QString &P, QString &A, QString &S, QString &PubK)
 {
     QByteArray block;
     QDataStream out(&block, QIODevice::WriteOnly);
@@ -412,7 +412,7 @@ void Server::LogIn(QTcpSocket *client, QString &U, QString &C, QString &P, QStri
     {
         if(C.isEmpty())
             C="Unknown";
-        sqlitedb->AddContact(U, S, A.toInt(), C, P, PubK, PrK);
+        sqlitedb->AddContact(U, S, A.toInt(), C, P, PubK);
         ui->chatDialog->addItem(timeconnect() + " - User registration: " + U);
         qDebug() << "Новый пользователь: " << U;
 

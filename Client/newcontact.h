@@ -8,6 +8,7 @@
 #include <QDir>
 #include <QTextStream>
 #include "rsacrypt.h"
+#include "hashmd5.h"
 
 namespace Ui {
 class NewContact;
@@ -36,6 +37,7 @@ signals:
     void sendData(QString str);
 
 private:
+    HashMD5 *hashmd5;
     RSACrypt *rsacrypt;
     QTcpSocket *socket;
     Ui::NewContact *ui;

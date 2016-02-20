@@ -23,17 +23,16 @@ SQLiteDB::~SQLiteDB()
     myDB.close();
 }
 
-void SQLiteDB::AddContact(QString UserName, QString Sex, int Age, QString City, QString Pas, QString PubK, QString PrK)
+void SQLiteDB::AddContact(QString UserName, QString Sex, int Age, QString City, QString Pas, QString PubK)
 {
     QSqlQuery query(myDB);
-    query.prepare("INSERT INTO Users (UserName, Sex, Age, City, Password, PubKey, PrivateKey) VALUES (:UserName, :Sex, :Age, :City, :Password, :Pub, :Pr)");
+    query.prepare("INSERT INTO Users (UserName, Sex, Age, City, Password, PubKey) VALUES (:UserName, :Sex, :Age, :City, :Password, :Pub)");
     query.bindValue(":UserName", UserName);
     query.bindValue(":Sex", Sex);
     query.bindValue(":Age", Age);
     query.bindValue(":City", City);
     query.bindValue(":Password", Pas);
     query.bindValue(":Pub", PubK);
-    query.bindValue(":Pr", PrK);
     query.exec();
 
     QSqlQuery queryCreate(myDB);
@@ -66,10 +65,10 @@ QString SQLiteDB::FindInDB(QString UserName, QString whoFind)
 QString SQLiteDB::CorrectInput(QString _login, QString _password)
 {
     QSqlQuery query(myDB);
-    if(query.exec("SELECT UserName, Password, PubKey, PrivateKey FROM Users WHERE UserName=\'" +_login+ "\' AND Password=\'"+_password+ "\'"))
+    if(query.exec("SELECT UserName, Password, PubKey FROM Users WHERE UserName=\'" +_login+ "\' AND Password=\'"+_password+ "\'"))
         if(query.next())
             if (query.value(0).toString()== _login && query.value(1).toString()==_password)
-                return query.value(2).toString() + " " + query.value(3).toString();
+                return query.value(2).toString();
 
     query.exec();
     return "false";

@@ -18,7 +18,7 @@ private:
     QSqlDatabase myDB;
 
 public slots:
-    void AddContact(QString, QString, int, QString, QString, QString, QString);
+    void AddContact(QString, QString, int, QString, QString, QString);
     void addMessInChat(QString, QString, QString, QString);
     QList <QPair <QString, QString> > FriendList(QString, ChatListVector&);
     QList <QPair <QString, QString> > FriendKeys(QString);
