@@ -186,10 +186,9 @@ void Server::getMessage()
 
     case 5:
     {
-        QString UserName, City, Password, Age, Sex, PublicKey; /*(Закрытый ключ в последствии убрать, тест)*/
-        in >> UserName >> City >> Password >> Age >> Sex >> PublicKey;
-        qDebug() << Password;
-        LogIn(client, UserName, City, Password, Age, Sex, PublicKey);
+        QString UserName, City, Password, Age, Sex, PublicKey, Salt;
+        in >> UserName >> City >> Password >> Age >> Sex >> PublicKey >> Salt;
+        LogIn(client, UserName, City, Password, Age, Sex, PublicKey, Salt);
         break;
     }
 
@@ -203,6 +202,7 @@ void Server::getMessage()
         out.setVersion(QDataStream::Qt_5_4);
 
         QString result_return = sqlitedb->CorrectInput(Login, Password);
+
         if(result_return=="false")
         {
             out  <<  QString("Error_Login_Pass") << QString("not_key");
@@ -397,7 +397,7 @@ void Server::SendingFile(QTcpSocket *client)
 
 
 
-void Server::LogIn(QTcpSocket *client, QString &U, QString &C, QString &P, QString &A, QString &S, QString &PubK)
+void Server::LogIn(QTcpSocket *client, QString &U, QString &C, QString &P, QString &A, QString &S, QString &PubK, QString &Salt)
 {
     QByteArray block;
     QDataStream out(&block, QIODevice::WriteOnly);
@@ -412,7 +412,8 @@ void Server::LogIn(QTcpSocket *client, QString &U, QString &C, QString &P, QStri
     {
         if(C.isEmpty())
             C="Unknown";
-        sqlitedb->AddContact(U, S, A.toInt(), C, P, PubK);
+
+        sqlitedb->AddContact(U, S, A.toInt(), C, P, PubK, Salt);
         ui->chatDialog->addItem(timeconnect() + " - User registration: " + U);
         qDebug() << "Новый пользователь: " << U;
 

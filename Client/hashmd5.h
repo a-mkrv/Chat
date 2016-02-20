@@ -16,14 +16,15 @@ class HashMD5
 private:
     QString hashPas;
     QString hashFile;
+    QString salt;
     uint32_t rotateLeft32(uint32_t val, int amount);
 
 public:
     HashMD5();
     QString hashSumPass(QString);
+    QString saltGeneration();
 
     void hash(QString message);
-
     ~HashMD5();
 };
 

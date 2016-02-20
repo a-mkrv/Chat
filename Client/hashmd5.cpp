@@ -1,8 +1,11 @@
 #include "hashmd5.h"
+#include <QTime>
+#include <QDebug>
 
 HashMD5::HashMD5()
 {
-
+    QTime time = QTime::currentTime();
+    qsrand((uint)time.msec());
 }
 
 QString HashMD5::hashSumPass(QString _pass)
@@ -18,6 +21,32 @@ QString HashMD5::hashSumPass(QString _pass)
     return str;
 }
 
+QString HashMD5::saltGeneration()
+{
+    QString pass;
+
+        for (int i = 0; i < 8; i++)
+        {
+            int key = rand() % 3;
+            char word_pass = 0;
+
+            switch (key)
+            {
+            case 0:
+                word_pass = qrand() % 9 + 48;
+                break;
+            case 1:
+                word_pass = qrand() % 26 + 65;
+                break;
+            case 2:
+                word_pass = qrand() % 26 + 97;
+                break;
+            }
+            pass.append(word_pass);
+        }
+
+        return pass;
+}
 
 void HashMD5::hash(QString message)
 {

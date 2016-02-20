@@ -62,15 +62,15 @@ void NewContact::on_accept_button_clicked()
     QDataStream out(&block, QIODevice::WriteOnly);
     out.setVersion(QDataStream::Qt_5_4);
 
-    QString pass = rsacrypt->encodeText(ui->enter_password->text(), rsacrypt->getE(), rsacrypt->getModule());
+    // password = md5(md5(password) + salt)
+
     QString passmd5 = hashmd5->hashSumPass(ui->enter_password->text());
-    qDebug() << "rsa: " << pass;
-    qDebug() << "md5: " << passmd5;
+    QString salt = hashmd5->saltGeneration();
+    passmd5 = hashmd5->hashSumPass(passmd5 + salt);
 
     out << quint32(0) << QTime::currentTime() << QString("_REG_") << ui->enter_user_name->text()
-        << ui->enter_city->text() << passmd5
-        << ui->age->text() << ui->sex_person->currentText()
-        << QString::number(rsacrypt->getE()) + "  " + QString::number(rsacrypt->getModule());
+        << ui->enter_city->text() << passmd5  << ui->age->text() << ui->sex_person->currentText()
+        << QString::number(rsacrypt->getE()) + "  " + QString::number(rsacrypt->getModule()) << salt ;
 
     socket->write(block);
 }

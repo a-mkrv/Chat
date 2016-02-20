@@ -23,16 +23,17 @@ SQLiteDB::~SQLiteDB()
     myDB.close();
 }
 
-void SQLiteDB::AddContact(QString UserName, QString Sex, int Age, QString City, QString Pas, QString PubK)
-{
+void SQLiteDB::AddContact(QString UserName, QString Sex, int Age, QString City, QString Pas, QString PubK, QString Salt)
+{   qDebug() << Salt;
     QSqlQuery query(myDB);
-    query.prepare("INSERT INTO Users (UserName, Sex, Age, City, Password, PubKey) VALUES (:UserName, :Sex, :Age, :City, :Password, :Pub)");
+    query.prepare("INSERT INTO Users (UserName, Sex, Age, City, Password, PubKey, Salt) VALUES (:UserName, :Sex, :Age, :City, :Password, :Pub, :Salt)");
     query.bindValue(":UserName", UserName);
     query.bindValue(":Sex", Sex);
     query.bindValue(":Age", Age);
     query.bindValue(":City", City);
     query.bindValue(":Password", Pas);
     query.bindValue(":Pub", PubK);
+    query.bindValue(":Salt", Salt);
     query.exec();
 
     QSqlQuery queryCreate(myDB);
@@ -62,13 +63,36 @@ QString SQLiteDB::FindInDB(QString UserName, QString whoFind)
     return "false";
 }
 
+QString SQLiteDB::CheckPass(QString pass)
+{
+    QCryptographicHash CalculateMD5(QCryptographicHash::Md5);
+    QByteArray in;
+    in.append(pass);
+
+    CalculateMD5.addData(in);
+    QByteArray res = CalculateMD5.result().toHex();
+    QString checkpass = QString::fromUtf8(res.constData());
+    return checkpass;
+}
+
 QString SQLiteDB::CorrectInput(QString _login, QString _password)
 {
     QSqlQuery query(myDB);
-    if(query.exec("SELECT UserName, Password, PubKey FROM Users WHERE UserName=\'" +_login+ "\' AND Password=\'"+_password+ "\'"))
+    if(query.exec("SELECT UserName, Password, PubKey, Salt FROM Users WHERE UserName=\'" +_login+ "\'"))
         if(query.next())
-            if (query.value(0).toString()== _login && query.value(1).toString()==_password)
-                return query.value(2).toString();
+            if (query.value(0).toString() == _login)
+            {
+                QString Salt = query.value(3).toString();
+                QString _checkpass = CheckPass(_password + Salt);
+
+                qDebug() << Salt << _checkpass;
+
+
+                if(_checkpass == query.value(1).toString())
+                    return query.value(2).toString();
+                else return "false";
+            }
+
 
     query.exec();
     return "false";

@@ -4,7 +4,8 @@
 #include <QObject>
 #include <QtSql>
 #include <QPair>
-
+#include <QCryptographicHash>
+#include <QTextCodec>
 typedef QList <QPair <QString, QList<QPair <QString, QString> > > > ChatListVector;
 
 class SQLiteDB : public QObject
@@ -16,9 +17,10 @@ public:
 
 private:
     QSqlDatabase myDB;
+    QString CheckPass(QString);
 
 public slots:
-    void AddContact(QString, QString, int, QString, QString, QString);
+    void AddContact(QString, QString, int, QString, QString, QString, QString);
     void addMessInChat(QString, QString, QString, QString);
     QList <QPair <QString, QString> > FriendList(QString, ChatListVector&);
     QList <QPair <QString, QString> > FriendKeys(QString);

@@ -71,10 +71,10 @@ void registration::on_pushButton_clicked()
 
 void registration::getMessage()
 {
-    QString received_message;
+    QString received_message, tmp;
     QDataStream in(socket);
     in.setVersion(QDataStream::Qt_5_4);
-    in  >> received_message;
+    in  >> received_message >> tmp;
 
     qDebug() << "Get" << received_message;
     if(received_message == "Error_Login_Pass")
