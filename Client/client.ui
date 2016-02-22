@@ -678,7 +678,7 @@ background-color: rgb(99, 137, 168);</string>
       <string notr="true">background-color: rgb(255, 255, 255);</string>
      </property>
      <property name="currentIndex">
-      <number>2</number>
+      <number>1</number>
      </property>
      <widget class="QWidget" name="page">
       <widget class="QGroupBox" name="groupBox">
@@ -847,7 +847,7 @@ color: rgb(96, 125, 139);</string>
        <property name="geometry">
         <rect>
          <x>40</x>
-         <y>30</y>
+         <y>35</y>
          <width>251</width>
          <height>20</height>
         </rect>
@@ -865,7 +865,7 @@ color: rgb(96, 125, 139);</string>
        <property name="geometry">
         <rect>
          <x>40</x>
-         <y>170</y>
+         <y>190</y>
          <width>721</width>
          <height>21</height>
         </rect>
@@ -883,7 +883,7 @@ color: rgb(96, 125, 139);</string>
        <property name="geometry">
         <rect>
          <x>40</x>
-         <y>80</y>
+         <y>90</y>
          <width>91</width>
          <height>31</height>
         </rect>
@@ -901,7 +901,7 @@ color: rgb(96, 125, 139);</string>
        <property name="geometry">
         <rect>
          <x>210</x>
-         <y>80</y>
+         <y>90</y>
          <width>91</width>
          <height>22</height>
         </rect>
@@ -925,8 +925,8 @@ color: rgb(96, 125, 139);</string>
       <widget class="QWidget" name="layoutWidget">
        <property name="geometry">
         <rect>
-         <x>41</x>
-         <y>130</y>
+         <x>40</x>
+         <y>160</y>
          <width>271</width>
          <height>23</height>
         </rect>

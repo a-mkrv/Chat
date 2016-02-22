@@ -182,7 +182,7 @@ void Client::on_sendMessage_clicked()
             QSound::play(":/new/prefix1/Resource/to.wav");
 
         QString RecName = vec.at(ui->userList->currentRow())->data(Qt::DisplayRole).toString();
-        QStringList lst = myPrivateKey.split(" ", QString::SkipEmptyParts);
+        QStringList lst = myPublicKey.split(" ", QString::SkipEmptyParts);
         QString MyMsg = rsaCrypt->encodeText(message, lst.at(0).toInt(), lst.at(1).toInt());
 
         for(int i=0; i<pubFriendKey.size(); i++)
@@ -355,8 +355,8 @@ void Client::AddUser_Chat(QString _username, QString _sex, QList<QPair<QString, 
 
             }
             else{
-                QStringList lst = myPublicKey.split(" ", QString::SkipEmptyParts);
-                msg = rsaCrypt->decodeText(msg, lst.at(0).toInt(), lst.at(1).toInt());
+                QStringList _lst = myPrivateKey.split(" ", QString::SkipEmptyParts);
+                msg = rsaCrypt->decodeText(msg, _lst.at(0).toInt(), _lst.at(1).toInt());
             }
 
 
@@ -453,10 +453,10 @@ void Client::getMessage()
     case COMMAND::FINDUSER:
     {
         QString find_user = commandList.at(1);
-        QString pubKey = commandList.at(3) + " " + commandList.at(4);
 
         if(find_user=="OKFIN" && gl_fname!=name)
         {
+            QString pubKey = commandList.at(3) + " " + commandList.at(4);
             pubFriendKey.push_back(qMakePair(gl_fname, pubKey));
             qDebug() << pubFriendKey;
             QList <QPair<QString, QString> > a;
@@ -551,7 +551,7 @@ void Client::getMessage()
         if(QStringRef(&message, 0, 3)=="*To")
         {
             QString myMsg = message.remove(0, 6+fromname.size());
-            QStringList lst = myPublicKey.split(" ", QString::SkipEmptyParts);
+            QStringList lst = myPrivateKey.split(" ", QString::SkipEmptyParts);
             myMsg = rsaCrypt->decodeText(myMsg, lst.at(0).toInt(), lst.at(1).toInt());
 
             QListWidgetItem *item = new QListWidgetItem();
