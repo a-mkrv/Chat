@@ -151,6 +151,7 @@ void Server::getMessage()
 
     case 3:
     {
+        qDebug() << "FIND";
         QString findUser, whoFind;
         in >> findUser >> whoFind;
         QString result = sqlitedb->FindInDB(findUser, whoFind);
@@ -166,7 +167,7 @@ void Server::getMessage()
             for (auto i : clientConnections)
                 if (i->getUserName() == findUser)
                 {
-                    result = sqlitedb->FindInDB(whoFind, findUser);
+                    result = sqlitedb->FindInDB(whoFind, 0);
                     sendToID("_INV_ " + whoFind + " " + result, i->getSocket()->socketDescriptor());
                 }
 

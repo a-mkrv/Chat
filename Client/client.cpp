@@ -127,7 +127,7 @@ void Client::recieveData(QString str, QString pas, QString pubKey)
                 myPrivateKey = myKey.readAll();
                 break;
             }
-
+        qDebug() << "Закрытый ключ: " << myPrivateKey;
         QString hostname = "127.0.0.1";
         quint32 port = 55155;
         tcpSocket->abort();
@@ -189,7 +189,9 @@ void Client::on_sendMessage_clicked()
         {
             if(RecName==pubFriendKey.at(i).first)
             {
+
                 QString user_key = pubFriendKey.at(i).second;
+                 qDebug() << "Ключ друга: " << pubFriendKey.at(i).first << user_key;
                 QStringList _key = user_key.split(" ", QString::SkipEmptyParts);
                 encodemsg = rsaCrypt->encodeText(message, _key.at(0).toInt(), _key.at(1).toInt());
                 qDebug() << "Отправил: " << encodemsg;
@@ -458,24 +460,23 @@ void Client::getMessage()
         {
             QString pubKey = commandList.at(3) + " " + commandList.at(4);
             pubFriendKey.push_back(qMakePair(gl_fname, pubKey));
-            qDebug() << pubFriendKey;
             QList <QPair<QString, QString> > a;
             AddUser_Chat(gl_fname, commandList.at(2), a , -1);
             findcont->~findcontacts();
         }
         else
             findcont->SetErrorLayout(1);
+        qDebug() << "Поиск:(Ключ друга) " << pubFriendKey;
         break;
     }
 
     case COMMAND::INVITE:
     {
         QList <QPair<QString, QString> > a;
-        qDebug() << commandList;
         QString pubKey = commandList.at(3) + " " + commandList.at(4);
         pubFriendKey.push_back(qMakePair(commandList.at(1), pubKey));
-        qDebug() << pubFriendKey;
         AddUser_Chat(commandList.at(1), commandList.at(2), a , -2);
+        qDebug() << "Инвайт:(Ключ друга) " << pubFriendKey;
         break;
     }
 
