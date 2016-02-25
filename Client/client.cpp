@@ -289,6 +289,7 @@ void Client::AddUser_Chat(QString _username, QString _sex, QList<QPair<QString, 
 
         if(count==-2)
         {
+            ui->textBrowser->hide();
             ui->stackedWidget_2->show();
             ui->stackedWidget_2->setCurrentIndex(chatvec.size()-1);
             ui->userList->clearSelection();
@@ -537,6 +538,7 @@ void Client::getMessage()
                     chatvec.at(i)->scrollToBottom();
                     vec.at(i)->setSelected(true);
                     whisperOnClickUsers(vec.at(i));
+                    ui->textBrowser->hide();
                     ui->stackedWidget_2->show();
                     ui->stackedWidget_2->setCurrentIndex(i);
 
@@ -597,6 +599,7 @@ void Client::getMessage()
                         chatvec.at(i)->scrollToBottom();
                         vec.at(i)->setSelected(true);
                         whisperOnClickUsers(vec.at(i));
+                        ui->textBrowser->hide();
                         ui->stackedWidget_2->show();
                         ui->stackedWidget_2->setCurrentIndex(i);
 
@@ -965,6 +968,7 @@ void Client::on_userList_clicked(const QModelIndex &index)
 
     if (!vec.empty())
     {
+        ui->textBrowser->hide();
         ui->stackedWidget_2->show();
         ui->stackedWidget_2->setCurrentIndex(index.row());
     }

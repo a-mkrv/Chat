@@ -678,7 +678,7 @@ background-color: rgb(99, 137, 168);</string>
       <string notr="true">background-color: rgb(255, 255, 255);</string>
      </property>
      <property name="currentIndex">
-      <number>1</number>
+      <number>2</number>
      </property>
      <widget class="QWidget" name="page">
       <widget class="QGroupBox" name="groupBox">
@@ -1049,7 +1049,7 @@ border:none;</string>
              </size>
             </property>
             <property name="styleSheet">
-             <string notr="true">background-color: rgb(255, 255, 235)</string>
+             <string notr="true">background-color: #f6f4ff</string>
             </property>
             <property name="text">
              <string/>
@@ -1260,13 +1260,10 @@ border:none;</string>
      </size>
     </property>
     <property name="styleSheet">
-     <string notr="true">background-color: rgb(255, 246, 238);</string>
+     <string notr="true">background-color: #f6f4ff</string>
     </property>
     <property name="text">
      <string/>
-    </property>
-    <property name="pixmap">
-     <pixmap resource="image.qrc">:/new/prefix1/Resource/bumaga.jpg</pixmap>
     </property>
     <property name="scaledContents">
      <bool>true</bool>
@@ -1280,6 +1277,9 @@ border:none;</string>
       <width>677</width>
       <height>448</height>
      </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">background-color: rgb(255, 255, 255, 1);</string>
     </property>
    </widget>
    <widget class="QLabel" name="label">
