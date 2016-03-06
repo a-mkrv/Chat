@@ -58,13 +58,13 @@ void ChatListDelegate::paint ( QPainter * painter, const QStyleOptionViewItem & 
 
         if(description=="FROM")
         {
-            painter->setBrush(QColor("#ffffff"));
-            //painter->setBrush(QColor("#eeefff"));
+            //painter->setBrush(QColor("#ffffff"));
+            painter->setBrush(QColor("#eeefff"));
             painter->drawRoundedRect(r.left()+2, r.top()+3, SizeMesBox, r.height() - 6, 5, 5);
         }
         else if (description=="FROMF")
         {
-            painter->setBrush(QColor("#ffffff"));
+            painter->setBrush(QColor("#eeefff"));
             painter->drawRoundedRect(r.left()+2, r.top()+3, SizeMesBox+55, r.height() - 6, 5, 5);
         }
 

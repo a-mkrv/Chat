@@ -85,9 +85,17 @@ private slots:
     void on_userList_clicked(const QModelIndex &index);
     void on_pushButton_3_clicked();
     void on_pushButton_5_clicked();
+    void showContextMenuForWidget(const QPoint &pos);
+    void showContextMenuForChat(const QPoint &pos);
+    void clearHistory();
+    void ClearSelect();
     void on_comboBox_currentIndexChanged(int index);
     void AddUser_Chat(QString, QString, QList<QPair<QString, QString> >, int);
 
+
+    void on_search_line_edit_textChanged(const QString &arg1);
+
+    void on_search_list_clicked(const QModelIndex &index);
 
 public slots:
     void recieveData(QString str, QString pas, QString);
@@ -97,7 +105,7 @@ signals:
     void setProcentage(int);
 private:
     Ui::Client *ui;
-
+    int FriendCount;
     int key;
     TrayIcon *trayIcon;
     QMenu *trayIconMenu;

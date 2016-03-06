@@ -54,10 +54,15 @@ Client::Client(QWidget *parent) : QMainWindow(parent), download_path("(C:/...)")
     QColor defaulcolor(Qt::white);
     colorchat = defaulcolor.name();
     ui->RB_sendEnter->setChecked(true);
+    ui->userList->setContextMenuPolicy(Qt::CustomContextMenu);
+    ui->stackedWidget_2->setContextMenuPolicy(Qt::CustomContextMenu);
     ui->userList->setItemDelegate(new ListDelegate(ui->userList));
+    ui->search_list->setItemDelegate(new ListDelegate(ui->search_list));
     ui->label_6->setText(QDir::homePath() + "/Whisper/");
     ui->widget_2->hide();
+    ui->search_list->hide();
     nextBlockSize = 0;
+    FriendCount = 0;
 
     trayIconMenu->addAction(ui->actionShowHideWindow);
     trayIconMenu->addSeparator();
@@ -80,6 +85,9 @@ Client::Client(QWidget *parent) : QMainWindow(parent), download_path("(C:/...)")
     connect(ui->userList, SIGNAL(itemDoubleClicked(QListWidgetItem*)), SLOT(whisperOnClickUsers(QListWidgetItem*)));
     connect(ui->userList, SIGNAL(itemClicked(QListWidgetItem*)), SLOT(whisperOnClickSelectUsers(QListWidgetItem*)));
     connect(ui->actionExit, SIGNAL(triggered()), this, SLOT(close()));
+    connect(ui->stackedWidget_2, SIGNAL(customContextMenuRequested(const QPoint &)), SLOT(showContextMenuForChat(const QPoint &)));
+    connect(ui->userList, SIGNAL(customContextMenuRequested(const QPoint &)), SLOT(showContextMenuForWidget(const QPoint &)));
+
 }
 
 void Client::keyReleaseEvent(QKeyEvent *event)
@@ -987,6 +995,51 @@ void Client::on_pushButton_5_clicked()
     aboutdialog->show();
 }
 
+void Client::clearHistory()
+{
+        chatvec.at(ui->stackedWidget_2->currentIndex())->clear();
+}
+
+void Client::ClearSelect()
+{
+
+    chatvec.at(ui->stackedWidget_2->currentIndex())->clearSelection();
+}
+
+void Client::showContextMenuForChat(const QPoint &pos)
+{
+    QPoint newPos = pos;
+    newPos.setX(pos.x()+560);
+
+    QMenu * menu = new QMenu(this);
+    QAction * deleteDevice = new QAction(trUtf8("Очистить историю"), this);
+    QAction * delSelect = NULL;
+    menu->addAction(deleteDevice);
+
+    if(ui->stackedWidget_2->count()!=0)
+        if(!chatvec.at(ui->stackedWidget_2->currentIndex())->selectedItems().isEmpty())
+        {
+            delSelect = new QAction(trUtf8("Снять выделение"), this);
+            menu->addAction(delSelect);
+        }
+
+    menu->popup(mapToGlobal(newPos));
+    connect(delSelect, SIGNAL(triggered()), this, SLOT(ClearSelect())); // Обработчик удаления записи
+    connect(deleteDevice, SIGNAL(triggered()), this, SLOT(clearHistory())); // Обработчик удаления записи
+}
+
+void Client::showContextMenuForWidget(const QPoint &pos)
+{
+    QPoint newPos = pos;
+    newPos.setX(pos.x()+20);
+
+    QMenu * menu = new QMenu(this);
+    QAction * deleteDevice = new QAction(trUtf8("Удалить"), this);
+    connect(deleteDevice, SIGNAL(triggered()), this, SLOT(slotRemoveRecord())); // Обработчик удаления записи
+    menu->addAction(deleteDevice);
+    menu->popup(mapToGlobal(newPos));
+}
+
 void Client::on_comboBox_currentIndexChanged(int index)
 {
     switch (index) {
@@ -1071,3 +1124,48 @@ Client::~Client()
 }
 
 
+
+void Client::on_search_line_edit_textChanged(const QString &arg1)
+{
+    if(arg1.isEmpty()){
+        ui->search_list->clear();
+        ui->search_list->hide();
+        return;
+    }
+
+    if(!vec.isEmpty())
+    {
+        ui->search_list->show();
+        ui->search_list->clear();
+        for(int i=0; i<vec.size(); i++)
+            if(vec.at(i)->data(Qt::DisplayRole).toString().contains(arg1, Qt::CaseInsensitive))
+            {
+                QListWidgetItem *item = new QListWidgetItem();
+
+                item->setData(Qt::DisplayRole, vec.at(i)->data(Qt::DisplayRole).toString());
+                item->setData(Qt::ToolTipRole, vec.at(i)->data(Qt::ToolTipRole).toString());
+                item->setData(Qt::UserRole + 1, vec.at(i)->data(Qt::UserRole + 1).toString());
+                item->setData(Qt::DecorationRole, vec.at(i)->data(Qt::DecorationRole));
+                ui->search_list->addItem(item);
+            }
+    }
+}
+
+void Client::on_search_list_clicked(const QModelIndex &index)
+{
+    for(int i=0; i<vec.size(); i++)
+    {
+        if(vec.at(i)->data(Qt::DisplayRole).toString() == index.data(Qt::DisplayRole).toString())
+        {
+            ui->textBrowser->hide();
+            ui->stackedWidget_2->show();
+            ui->stackedWidget_2->setCurrentIndex(i);
+            ui->userList->setCurrentRow(i);
+            ui->search_line_edit->clear();
+            ui->search_line_edit->clearFocus();
+            ui->search_list->hide();
+            ui->search_list->clear();
+            return;
+        }
+    }
+}

@@ -276,7 +276,7 @@ background-color: rgb(74, 107, 142);</string>
      <enum>QListView::SinglePass</enum>
     </property>
     <property name="spacing">
-     <number>3</number>
+     <number>2</number>
     </property>
     <property name="viewMode">
      <enum>QListView::ListMode</enum>
@@ -1260,7 +1260,7 @@ border:none;</string>
      </size>
     </property>
     <property name="styleSheet">
-     <string notr="true">background-color: #f6f4ff</string>
+     <string notr="true">background-color: rgb(255, 255, 255);</string>
     </property>
     <property name="text">
      <string/>
@@ -1443,6 +1443,29 @@ p, li { white-space: pre-wrap; }
      <bool>false</bool>
     </property>
    </widget>
+   <widget class="QListWidget" name="search_list">
+    <property name="geometry">
+     <rect>
+      <x>-1</x>
+      <y>90</y>
+      <width>383</width>
+      <height>531</height>
+     </rect>
+    </property>
+    <property name="frameShape">
+     <enum>QFrame::VLine</enum>
+    </property>
+    <property name="iconSize">
+     <size>
+      <width>90</width>
+      <height>90</height>
+     </size>
+    </property>
+    <property name="spacing">
+     <number>2</number>
+    </property>
+   </widget>
+   <zorder>widget_2</zorder>
    <zorder>line</zorder>
    <zorder>userList</zorder>
    <zorder>background_inder_list</zorder>
@@ -1459,7 +1482,7 @@ p, li { white-space: pre-wrap; }
    <zorder>textBrowser</zorder>
    <zorder>search_label</zorder>
    <zorder>stackedWidget_2</zorder>
-   <zorder>widget_2</zorder>
+   <zorder>search_list</zorder>
   </widget>
   <action name="actionShowHideWindow">
    <property name="text">
