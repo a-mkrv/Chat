@@ -29,6 +29,10 @@ QString gl_fname; //Поиск человека
 // Устойчивая отправка файлов до клииента                   -- СДЕЛАНО
 // RSA - Осталась отправка. Шифрование сделано.             -- Сделано
 // MD5+Solt Хэширование - Сделано
+// Поиск по контактам.  - Сделано
+
+// Удаление контакта и удаление истории переписки - Сделано локально, доделать передачу на сервер и обновлении БД.
+
 
 // Второй план:
 // Т.к есть структура со всей инфой о человеке(город, пол и т.д), мб добавлю Информационное окно, где-то нужно инфу разместить в общем.
@@ -199,7 +203,7 @@ void Client::on_sendMessage_clicked()
             {
 
                 QString user_key = pubFriendKey.at(i).second;
-                 qDebug() << "Ключ друга: " << pubFriendKey.at(i).first << user_key;
+                qDebug() << "Ключ друга: " << pubFriendKey.at(i).first << user_key;
                 QStringList _key = user_key.split(" ", QString::SkipEmptyParts);
                 encodemsg = rsaCrypt->encodeText(message, _key.at(0).toInt(), _key.at(1).toInt());
                 qDebug() << "Отправил: " << encodemsg;
@@ -973,7 +977,6 @@ void Client::on_pushButton_2_clicked()
 
 void Client::on_userList_clicked(const QModelIndex &index)
 {
-
     if (!vec.empty())
     {
         ui->textBrowser->hide();
@@ -997,45 +1000,55 @@ void Client::on_pushButton_5_clicked()
 
 void Client::clearHistory()
 {
-        chatvec.at(ui->stackedWidget_2->currentIndex())->clear();
+    // Очистить историю.
+    // Пока сеансово, добавть подтверждение и запрос в БД на очистку переписки.
+
+    chatvec.at(ui->stackedWidget_2->currentIndex())->clear();
 }
 
 void Client::ClearSelect()
 {
-
+    // Очистить выделенные сообщения
     chatvec.at(ui->stackedWidget_2->currentIndex())->clearSelection();
 }
 
 void Client::showContextMenuForChat(const QPoint &pos)
 {
+     // Контекстное меню для чата.
+
     QPoint newPos = pos;
-    newPos.setX(pos.x()+560);
+    newPos.setX(pos.x()+385);
+    newPos.setY(pos.y()+30);
 
     QMenu * menu = new QMenu(this);
-    QAction * deleteDevice = new QAction(trUtf8("Очистить историю"), this);
+    QAction * deleteDevice = new QAction(trUtf8("Clear history"), this);
     QAction * delSelect = NULL;
     menu->addAction(deleteDevice);
 
+    // Если есть выделенные сообщения, добавить в меню возможность скипнуть.
     if(ui->stackedWidget_2->count()!=0)
         if(!chatvec.at(ui->stackedWidget_2->currentIndex())->selectedItems().isEmpty())
         {
-            delSelect = new QAction(trUtf8("Снять выделение"), this);
+            delSelect = new QAction(trUtf8("Clear selection"), this);
             menu->addAction(delSelect);
         }
 
     menu->popup(mapToGlobal(newPos));
     connect(delSelect, SIGNAL(triggered()), this, SLOT(ClearSelect())); // Обработчик удаления записи
-    connect(deleteDevice, SIGNAL(triggered()), this, SLOT(clearHistory())); // Обработчик удаления записи
+    connect(deleteDevice, SIGNAL(triggered()), this, SLOT(clearHistory()));
 }
 
 void Client::showContextMenuForWidget(const QPoint &pos)
 {
+    // Контекстное меню для списка контактов.
+
     QPoint newPos = pos;
-    newPos.setX(pos.x()+20);
+    newPos.setX(pos.x());
+    newPos.setY(pos.y()+45);
 
     QMenu * menu = new QMenu(this);
-    QAction * deleteDevice = new QAction(trUtf8("Удалить"), this);
-    connect(deleteDevice, SIGNAL(triggered()), this, SLOT(slotRemoveRecord())); // Обработчик удаления записи
+    QAction * deleteDevice = new QAction(trUtf8("Delete user"), this);
+    connect(deleteDevice, SIGNAL(triggered()), this, SLOT(DeleteUser())); // Обработчик удаления записи
     menu->addAction(deleteDevice);
     menu->popup(mapToGlobal(newPos));
 }
@@ -1118,21 +1131,42 @@ void Client::on_comboBox_currentIndexChanged(int index)
     }
 }
 
-Client::~Client()
+
+void Client::DeleteUser()
 {
-    delete ui;
+    // Как и с историей переписки, добавить подтверждение на удаление друга
+    // И запрос на сервер в БД, удалить из таблицы.
+    // Хз что пока делать на стороне удаляемого, вдруг он будет писать, а его уже нет =(((
+
+
+    // Если есть контакты в списке, удалить нужного.
+    if(!ui->userList->size().isEmpty())
+    {
+        //Вытаскивание виджета из Стека Виджетов >_<
+        QWidget* widget = ui->stackedWidget_2->widget(ui->userList->currentRow());
+        // и удалить
+        ui->stackedWidget_2->removeWidget(widget);
+
+        // Очистить вектора
+        vec.erase(vec.begin()+ui->userList->currentRow());
+        chatvec.erase(chatvec.begin()+ui->userList->currentRow());
+        ui->userList->removeItemWidget(ui->userList->takeItem(ui->userList->currentRow()));
+        update();
+    }
 }
 
-
-
+// Поиск по контакт - листу. Вызывается при изменении текст. поля.
 void Client::on_search_line_edit_textChanged(const QString &arg1)
 {
+    // Если запрос пуст, удаление предыдщуих результатов поиска + скрытие виджета.
     if(arg1.isEmpty()){
         ui->search_list->clear();
         ui->search_list->hide();
         return;
     }
 
+
+    // Если список контактов не пуст, нахожу вхождение поиск-запроса в имена друзей.
     if(!vec.isEmpty())
     {
         ui->search_list->show();
@@ -1140,8 +1174,9 @@ void Client::on_search_line_edit_textChanged(const QString &arg1)
         for(int i=0; i<vec.size(); i++)
             if(vec.at(i)->data(Qt::DisplayRole).toString().contains(arg1, Qt::CaseInsensitive))
             {
+                // Во временный список добавляю элементы, которые удовлетворяют поиску(вхождение подстроки)
+                // Переписать: не копировать все элементы, а брать их по ссылке.
                 QListWidgetItem *item = new QListWidgetItem();
-
                 item->setData(Qt::DisplayRole, vec.at(i)->data(Qt::DisplayRole).toString());
                 item->setData(Qt::ToolTipRole, vec.at(i)->data(Qt::ToolTipRole).toString());
                 item->setData(Qt::UserRole + 1, vec.at(i)->data(Qt::UserRole + 1).toString());
@@ -1151,12 +1186,14 @@ void Client::on_search_line_edit_textChanged(const QString &arg1)
     }
 }
 
+// Выбор контакта из поискового запроса (списка)
 void Client::on_search_list_clicked(const QModelIndex &index)
 {
     for(int i=0; i<vec.size(); i++)
     {
         if(vec.at(i)->data(Qt::DisplayRole).toString() == index.data(Qt::DisplayRole).toString())
         {
+            // Переключение на выбранного человека/чат. Очищение запроса поиска + скрытие результата.
             ui->textBrowser->hide();
             ui->stackedWidget_2->show();
             ui->stackedWidget_2->setCurrentIndex(i);
@@ -1169,3 +1206,9 @@ void Client::on_search_list_clicked(const QModelIndex &index)
         }
     }
 }
+
+Client::~Client()
+{
+    delete ui;
+}
+

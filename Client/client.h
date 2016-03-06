@@ -89,6 +89,7 @@ private slots:
     void showContextMenuForChat(const QPoint &pos);
     void clearHistory();
     void ClearSelect();
+    void DeleteUser();
     void on_comboBox_currentIndexChanged(int index);
     void AddUser_Chat(QString, QString, QList<QPair<QString, QString> >, int);
 
