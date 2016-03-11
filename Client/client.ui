@@ -1465,7 +1465,21 @@ p, li { white-space: pre-wrap; }
      <number>2</number>
     </property>
    </widget>
+   <widget class="QPushButton" name="glass_button">
+    <property name="geometry">
+     <rect>
+      <x>-10</x>
+      <y>-10</y>
+      <width>1081</width>
+      <height>631</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">background-color: rgb(0, 0, 0, 130);</string>
+    </property>
+   </widget>
    <zorder>widget_2</zorder>
+   <zorder>glass_button</zorder>
    <zorder>line</zorder>
    <zorder>userList</zorder>
    <zorder>background_inder_list</zorder>

@@ -2,7 +2,6 @@
 #define TCPCONNECT_H
 
 #include <QObject>
-#include "ui_maingui.h"
 
 class tcpconnect : public QObject
 {

@@ -26,6 +26,7 @@
 #include "aboutdialog.h"
 #include "notification.h"
 #include "rsacrypt.h"
+#include "confirmwindow.h"
 #include <QMouseEvent>
 #include <QPoint>
 #include <QTime>
@@ -88,15 +89,17 @@ private slots:
     void showContextMenuForWidget(const QPoint &pos);
     void showContextMenuForChat(const QPoint &pos);
     void clearHistory();
+    void clearCurHistory(QString);
+    void clearCurUser(QString);
     void ClearSelect();
     void DeleteUser();
+    void setGlass();
     void on_comboBox_currentIndexChanged(int index);
     void AddUser_Chat(QString, QString, QList<QPair<QString, QString> >, int);
-
-
     void on_search_line_edit_textChanged(const QString &arg1);
-
     void on_search_list_clicked(const QModelIndex &index);
+    void on_glass_button_clicked();
+
 
 public slots:
     void recieveData(QString str, QString pas, QString);
@@ -120,6 +123,7 @@ private:
     findcontacts *findcont;
     AboutDialog *aboutdialog;
     registration *reg_window;
+    ConfirmWindow *conf_message;
     Notification *notice;
     RSACrypt *rsaCrypt;
     QString myPrivateKey;

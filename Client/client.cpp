@@ -9,6 +9,7 @@
 #include <QPainter>
 #include <time.h>
 #include <QPropertyAnimation>
+#include <QGraphicsOpacityEffect>
 
 QString gl_fname; //Поиск человека
 
@@ -65,6 +66,8 @@ Client::Client(QWidget *parent) : QMainWindow(parent), download_path("(C:/...)")
     ui->label_6->setText(QDir::homePath() + "/Whisper/");
     ui->widget_2->hide();
     ui->search_list->hide();
+    ui->glass_button->raise();
+    ui->glass_button->hide();
     nextBlockSize = 0;
     FriendCount = 0;
 
@@ -740,14 +743,31 @@ void Client::showEmoji()
     QPoint p = QCursor::pos();
     frameEmoji->setGeometry(p.x()-250, p.y() -300, 300, 250);
     frameEmoji->show();
+
+}
+
+void Client::setGlass()
+{
+    QPropertyAnimation* anim = new QPropertyAnimation(ui->glass_button);
+    QGraphicsOpacityEffect* grEffect = new QGraphicsOpacityEffect(ui->glass_button);
+    ui->glass_button->setGraphicsEffect(grEffect);
+    anim->setTargetObject(grEffect);
+    anim->setPropertyName("opacity");
+    anim->setDuration(1000);
+    anim->setStartValue(0.0);
+    anim->setEndValue(1.0);
+    anim->start();
+    ui->glass_button->show();
 }
 
 void Client::showFindCont()
 {
     QPoint p = QCursor::pos();
-    findcont->setGeometry(p.x() + 380, p.y() + 70, 310, 350);
+    findcont->setGeometry(p.x() + 350, p.y() + 70, 310, 350);
+    setGlass();
     findcont->show();
     connect(findcont, SIGNAL(findUsers(QString)), this, SLOT(findtoserv(QString)));
+
 }
 
 void Client::findtoserv(QString name_user)
@@ -992,9 +1012,10 @@ void Client::on_pushButton_3_clicked()
 
 void Client::on_pushButton_5_clicked()
 {
-    aboutdialog = new AboutDialog();
+    aboutdialog = new AboutDialog(this);
     QPoint p = QCursor::pos();
-    aboutdialog->setGeometry(p.x() -680, p.y() +80, 380, 480);
+    aboutdialog->setGeometry(p.x() - 550, p.y() +80, 380, 480);
+    setGlass();
     aboutdialog->show();
 }
 
@@ -1003,9 +1024,48 @@ void Client::clearHistory()
     // Очистить историю.
     // Пока сеансово, добавть подтверждение и запрос в БД на очистку переписки.
 
-    chatvec.at(ui->stackedWidget_2->currentIndex())->clear();
+    QString message = "Are you sure you want to clear history?";
+    conf_message = new ConfirmWindow(this, message);
+    conf_message->setGeometry(395, 100, 350, 170);
+    setGlass();
+    conf_message->show();
+
+    connect(conf_message, SIGNAL(response(QString)), this, SLOT(clearCurHistory(QString)));
 }
 
+void Client::clearCurHistory(QString cmd)
+{
+    if(cmd=="OK")
+        chatvec.at(ui->stackedWidget_2->currentIndex())->clear();
+
+    on_glass_button_clicked();
+    conf_message->~ConfirmWindow();
+}
+
+void Client::clearCurUser(QString cmd)
+{
+    if(cmd=="OK")
+    {
+        // Если есть контакты в списке, удалить нужного.
+        if(!ui->userList->size().isEmpty())
+        {
+            //Вытаскивание виджета из Стека Виджетов >_<
+            QWidget* widget = ui->stackedWidget_2->widget(ui->userList->currentRow());
+            // и удалить
+            ui->stackedWidget_2->removeWidget(widget);
+
+            // Очистить вектора
+            vec.erase(vec.begin()+ui->userList->currentRow());
+            chatvec.erase(chatvec.begin()+ui->userList->currentRow());
+            ui->userList->removeItemWidget(ui->userList->takeItem(ui->userList->currentRow()));
+            update();
+        }
+    }
+
+    on_glass_button_clicked();
+    conf_message->~ConfirmWindow();
+
+}
 void Client::ClearSelect()
 {
     // Очистить выделенные сообщения
@@ -1014,7 +1074,7 @@ void Client::ClearSelect()
 
 void Client::showContextMenuForChat(const QPoint &pos)
 {
-     // Контекстное меню для чата.
+    // Контекстное меню для чата.
 
     QPoint newPos = pos;
     newPos.setX(pos.x()+385);
@@ -1134,26 +1194,18 @@ void Client::on_comboBox_currentIndexChanged(int index)
 
 void Client::DeleteUser()
 {
-    // Как и с историей переписки, добавить подтверждение на удаление друга
     // И запрос на сервер в БД, удалить из таблицы.
     // Хз что пока делать на стороне удаляемого, вдруг он будет писать, а его уже нет =(((
 
+    QString message = "Are you sure you want to delete this user?";
+    conf_message = new ConfirmWindow(this, message);
+    conf_message->setGeometry(395, 100, 350, 170);
+    setGlass();
+    conf_message->show();
 
-    // Если есть контакты в списке, удалить нужного.
-    if(!ui->userList->size().isEmpty())
-    {
-        //Вытаскивание виджета из Стека Виджетов >_<
-        QWidget* widget = ui->stackedWidget_2->widget(ui->userList->currentRow());
-        // и удалить
-        ui->stackedWidget_2->removeWidget(widget);
-
-        // Очистить вектора
-        vec.erase(vec.begin()+ui->userList->currentRow());
-        chatvec.erase(chatvec.begin()+ui->userList->currentRow());
-        ui->userList->removeItemWidget(ui->userList->takeItem(ui->userList->currentRow()));
-        update();
-    }
+    connect(conf_message, SIGNAL(response(QString)), this, SLOT(clearCurUser(QString)));
 }
+
 
 // Поиск по контакт - листу. Вызывается при изменении текст. поля.
 void Client::on_search_line_edit_textChanged(const QString &arg1)
@@ -1212,3 +1264,8 @@ Client::~Client()
     delete ui;
 }
 
+
+void Client::on_glass_button_clicked()
+{
+    ui->glass_button->hide();
+}

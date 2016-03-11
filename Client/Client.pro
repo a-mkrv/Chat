@@ -16,7 +16,6 @@ CONFIG += c++11
 SOURCES +=\
         client.cpp \
     emojiframe.cpp \
-    setting.cpp \
     findcontacts.cpp \
     trayicon.cpp \
     tcpconnect.cpp \
@@ -30,11 +29,11 @@ SOURCES +=\
     notification.cpp \
     main.cpp \
     rsacrypt.cpp \
-    hashmd5.cpp
+    hashmd5.cpp \
+    confirmwindow.cpp
 
 HEADERS  += client.h \
     emojiframe.h \
-    setting.h \
     findcontacts.h \
     trayicon.h \
     tcpconnect.h \
@@ -47,15 +46,16 @@ HEADERS  += client.h \
     aboutdialog.h \
     notification.h \
     rsacrypt.h \
-    hashmd5.h
+    hashmd5.h \
+    confirmwindow.h
 
 FORMS    += client.ui \
     emojiframe.ui \
     findcontacts.ui \
     registration.ui \
-    maingui.ui \
     newcontact.ui \
-    aboutdialog.ui
+    aboutdialog.ui \
+    confirmwindow.ui
 
 RESOURCES += \
     image.qrc
