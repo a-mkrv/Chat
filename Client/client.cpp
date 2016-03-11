@@ -1036,8 +1036,17 @@ void Client::clearHistory()
 void Client::clearCurHistory(QString cmd)
 {
     if(cmd=="OK")
+    {
         chatvec.at(ui->stackedWidget_2->currentIndex())->clear();
 
+        QByteArray msg;
+        QDataStream out(&msg, QIODevice::WriteOnly);
+        out.setVersion(QDataStream::Qt_5_4);
+
+        QString to = vec.at(ui->userList->currentRow())->data(Qt::DisplayRole).toString();
+        out << quint32(0) << QTime::currentTime() << QString("_CLNHISTORY_") << name << to;
+        tcpSocket->write(msg);
+    }
     on_glass_button_clicked();
     conf_message->~ConfirmWindow();
 }
@@ -1049,6 +1058,14 @@ void Client::clearCurUser(QString cmd)
         // Если есть контакты в списке, удалить нужного.
         if(!ui->userList->size().isEmpty())
         {
+            QByteArray msg;
+            QDataStream out(&msg, QIODevice::WriteOnly);
+            out.setVersion(QDataStream::Qt_5_4);
+
+            QString delfriend = vec.at(ui->userList->currentRow())->data(Qt::DisplayRole).toString();
+            out << quint32(0) << QTime::currentTime() << QString("_DELFRIEND_") << name << delfriend;
+            tcpSocket->write(msg);
+
             //Вытаскивание виджета из Стека Виджетов >_<
             QWidget* widget = ui->stackedWidget_2->widget(ui->userList->currentRow());
             // и удалить
@@ -1076,6 +1093,9 @@ void Client::showContextMenuForChat(const QPoint &pos)
 {
     // Контекстное меню для чата.
 
+    if(ui->stackedWidget_2->count()==0 || ui->stackedWidget->isHidden() || chatvec.at(ui->stackedWidget_2->currentIndex())->count()==0)
+        return;
+
     QPoint newPos = pos;
     newPos.setX(pos.x()+385);
     newPos.setY(pos.y()+30);
@@ -1101,6 +1121,9 @@ void Client::showContextMenuForChat(const QPoint &pos)
 void Client::showContextMenuForWidget(const QPoint &pos)
 {
     // Контекстное меню для списка контактов.
+
+    if(ui->userList->count()==0 || ui->userList->selectedItems().isEmpty())
+        return;
 
     QPoint newPos = pos;
     newPos.setX(pos.x());

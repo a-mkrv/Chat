@@ -149,3 +149,27 @@ void SQLiteDB::addMessInChat(QString who, QString find, QString message, QString
     query.bindValue(":Time", QDateTime::currentDateTime().toString("dd.MM.yy hh:mm"));
     query.exec();
 }
+
+void SQLiteDB::ClearHistory(QString from, QString to)
+{
+    QSqlQuery query(myDB);
+
+    query.prepare("DELETE FROM Chat" + from + to);
+    if(!query.exec())
+        qDebug() << query.lastError();
+}
+
+
+void SQLiteDB::delFriend(QString from, QString delfriend)
+{
+    QSqlQuery query(myDB);
+    qDebug() << "DELETE";
+
+    query.prepare("DELETE FROM Friend" + from +  " WHERE name=\'" +delfriend+ "\'");
+    if(!query.exec())
+        qDebug() << query.lastError();
+
+    query.prepare("DELETE FROM Friend" + delfriend +  " WHERE name=\'" +from+ "\'");
+    if(!query.exec())
+        qDebug() << query.lastError();
+}

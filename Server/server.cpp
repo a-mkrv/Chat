@@ -129,6 +129,9 @@ void Server::getMessage()
     else if(typePacket == "_LOG_IN_")
         command = 6;
 
+    else if(typePacket == "_CLNHISTORY_" || typePacket == "_DELFRIEND_")
+        command = 7;
+
     switch (command)
     {
 
@@ -217,6 +220,17 @@ void Server::getMessage()
         }
 
         break;
+    }
+    case 7:
+    {
+        QString from, to;
+        in >> from >> to;
+
+        if(typePacket=="_CLNHISTORY_")
+            sqlitedb->ClearHistory(from, to);
+
+        else if(typePacket=="_DELFRIEND_")
+            sqlitedb->delFriend(from, to);
     }
     }
 }

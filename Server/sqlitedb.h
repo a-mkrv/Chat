@@ -26,7 +26,9 @@ public slots:
     void LoadChatList(QString, QString, ChatListVector&);
     void addChatTable(QString, QString);
     QString FindInDB(QString, QString);
-    QString CorrectInput(QString, QString);  //Возвращаю закрытый ключ(тест), в дальнейшем убрать.
+    void ClearHistory(QString, QString);
+    void delFriend(QString, QString);
+    QString CorrectInput(QString, QString);
 
 };
 
