@@ -163,13 +163,12 @@ void SQLiteDB::ClearHistory(QString from, QString to)
 void SQLiteDB::delFriend(QString from, QString delfriend)
 {
     QSqlQuery query(myDB);
-    qDebug() << "DELETE";
+
+    // Удалении происходит только на "исходном" клиенте. Удаляемый пользователь потом может написать тому, кто удалил, и у того
+    // вновь добавится человек, которого удалил. СложнА :))
 
     query.prepare("DELETE FROM Friend" + from +  " WHERE name=\'" +delfriend+ "\'");
     if(!query.exec())
         qDebug() << query.lastError();
 
-    query.prepare("DELETE FROM Friend" + delfriend +  " WHERE name=\'" +from+ "\'");
-    if(!query.exec())
-        qDebug() << query.lastError();
 }
