@@ -1,17 +1,17 @@
-#include "listdelegate.h"
+#include "userlistdelegate.h"
 #include <QLabel>
 #include <QDebug>
 
-ListDelegate::ListDelegate(QObject *parent)
+UserListDelegate::UserListDelegate(QObject *parent)
     {
 
     }
 
-
-void ListDelegate::paint ( QPainter * painter, const QStyleOptionViewItem & option, const QModelIndex & index ) const{
+void UserListDelegate::paint ( QPainter * painter, const QStyleOptionViewItem & option, const QModelIndex & index ) const{
 
 
     QRect r = option.rect;
+
     QPen linePen(QColor::fromRgb(211,211,211), 1, Qt::SolidLine);
     QPen lineMarkedPen(QColor::fromRgb(0,90,131), 1, Qt::SolidLine);
     QPen fontPen(QColor::fromRgb(51,51,51), 1, Qt::SolidLine);
@@ -36,6 +36,7 @@ void ListDelegate::paint ( QPainter * painter, const QStyleOptionViewItem & opti
         painter->setPen(fontMarkedPen);
 
     } else {
+
         //BACKGROUND
         //ALTERNATING COLORS
         painter->setBrush( (index.row() % 2) ? Qt::white : QColor(252,252,252) );
@@ -85,7 +86,7 @@ void ListDelegate::paint ( QPainter * painter, const QStyleOptionViewItem & opti
 
         }
 
-QSize ListDelegate::sizeHint ( const QStyleOptionViewItem & option, const QModelIndex & index ) const{
+QSize UserListDelegate::sizeHint ( const QStyleOptionViewItem & option, const QModelIndex & index ) const{
         return QSize(200, 70); // Размер элемента списка
     }
 

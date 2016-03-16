@@ -21,7 +21,7 @@
 #include <QCoreApplication>
 #include <QColorDialog>
 #include <QKeyEvent>
-#include "listdelegate.h"
+#include "userlistdelegate.h"
 #include "chatlistdelegate.h"
 #include "aboutdialog.h"
 #include "notification.h"

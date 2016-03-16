@@ -5,10 +5,10 @@
 #include <QString>
 #include <QTextDocument>
 
-class ListDelegate : public QAbstractItemDelegate
+class UserListDelegate : public QAbstractItemDelegate
 {
 public:
-    ListDelegate(QObject *parent = 0);
+    UserListDelegate(QObject *parent = 0);
     void paint ( QPainter * painter, const QStyleOptionViewItem & option, const QModelIndex & index ) const;
     QSize sizeHint ( const QStyleOptionViewItem & option, const QModelIndex & index ) const;
 };

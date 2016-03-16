@@ -21,7 +21,6 @@ SOURCES +=\
     tcpconnect.cpp \
     emojimanager.cpp \
     listwidgetemoji.cpp \
-    listdelegate.cpp \
     registration.cpp \
     newcontact.cpp \
     chatlistdelegate.cpp \
@@ -30,7 +29,9 @@ SOURCES +=\
     main.cpp \
     rsacrypt.cpp \
     hashmd5.cpp \
-    confirmwindow.cpp
+    confirmwindow.cpp \
+    creategroup.cpp \
+    userlistdelegate.cpp
 
 HEADERS  += client.h \
     emojiframe.h \
@@ -39,7 +40,6 @@ HEADERS  += client.h \
     tcpconnect.h \
     emojimanager.h \
     listwidgetemoji.h \
-    listdelegate.h \
     registration.h \
     newcontact.h \
     chatlistdelegate.h \
@@ -47,7 +47,9 @@ HEADERS  += client.h \
     notification.h \
     rsacrypt.h \
     hashmd5.h \
-    confirmwindow.h
+    confirmwindow.h \
+    creategroup.h \
+    userlistdelegate.h
 
 FORMS    += client.ui \
     emojiframe.ui \
@@ -55,7 +57,8 @@ FORMS    += client.ui \
     registration.ui \
     newcontact.ui \
     aboutdialog.ui \
-    confirmwindow.ui
+    confirmwindow.ui \
+    creategroup.ui
 
 RESOURCES += \
     image.qrc

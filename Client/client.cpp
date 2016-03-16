@@ -65,8 +65,8 @@ Client::Client(QWidget *parent) : QMainWindow(parent), download_path("(C:/...)")
     ui->RB_sendEnter->setChecked(true);
     ui->userList->setContextMenuPolicy(Qt::CustomContextMenu);
     ui->stackedWidget_2->setContextMenuPolicy(Qt::CustomContextMenu);
-    ui->userList->setItemDelegate(new ListDelegate(ui->userList));
-    ui->search_list->setItemDelegate(new ListDelegate(ui->search_list));
+    ui->userList->setItemDelegate(new UserListDelegate(ui->userList));
+    ui->search_list->setItemDelegate(new UserListDelegate(ui->search_list));
     ui->label_6->setText(QDir::homePath() + "/Whisper/");
     ui->widget_2->hide();
     ui->search_list->hide();
