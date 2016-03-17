@@ -4,7 +4,6 @@
 #include <QFrame>
 #include <QTcpSocket>
 
-
 namespace Ui {
 class findcontacts;
 }

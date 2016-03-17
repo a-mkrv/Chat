@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>403</width>
-    <height>234</height>
+    <width>400</width>
+    <height>230</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -16,7 +16,7 @@
   <property name="styleSheet">
    <string notr="true">background-color: rgb(255, 255, 255);</string>
   </property>
-  <widget class="QWidget" name="">
+  <widget class="QWidget" name="layoutWidget">
    <property name="geometry">
     <rect>
      <x>20</x>
@@ -92,7 +92,7 @@ border-left-color: rgb(255, 255, 255);</string>
     </item>
    </layout>
   </widget>
-  <widget class="QWidget" name="">
+  <widget class="QWidget" name="layoutWidget">
    <property name="geometry">
     <rect>
      <x>20</x>
@@ -132,7 +132,7 @@ border-left-color: rgb(255, 255, 255);</string>
 QPushButton:hover{background: #f6f4ff; border:none;}</string>
         </property>
         <property name="text">
-         <string>Cancel</string>
+         <string>CANCEL</string>
         </property>
         <property name="flat">
          <bool>true</bool>
@@ -152,7 +152,7 @@ QPushButton{color: rgb(65, 109, 211); background: white;}
 QPushButton:hover{background: #f6f4ff; border:none;}</string>
         </property>
         <property name="text">
-         <string>Create</string>
+         <string>CREATE</string>
         </property>
         <property name="flat">
          <bool>true</bool>
@@ -163,13 +163,6 @@ QPushButton:hover{background: #f6f4ff; border:none;}</string>
     </item>
    </layout>
   </widget>
-  <zorder>g_name</zorder>
-  <zorder>group_avatar</zorder>
-  <zorder>g_description</zorder>
-  <zorder>create_group</zorder>
-  <zorder>close_groupW</zorder>
-  <zorder>verticalSpacer_3</zorder>
-  <zorder>horizontalSpacer</zorder>
  </widget>
  <resources/>
  <connections/>

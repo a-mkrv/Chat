@@ -27,6 +27,8 @@
 #include "notification.h"
 #include "rsacrypt.h"
 #include "confirmwindow.h"
+#include "creategroup.h"
+#include "choicecreate.h"
 #include <QMouseEvent>
 #include <QPoint>
 #include <QTime>
@@ -68,6 +70,8 @@ private slots:
     void whisperOnClick(QListWidgetItem* user);
     void showEmoji();
     void showFindCont();
+    void showCreateGroupe();
+    void getCreateGroupeSig(QString);
     void on_pushButton_clicked();
     void on_newContact_Button_clicked();
     void iconActivated(QSystemTrayIcon::ActivationReason reason);
@@ -99,6 +103,8 @@ private slots:
     void on_search_line_edit_textChanged(const QString &arg1);
     void on_search_list_clicked(const QModelIndex &index);
     void on_glass_button_clicked();
+    void choice_Window(QString);
+    void show_FindUsers();
 
 
 public slots:
@@ -124,6 +130,8 @@ private:
     AboutDialog *aboutdialog;
     registration *reg_window;
     ConfirmWindow *conf_message;
+    CreateGroup *create_group;
+    ChoiceCreate *choice_window;
     Notification *notice;
     RSACrypt *rsaCrypt;
     QString myPrivateKey;

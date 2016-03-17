@@ -483,6 +483,7 @@ void Client::getMessage()
             QList <QPair<QString, QString> > a;
             AddUser_Chat(gl_fname, commandList.at(2), a , -1);
             findcont->~findcontacts();
+            on_glass_button_clicked();
         }
         else
             findcont->SetErrorLayout(1);
@@ -773,8 +774,7 @@ void Client::setGlass()
 void Client::showFindCont()
 {
     QPoint p = QCursor::pos();
-    findcont->setGeometry(p.x() + 350, p.y() + 70, 310, 350);
-    setGlass();
+    findcont->setGeometry(p.x()-200, p.y()-230, 310, 350);
     findcont->show();
     connect(findcont, SIGNAL(findUsers(QString)), this, SLOT(findtoserv(QString)));
 
@@ -800,7 +800,6 @@ void Client::findtoserv(QString name_user)
 
     if(tmp)
     {
-        on_glass_button_clicked();
         QByteArray msg;
         QDataStream out(&msg, QIODevice::WriteOnly);
         out.setVersion(QDataStream::Qt_5_4);
@@ -815,8 +814,50 @@ void Client::findtoserv(QString name_user)
 
 void Client::on_newContact_Button_clicked()
 {
-    findcont = new findcontacts();
-    showFindCont();
+    choice_window = new ChoiceCreate(this);
+    QPoint p = QCursor::pos();
+    choice_window->setGeometry(p.x() + 330, p.y() + 70, 343, 220);
+    setGlass();
+    choice_window->show();
+    connect(choice_window, SIGNAL(choice(QString)), this, SLOT(choice_Window(QString)));
+
+}
+
+void Client::choice_Window(QString str)
+{
+    if(str == "close")
+        on_glass_button_clicked();
+
+    else if(str == "newContact")
+    {
+        findcont = new findcontacts();
+        showFindCont();
+    }
+    else if (str == "newGroup")
+    {
+        create_group = new CreateGroup(this);
+        showCreateGroupe();
+    }
+}
+
+void Client::showCreateGroupe()
+{
+    QPoint p = QCursor::pos();
+    create_group->setGeometry(p.x()-240, p.y()-175, 400, 230);
+    create_group->show();
+
+    connect(create_group, SIGNAL(groupSig(QString)), this, SLOT(getCreateGroupeSig(QString)));
+}
+
+void Client::getCreateGroupeSig(QString str)
+{
+    if(str=="Close")
+        on_glass_button_clicked();
+
+    else if(str == "Create")
+    {
+        on_glass_button_clicked();
+    }
 }
 
 void Client::on_actionShowHideWindow_triggered()

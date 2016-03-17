@@ -18,7 +18,7 @@ findcontacts::findcontacts(QWidget *parent) :
     connect(ui->invite_cont_button, SIGNAL(clicked()), this, SLOT(on_invite_cont_button_clicked()));
 
     QPropertyAnimation* animation = new QPropertyAnimation(this, "windowOpacity");
-    animation->setDuration(1000);
+    animation->setDuration(500);
     animation->setStartValue(0);
     animation->setEndValue(1);
     animation->start();

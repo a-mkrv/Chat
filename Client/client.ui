@@ -1462,7 +1462,7 @@ p, li { white-space: pre-wrap; }
      </size>
     </property>
     <property name="spacing">
-     <number>2</number>
+     <number>0</number>
     </property>
    </widget>
    <widget class="QPushButton" name="glass_button">
@@ -1478,6 +1478,7 @@ p, li { white-space: pre-wrap; }
      <string notr="true">background-color: rgb(0, 0, 0, 130);</string>
     </property>
    </widget>
+   <zorder>widget_2</zorder>
    <zorder>glass_button</zorder>
    <zorder>line</zorder>
    <zorder>userList</zorder>
@@ -1496,7 +1497,6 @@ p, li { white-space: pre-wrap; }
    <zorder>search_label</zorder>
    <zorder>stackedWidget_2</zorder>
    <zorder>search_list</zorder>
-   <zorder>widget_2</zorder>
   </widget>
   <action name="actionShowHideWindow">
    <property name="text">
