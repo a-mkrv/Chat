@@ -4,6 +4,7 @@
 #include <QWidget>
 #include <QFrame>
 #include <QPropertyAnimation>
+#include <QFileDialog>
 
 namespace Ui {
 class CreateGroup;
@@ -21,8 +22,10 @@ private slots:
     void on_create_group_clicked();
     void on_close_groupW_clicked();
 
+    void on_group_avatar_clicked();
+
 signals:
-    void groupSig(QString);
+    void GroupSignal(QString, QString, QString, QString);
 
 private:
     Ui::CreateGroup *ui;

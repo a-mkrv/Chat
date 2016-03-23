@@ -22,24 +22,36 @@
      <x>20</x>
      <y>20</y>
      <width>351</width>
-     <height>111</height>
+     <height>112</height>
     </rect>
    </property>
    <layout class="QHBoxLayout" name="horizontalLayout_2">
     <item>
-     <widget class="QLabel" name="group_avatar">
+     <widget class="QPushButton" name="group_avatar">
       <property name="minimumSize">
        <size>
         <width>110</width>
-        <height>100</height>
+        <height>110</height>
        </size>
       </property>
       <property name="styleSheet">
-       <string notr="true">
-background-color: rgb(228, 233, 255);</string>
+       <string notr="true"/>
       </property>
       <property name="text">
        <string/>
+      </property>
+      <property name="icon">
+       <iconset resource="image.qrc">
+        <normaloff>:/new/prefix1/Resource/group_avatar.png</normaloff>:/new/prefix1/Resource/group_avatar.png</iconset>
+      </property>
+      <property name="iconSize">
+       <size>
+        <width>62</width>
+        <height>62</height>
+       </size>
+      </property>
+      <property name="flat">
+       <bool>true</bool>
       </property>
      </widget>
     </item>
@@ -152,7 +164,7 @@ QPushButton{color: rgb(65, 109, 211); background: white;}
 QPushButton:hover{background: #f6f4ff; border:none;}</string>
         </property>
         <property name="text">
-         <string>CREATE</string>
+         <string>NEXT</string>
         </property>
         <property name="flat">
          <bool>true</bool>
@@ -164,6 +176,8 @@ QPushButton:hover{background: #f6f4ff; border:none;}</string>
    </layout>
   </widget>
  </widget>
- <resources/>
+ <resources>
+  <include location="image.qrc"/>
+ </resources>
  <connections/>
 </ui>

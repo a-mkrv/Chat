@@ -55,6 +55,24 @@ void NewContact::getMessagee()
 
 void NewContact::on_accept_button_clicked()
 {
+
+    if(ui->enter_password->text().isEmpty())
+    {
+        ui->Error_label_2->show();
+        return;
+    }
+    else if(ui->password_confirm->text().isEmpty())
+    {
+        ui->Error_label_2->show();
+        ui->Error_label_2->setText("Confirm pass is empty");
+        return;
+    }
+    else if(ui->password_confirm->text() != ui->enter_password->text())
+    {
+        ui->Error_label_2->show();
+        ui->Error_label_2->setText("Passwords are different");
+        return;
+    }
     socket->abort();
     socket->connectToHost("127.0.0.1", 55155);
 

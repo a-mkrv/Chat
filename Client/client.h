@@ -29,6 +29,7 @@
 #include "confirmwindow.h"
 #include "creategroup.h"
 #include "choicecreate.h"
+#include "selectcontacts.h"
 #include <QMouseEvent>
 #include <QPoint>
 #include <QTime>
@@ -70,8 +71,8 @@ private slots:
     void whisperOnClick(QListWidgetItem* user);
     void showEmoji();
     void showFindCont();
-    void showCreateGroupe();
-    void getCreateGroupeSig(QString);
+    void showCreateGroup();
+    void getCreateGroupSig(QString, QString, QString, QString);
     void on_pushButton_clicked();
     void on_newContact_Button_clicked();
     void iconActivated(QSystemTrayIcon::ActivationReason reason);
@@ -104,7 +105,7 @@ private slots:
     void on_search_list_clicked(const QModelIndex &index);
     void on_glass_button_clicked();
     void choice_Window(QString);
-    void show_FindUsers();
+    void addGroup_toList(QStringList, QString);
 
 
 public slots:
@@ -132,6 +133,7 @@ private:
     ConfirmWindow *conf_message;
     CreateGroup *create_group;
     ChoiceCreate *choice_window;
+    SelectContacts *selectContacts;
     Notification *notice;
     RSACrypt *rsaCrypt;
     QString myPrivateKey;
@@ -145,6 +147,7 @@ private:
     QString name;
     QString download_path;
     QString colorchat;
+    QStringList groupData;
     bool personDates;
 };
 

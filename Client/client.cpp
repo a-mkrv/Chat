@@ -487,7 +487,7 @@ void Client::getMessage()
         }
         else
             findcont->SetErrorLayout(1);
-        qDebug() << "Поиск:(Ключ друга) " << pubFriendKey;
+        //qDebug() << "Поиск:(Ключ друга) " << pubFriendKey;
         break;
     }
 
@@ -836,28 +836,84 @@ void Client::choice_Window(QString str)
     else if (str == "newGroup")
     {
         create_group = new CreateGroup(this);
-        showCreateGroupe();
+        showCreateGroup();
     }
 }
 
-void Client::showCreateGroupe()
+void Client::showCreateGroup()
 {
     QPoint p = QCursor::pos();
     create_group->setGeometry(p.x()-240, p.y()-175, 400, 230);
     create_group->show();
 
-    connect(create_group, SIGNAL(groupSig(QString)), this, SLOT(getCreateGroupeSig(QString)));
+    connect(create_group, SIGNAL(GroupSignal(QString, QString, QString, QString)), SLOT(getCreateGroupSig(QString, QString, QString, QString)));
 }
 
-void Client::getCreateGroupeSig(QString str)
+void Client::getCreateGroupSig(QString state, QString group_name, QString group_descr, QString path_avatar)
 {
-    if(str=="Close")
+
+    if(state=="Close"){
         on_glass_button_clicked();
 
-    else if(str == "Create")
+    }
+    else if(state == "Create")
     {
+        selectContacts = new SelectContacts(this, ui->userList);
+        QPoint p = QCursor::pos();
+        selectContacts->setGeometry(p.x()-245, p.y()-280, 361, 540);
+        selectContacts->show();
+
+        groupData.push_back(group_name);
+        groupData.push_back(group_descr);
+        groupData.push_back(path_avatar);
+
+        connect(selectContacts, SIGNAL(SelectUsersSignal(QStringList, QString)), SLOT(addGroup_toList(QStringList, QString)));
+    }
+}
+
+void Client::addGroup_toList(QStringList userList, QString state)
+{
+    if(state == "Cancel")
+    {
+        if(!groupData.isEmpty())
+            groupData.clear();
         on_glass_button_clicked();
     }
+
+    else if(state == "Create")
+    {
+        QListWidgetItem *item = new QListWidgetItem();
+        QListWidget *chatlist = new QListWidget();
+        chatlist->setItemDelegate(new ChatListDelegate(chatlist, colorchat));
+        ui->stackedWidget_2->addWidget(chatlist);
+
+        QString groupName = groupData.takeAt(0);
+        item->setData(Qt::DisplayRole, groupName);
+        item->setData(Qt::ToolTipRole, QDateTime::currentDateTime().toString("dd.MM.yy hh:mm"));
+        item->setData(Qt::UserRole + 1, groupData.takeAt(0));
+        //item->setData(Qt::DecorationRole, groupData.takeAt(2));
+
+        QListWidgetItem *item2 = new QListWidgetItem();
+        item2->setData(Qt::UserRole + 1, "TO");
+        item2->setData(Qt::DisplayRole, "You have created a new room \"" + groupName + "\"");
+        item2->setData(Qt::ToolTipRole, QDateTime::currentDateTime().toString("dd.MM.yy hh:mm"));
+        chatlist->addItem(item2);
+
+
+        vec.push_back(item);
+        chatvec.push_back(chatlist);
+        ui->userList->addItem(item);
+        ui->userList->scrollToBottom();
+
+        ui->textBrowser->hide();
+        ui->stackedWidget_2->show();
+        ui->stackedWidget_2->setCurrentIndex(chatvec.size()-1);
+        ui->userList->clearSelection();
+        vec.at(vec.size()-1)->setSelected(true);
+        whisperOnClickUsers(vec.at(vec.size()-1));
+        on_glass_button_clicked();
+    }
+
 }
 
 void Client::on_actionShowHideWindow_triggered()

@@ -34,6 +34,7 @@
         <file>Resource/logo.png</file>
         <file>Resource/sendfiles.png</file>
         <file>Resource/enter.png</file>
+        <file>Resource/group_avatar.png</file>
     </qresource>
     <qresource prefix="/Avatars">
         <file>Resource/Avatars/1.jpg</file>
