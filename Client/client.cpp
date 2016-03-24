@@ -429,7 +429,7 @@ void Client::getMessage()
     QStringList commandList;
     QString fromname;
 
-    enum class COMMAND { NONE, USERLIST, FINDUSER, INVITE, GETFILE};
+    enum class COMMAND { NONE, USERLIST, FINDUSER, INVITE, GETFILE, USINFO};
     COMMAND cmd = COMMAND::NONE;
 
     if (message=="FRLST")
@@ -437,6 +437,9 @@ void Client::getMessage()
 
     else if(message=="_GetFILE_")
         cmd = COMMAND::GETFILE;
+
+    else if(message=="_USINFO_")
+        cmd = COMMAND::USINFO;
 
     else
     {
@@ -461,11 +464,11 @@ void Client::getMessage()
         QList <QPair<QString, QString> > lst;
         ChatListVector chatList;
 
-        in >> FriendKey >> lst >> chatList; ;
+        in >> FriendKey >> lst >> chatList;
 
         for(int i=0; i<FriendKey.size(); i++)
             pubFriendKey.push_back(qMakePair(FriendKey.at(i).first, FriendKey.at(i).second));
-        qDebug() << "Key: " << pubFriendKey;
+        //qDebug() << "Key: " << pubFriendKey;
         for(int i=0; i<lst.size(); i++)
             AddUser_Chat(lst.at(i).first, lst.at(i).second, chatList.at(i).second, i);
 
@@ -497,7 +500,22 @@ void Client::getMessage()
         QString pubKey = commandList.at(3) + " " + commandList.at(4);
         pubFriendKey.push_back(qMakePair(commandList.at(1), pubKey));
         AddUser_Chat(commandList.at(1), commandList.at(2), a , -2);
-        qDebug() << "Инвайт:(Ключ друга) " << pubFriendKey;
+        //qDebug() << "Инвайт:(Ключ друга) " << pubFriendKey;
+        break;
+    }
+
+    case COMMAND::USINFO:
+    {
+        QStringList *usData = new QStringList;
+        QStringList UData;
+        in >> UData;
+        for(int i=0; i<4; i++)
+            usData->push_back(UData.at(i));
+
+        users_info = new UsersGroupInfo(this, usData);
+        users_info->setGeometry(this->x()+365, this->y()+70, 330, 480);
+        setGlass();
+        users_info->show();
         break;
     }
 
@@ -815,8 +833,7 @@ void Client::findtoserv(QString name_user)
 void Client::on_newContact_Button_clicked()
 {
     choice_window = new ChoiceCreate(this);
-    QPoint p = QCursor::pos();
-    choice_window->setGeometry(p.x() + 330, p.y() + 70, 343, 220);
+    choice_window->setGeometry(this->x()+359, this->y()+130, 343, 220);
     setGlass();
     choice_window->show();
     connect(choice_window, SIGNAL(choice(QString)), this, SLOT(choice_Window(QString)));
@@ -843,7 +860,7 @@ void Client::choice_Window(QString str)
 void Client::showCreateGroup()
 {
     QPoint p = QCursor::pos();
-    create_group->setGeometry(p.x()-240, p.y()-175, 400, 230);
+    create_group->setGeometry(this->x()+330, this->y()+130, 400, 230);
     create_group->show();
 
     connect(create_group, SIGNAL(GroupSignal(QString, QString, QString, QString)), SLOT(getCreateGroupSig(QString, QString, QString, QString)));
@@ -859,8 +876,7 @@ void Client::getCreateGroupSig(QString state, QString group_name, QString group_
     else if(state == "Create")
     {
         selectContacts = new SelectContacts(this, ui->userList);
-        QPoint p = QCursor::pos();
-        selectContacts->setGeometry(p.x()-245, p.y()-280, 361, 540);
+        selectContacts->setGeometry(this->x()+350, this->y()+40, 361, 540);
         selectContacts->show();
 
         groupData.push_back(group_name);
@@ -888,10 +904,11 @@ void Client::addGroup_toList(QStringList userList, QString state)
         ui->stackedWidget_2->addWidget(chatlist);
 
         QString groupName = groupData.takeAt(0);
+        QIcon pic(":/new/prefix1/Resource/group-1.png");
         item->setData(Qt::DisplayRole, groupName);
         item->setData(Qt::ToolTipRole, QDateTime::currentDateTime().toString("dd.MM.yy hh:mm"));
         item->setData(Qt::UserRole + 1, groupData.takeAt(0));
-        //item->setData(Qt::DecorationRole, groupData.takeAt(2));
+        item->setData(Qt::DecorationRole, pic);
 
         QListWidgetItem *item2 = new QListWidgetItem();
         item2->setData(Qt::UserRole + 1, "TO");
@@ -1121,8 +1138,7 @@ void Client::on_pushButton_3_clicked()
 void Client::on_pushButton_5_clicked()
 {
     aboutdialog = new AboutDialog(this);
-    QPoint p = QCursor::pos();
-    aboutdialog->setGeometry(p.x() - 550, p.y() +80, 380, 480);
+    aboutdialog->setGeometry(this->x()+340, this->y()+70, 380, 480);
     setGlass();
     aboutdialog->show();
 }
@@ -1134,7 +1150,7 @@ void Client::clearHistory()
 
     QString message = "Are you sure you want to clear history?";
     conf_message = new ConfirmWindow(this, message);
-    conf_message->setGeometry(395, 100, 350, 170);
+    conf_message->setGeometry(this->x()+355, this->y()+100, 350, 170);
     setGlass();
     conf_message->show();
 
@@ -1330,7 +1346,7 @@ void Client::DeleteUser()
 
     QString message = "Are you sure you want to delete this user?";
     conf_message = new ConfirmWindow(this, message);
-    conf_message->setGeometry(395, 100, 350, 170);
+    conf_message->setGeometry(this->x()+355, this->y()+100, 350, 170);
     setGlass();
     conf_message->show();
 
@@ -1399,4 +1415,18 @@ Client::~Client()
 void Client::on_glass_button_clicked()
 {
     ui->glass_button->hide();
+}
+
+void Client::on_info_user_button_clicked()
+{
+    if(ui->stackedWidget_2->count()==0 || ui->stackedWidget->isHidden())
+        return;
+
+    QByteArray msg;
+    QDataStream out(&msg, QIODevice::WriteOnly);
+    out.setVersion(QDataStream::Qt_5_4);
+
+    QString name_user = vec.at(ui->userList->currentRow())->data(Qt::DisplayRole).toString();
+    out << quint32(0) << QTime::currentTime() << QString("_USERINFO_") << name_user;
+    tcpSocket->write(msg);
 }

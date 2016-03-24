@@ -23,7 +23,6 @@ signals:
     void SelectUsersSignal(QStringList, QString);
 private slots:
     void on_crGroup_button_clicked();
-
     void on_cancel_button_clicked();
 
 private:

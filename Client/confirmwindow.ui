@@ -44,12 +44,22 @@
      <item>
       <layout class="QHBoxLayout" name="horizontalLayout">
        <item>
-        <widget class="QPushButton" name="ok_Button">
+        <widget class="QPushButton" name="cancel_Button">
+         <property name="font">
+          <font>
+           <pointsize>10</pointsize>
+          </font>
+         </property>
          <property name="styleSheet">
-          <string notr="true">background-color: rgb(220, 223, 255);</string>
+          <string notr="true">
+QPushButton{ background: white;}
+QPushButton:hover{background: #f6f4ff; border:none;}</string>
          </property>
          <property name="text">
-          <string>OK</string>
+          <string>CANCEL</string>
+         </property>
+         <property name="flat">
+          <bool>true</bool>
          </property>
         </widget>
        </item>
@@ -61,12 +71,22 @@
         </widget>
        </item>
        <item>
-        <widget class="QPushButton" name="cancel_Button">
+        <widget class="QPushButton" name="ok_Button">
+         <property name="font">
+          <font>
+           <pointsize>10</pointsize>
+          </font>
+         </property>
          <property name="styleSheet">
-          <string notr="true">background-color: rgb(220, 223, 255);</string>
+          <string notr="true">
+QPushButton{color: rgb(255,0,0); background: white;}
+QPushButton:hover{background: #f6f4ff; border:none;}</string>
          </property>
          <property name="text">
-          <string>Cancel</string>
+          <string>OK</string>
+         </property>
+         <property name="flat">
+          <bool>true</bool>
          </property>
         </widget>
        </item>

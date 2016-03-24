@@ -1478,6 +1478,56 @@ p, li { white-space: pre-wrap; }
      <string notr="true">background-color: rgb(0, 0, 0, 130);</string>
     </property>
    </widget>
+   <widget class="QPushButton" name="info_user_button">
+    <property name="geometry">
+     <rect>
+      <x>390</x>
+      <y>35</y>
+      <width>671</width>
+      <height>51</height>
+     </rect>
+    </property>
+    <property name="layoutDirection">
+     <enum>Qt::LeftToRight</enum>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">background-color: rgb(99, 137, 168);
+border:none;</string>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+    <property name="default">
+     <bool>false</bool>
+    </property>
+    <property name="flat">
+     <bool>true</bool>
+    </property>
+   </widget>
+   <widget class="QLabel" name="name_label">
+    <property name="geometry">
+     <rect>
+      <x>390</x>
+      <y>30</y>
+      <width>671</width>
+      <height>61</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>14</pointsize>
+     </font>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">color: rgb(255, 255, 255);</string>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
+    </property>
+   </widget>
    <zorder>widget_2</zorder>
    <zorder>glass_button</zorder>
    <zorder>line</zorder>
@@ -1497,6 +1547,8 @@ p, li { white-space: pre-wrap; }
    <zorder>search_label</zorder>
    <zorder>stackedWidget_2</zorder>
    <zorder>search_list</zorder>
+   <zorder>name_label</zorder>
+   <zorder>info_user_button</zorder>
   </widget>
   <action name="actionShowHideWindow">
    <property name="text">

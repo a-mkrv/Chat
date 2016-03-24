@@ -132,6 +132,9 @@ void Server::getMessage()
     else if(typePacket == "_CLNHISTORY_" || typePacket == "_DELFRIEND_")
         command = 7;
 
+    else if(typePacket == "_USERINFO_")
+        command = 8;
+
     switch (command)
     {
 
@@ -231,6 +234,26 @@ void Server::getMessage()
 
         else if(typePacket=="_DELFRIEND_")
             sqlitedb->delFriend(from, to);
+        break;
+    }
+
+    case 8:
+    {
+        QString  userInfo;
+        QStringList dataList;
+        in >> userInfo;
+
+        dataList = sqlitedb->UserData(userInfo);
+
+        QByteArray block;
+        QDataStream out(&block, QIODevice::WriteOnly);
+        out.setVersion(QDataStream::Qt_5_4);
+
+        QString message = "_USINFO_";
+        out << quint32(0) << message << dataList;
+        client->write(block);
+
+        break;
     }
     }
 }

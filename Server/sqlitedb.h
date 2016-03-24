@@ -29,6 +29,7 @@ public slots:
     void ClearHistory(QString, QString);
     void delFriend(QString, QString);
     QString CorrectInput(QString, QString);
+    QStringList UserData(QString);
 
 };
 

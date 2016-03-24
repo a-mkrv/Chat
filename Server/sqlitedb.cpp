@@ -172,3 +172,23 @@ void SQLiteDB::delFriend(QString from, QString delfriend)
         qDebug() << query.lastError();
 
 }
+
+QStringList SQLiteDB::UserData(QString name)
+{
+    QStringList uList;
+
+    QSqlQuery query(myDB);
+    if(query.exec("SELECT UserName, Sex, Age, City FROM Users WHERE UserName=\'" +name+ "\'"))
+        if(query.next())
+            if (query.value(0).toString() == name)
+            {
+                uList.push_back(name);
+                uList.push_back(query.value(1).toString());
+                uList.push_back(query.value(2).toString());
+                uList.push_back(query.value(3).toString());
+                return uList;
+            }
+
+    query.exec();
+    return uList;
+}

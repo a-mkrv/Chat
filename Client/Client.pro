@@ -33,7 +33,8 @@ SOURCES +=\
     creategroup.cpp \
     userlistdelegate.cpp \
     choicecreate.cpp \
-    selectcontacts.cpp
+    selectcontacts.cpp \
+    usersgroupinfo.cpp
 
 HEADERS  += client.h \
     emojiframe.h \
@@ -53,7 +54,8 @@ HEADERS  += client.h \
     creategroup.h \
     userlistdelegate.h \
     choicecreate.h \
-    selectcontacts.h
+    selectcontacts.h \
+    usersgroupinfo.h
 
 FORMS    += client.ui \
     emojiframe.ui \
@@ -64,7 +66,8 @@ FORMS    += client.ui \
     confirmwindow.ui \
     creategroup.ui \
     choicecreate.ui \
-    selectcontacts.ui
+    selectcontacts.ui \
+    usersgroupinfo.ui
 
 RESOURCES += \
     image.qrc

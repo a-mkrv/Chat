@@ -30,6 +30,7 @@
 #include "creategroup.h"
 #include "choicecreate.h"
 #include "selectcontacts.h"
+#include "usersgroupinfo.h"
 #include <QMouseEvent>
 #include <QPoint>
 #include <QTime>
@@ -106,7 +107,7 @@ private slots:
     void on_glass_button_clicked();
     void choice_Window(QString);
     void addGroup_toList(QStringList, QString);
-
+    void on_info_user_button_clicked();
 
 public slots:
     void recieveData(QString str, QString pas, QString);
@@ -134,6 +135,7 @@ private:
     CreateGroup *create_group;
     ChoiceCreate *choice_window;
     SelectContacts *selectContacts;
+    UsersGroupInfo *users_info;
     Notification *notice;
     RSACrypt *rsaCrypt;
     QString myPrivateKey;
