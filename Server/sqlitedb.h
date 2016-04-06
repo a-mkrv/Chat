@@ -24,6 +24,7 @@ public slots:
     QList <QPair <QString, QString> > FriendList(QString, ChatListVector&);
     QList <QPair <QString, QString> > FriendKeys(QString);
     void LoadChatList(QString, QString, ChatListVector&);
+    void createGroup(QString , QString , QStringList);
     void addChatTable(QString, QString);
     QString FindInDB(QString, QString);
     void ClearHistory(QString, QString);

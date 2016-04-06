@@ -17,9 +17,7 @@ QString gl_fname; //Поиск человека
 // Передачу аватарки, а не рандомная загрузка из ресурсов
 // Создание группового чата
 // Смайлики доделать по нормальному
-// Информация о друге.
 // Повторное добавление удаленного друга
-
 
 
 //СДЕЛАНО:
@@ -41,6 +39,7 @@ QString gl_fname; //Поиск человека
 // MD5+Solt Хэширование - Сделано
 // Поиск по контактам.  - Сделано
 // Удаление контакта и удаление истории переписки - Добавлено
+// Информация о друге   - Сделано
 
 
 
@@ -903,19 +902,18 @@ void Client::addGroup_toList(QStringList userList, QString state)
         chatlist->setItemDelegate(new ChatListDelegate(chatlist, colorchat));
         ui->stackedWidget_2->addWidget(chatlist);
 
-        QString groupName = groupData.takeAt(0);
         QIcon pic(":/new/prefix1/Resource/group-1.png");
-        item->setData(Qt::DisplayRole, groupName);
+        item->setData(Qt::DisplayRole, groupData.at(0));
+        item->setData(Qt::StatusTipRole, "group");
         item->setData(Qt::ToolTipRole, QDateTime::currentDateTime().toString("dd.MM.yy hh:mm"));
-        item->setData(Qt::UserRole + 1, groupData.takeAt(0));
+        item->setData(Qt::UserRole + 1, groupData.at(1));
         item->setData(Qt::DecorationRole, pic);
 
         QListWidgetItem *item2 = new QListWidgetItem();
         item2->setData(Qt::UserRole + 1, "TO");
-        item2->setData(Qt::DisplayRole, "You have created a new room \"" + groupName + "\"");
+        item2->setData(Qt::DisplayRole, "You have created a new room \"" + groupData.at(0) + "\"");
         item2->setData(Qt::ToolTipRole, QDateTime::currentDateTime().toString("dd.MM.yy hh:mm"));
         chatlist->addItem(item2);
-
 
         vec.push_back(item);
         chatvec.push_back(chatlist);
@@ -929,8 +927,15 @@ void Client::addGroup_toList(QStringList userList, QString state)
         vec.at(vec.size()-1)->setSelected(true);
         whisperOnClickUsers(vec.at(vec.size()-1));
         on_glass_button_clicked();
-    }
 
+        QByteArray msg;
+        QDataStream out(&msg, QIODevice::WriteOnly);
+        out.setVersion(QDataStream::Qt_5_4);
+
+        out << quint32(0) << QTime::currentTime() << QString("_NEWGROUP_") << groupData.at(0) << groupData.at(1) <<  userList;
+        tcpSocket->write(msg);
+
+    }
 }
 
 void Client::on_actionShowHideWindow_triggered()

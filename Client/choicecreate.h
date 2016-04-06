@@ -19,8 +19,6 @@ public:
 
 private slots:
     void on_next_choice_clicked();
-
-
     void on_close_choice_clicked();
 
 signals:

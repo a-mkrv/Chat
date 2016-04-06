@@ -22,6 +22,7 @@ private:
 
 signals:
     void response(QString);
+
 private slots:
     void on_ok_Button_clicked();
     void on_cancel_Button_clicked();

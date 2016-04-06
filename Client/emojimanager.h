@@ -35,7 +35,6 @@ public:
 private:
     QStringList readText(QString fileName);
     void parseEmoticonList(QStringList content);
-
     QList<Emoji> emojiList;
     QList<EmojiCategory> categoryList;
     QMap<QString, QString> symbolNumberMap;

@@ -115,6 +115,7 @@ public slots:
 signals:
     void find_user_Serv(QString str);
     void setProcentage(int);
+
 private:
     Ui::Client *ui;
     int FriendCount;

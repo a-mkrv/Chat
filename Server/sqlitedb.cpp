@@ -140,6 +140,26 @@ void SQLiteDB::addChatTable(QString who, QString find)
     queryCreate.exec("CREATE TABLE Chat" + who + find + " (Message text NOT NULL, Who text NOT NULL, Time text NOT NULL)");
 }
 
+void SQLiteDB::createGroup(QString group_name, QString group_description, QStringList user_list)
+{
+    QSqlQuery queryCreate(myDB);
+    group_name = group_name.simplified();
+    group_name.replace(" ", "_");
+
+    queryCreate.exec("CREATE TABLE Group" + group_name + " (User text NOT NULL)");
+
+    queryCreate.prepare("INSERT INTO Group" + group_name +  " (User) VALUES (:User)");
+    queryCreate.bindValue(":User", group_description);
+    queryCreate.prepare("INSERT INTO Group" + group_name +  " (User) VALUES (:User)");
+    queryCreate.bindValue(":User", "-----------------");
+
+    for(int i=0; i<user_list.size(); i++)
+    {
+        queryCreate.prepare("INSERT INTO Group" + group_name +  " (User) VALUES (:User)");
+        queryCreate.bindValue(":User", user_list.at(i));
+    }
+}
+
 void SQLiteDB::addMessInChat(QString who, QString find, QString message, QString log)
 {
     QSqlQuery query(myDB);

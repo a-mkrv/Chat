@@ -102,7 +102,7 @@ void Server::getMessage()
     }
 
     in >> time >> typePacket;
-    qDebug() << typePacket;
+
     int command = 0;
     // 0 - пусто,
     // 1 - имя пользователя,
@@ -134,6 +134,9 @@ void Server::getMessage()
 
     else if(typePacket == "_USERINFO_")
         command = 8;
+
+    else if(typePacket == "_NEWGROUP_")
+        command = 9;
 
     switch (command)
     {
@@ -254,6 +257,14 @@ void Server::getMessage()
         client->write(block);
 
         break;
+    }
+    case 9:
+    {
+        QStringList userList;
+        QString groupName, groupDescr;
+
+        in >> groupName >> groupDescr >> userList;
+        sqlitedb->createGroup(groupName, groupDescr, userList);
     }
     }
 }

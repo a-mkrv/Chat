@@ -1528,7 +1528,6 @@ border:none;</string>
      <set>Qt::AlignCenter</set>
     </property>
    </widget>
-   <zorder>widget_2</zorder>
    <zorder>glass_button</zorder>
    <zorder>line</zorder>
    <zorder>userList</zorder>
@@ -1549,6 +1548,7 @@ border:none;</string>
    <zorder>search_list</zorder>
    <zorder>name_label</zorder>
    <zorder>info_user_button</zorder>
+   <zorder>widget_2</zorder>
   </widget>
   <action name="actionShowHideWindow">
    <property name="text">

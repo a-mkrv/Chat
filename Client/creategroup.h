@@ -21,7 +21,6 @@ public:
 private slots:
     void on_create_group_clicked();
     void on_close_groupW_clicked();
-
     void on_group_avatar_clicked();
 
 signals:

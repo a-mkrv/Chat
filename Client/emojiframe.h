@@ -22,7 +22,6 @@ private:
     Ui::EmojiFrame *ui;
     EmojiManager *emojiMan;
     QString m_emojiPath;
-
     void loadComboCategories();
 
 private slots:

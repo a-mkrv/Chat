@@ -18,7 +18,6 @@ SOURCES +=\
     emojiframe.cpp \
     findcontacts.cpp \
     trayicon.cpp \
-    tcpconnect.cpp \
     emojimanager.cpp \
     listwidgetemoji.cpp \
     registration.cpp \
@@ -40,7 +39,6 @@ HEADERS  += client.h \
     emojiframe.h \
     findcontacts.h \
     trayicon.h \
-    tcpconnect.h \
     emojimanager.h \
     listwidgetemoji.h \
     registration.h \

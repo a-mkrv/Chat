@@ -15,7 +15,7 @@ class AboutDialog : public QFrame
 public:
     explicit AboutDialog(QWidget *parent = 0);
     ~AboutDialog();
- Ui::AboutDialog *ui;
+    Ui::AboutDialog *ui;
 private:
 
 };

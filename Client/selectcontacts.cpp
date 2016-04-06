@@ -30,10 +30,6 @@ SelectContacts::SelectContacts(QWidget *parent, QListWidget *list) :
     }
 
     ui->count_member->setText("Add members: 0/" + QString::number(list->count()));
-
-    //userList = new QListWidget;
-    //userList = list;
-    //userList->setItemDelegate(new ChatListDelegate(chatlist, colorchat));
 }
 
 SelectContacts::~SelectContacts()
@@ -62,4 +58,17 @@ void SelectContacts::on_cancel_button_clicked()
     QStringList tmp;
     emit SelectUsersSignal(tmp, "Cancel");
     this->close();
+}
+
+void SelectContacts::on_userList_itemSelectionChanged()
+{
+    // Увеличение счетчика выбранных пользователей для добавления в группу
+
+    int count = 0;
+    for(int i=0; i<ui->userList->count(); i++)
+    {
+        if(ui->userList->item(i)->isSelected())
+            count ++;
+    }
+    ui->count_member->setText("Add members: " + QString::number(count) + "/" + QString::number(ui->userList->count()));
 }

@@ -25,6 +25,7 @@ public:
     bool ok;
     Ui::registration *ui;
     NewContact *reg;
+
 private:
     QPoint m_dragPosition;
     HashMD5 *passhash;
