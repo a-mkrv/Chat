@@ -2,15 +2,28 @@
 #include "ui_selectcontacts.h"
 #include <QDebug>
 
+
+/******************************************************/
+/*                                                    */
+/* Window selection contacts when added to the group. */
+/*      Displaying a list of users from the user      */
+/*       who creates a group and can add people       */
+/*            from your list of friends.              */
+/*                                                    */
+/******************************************************/
+
 SelectContacts::SelectContacts(QWidget *parent, QListWidget *list) :
     QFrame(parent),
     ui(new Ui::SelectContacts)
 {
     ui->setupUi(this);
+
+    //To hide the edges of the form and standard buttons.
     this->setWindowFlags(Qt::Popup | Qt::Window);
     setWindowOpacity(0);
     show();
 
+    // Setting animation when opening window
     QPropertyAnimation* animation = new QPropertyAnimation(this, "windowOpacity");
     animation->setDuration(500);
     animation->setStartValue(0);
@@ -32,11 +45,9 @@ SelectContacts::SelectContacts(QWidget *parent, QListWidget *list) :
     ui->count_member->setText("Add members: 0/" + QString::number(list->count()));
 }
 
-SelectContacts::~SelectContacts()
-{
-    //delete ui;
-}
-
+//////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////
+/// Members are selected. In the main class is sent a signal to create a group.
 void SelectContacts::on_crGroup_button_clicked()
 {
     QStringList userList;
@@ -53,6 +64,9 @@ void SelectContacts::on_crGroup_button_clicked()
     }
 }
 
+//////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////
+/// Cancel group creation. Close window
 void SelectContacts::on_cancel_button_clicked()
 {
     QStringList tmp;
@@ -60,10 +74,11 @@ void SelectContacts::on_cancel_button_clicked()
     this->close();
 }
 
+//////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////
+/// Counter users that are added to the group. On-screen display
 void SelectContacts::on_userList_itemSelectionChanged()
 {
-    // Увеличение счетчика выбранных пользователей для добавления в группу
-
     int count = 0;
     for(int i=0; i<ui->userList->count(); i++)
     {
@@ -71,4 +86,9 @@ void SelectContacts::on_userList_itemSelectionChanged()
             count ++;
     }
     ui->count_member->setText("Add members: " + QString::number(count) + "/" + QString::number(ui->userList->count()));
+}
+
+SelectContacts::~SelectContacts()
+{
+    //delete ui;
 }

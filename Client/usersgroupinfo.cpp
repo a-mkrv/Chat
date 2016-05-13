@@ -3,13 +3,21 @@
 #include "userlistdelegate.h"
 #include <QDebug>
 
+/******************************************************/
+/*                                                    */
+/*           Information window about the user        */
+/*           or the group in which the user is.       */
+/*                                                    */
+/******************************************************/
+
+//////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////
+/// The constructor accepts parameters for the display of one the user (Name, age, city, sex)
 UsersGroupInfo::UsersGroupInfo(QWidget *parent, QStringList *UserInfo) :
     QFrame(parent),
     ui(new Ui::UsersGroupInfo)
 {
-    // Конструктор принимает список данных о пользователе (Имя, Возраст, Город, пол)
-    // Нужно дописать о кол-во файлах и аватар.
-
+    // It is necessary to write about the number of files and the avatar.
     ui->setupUi(this);
     initWindow();
 
@@ -19,12 +27,14 @@ UsersGroupInfo::UsersGroupInfo(QWidget *parent, QStringList *UserInfo) :
     ui->sex->setText("Sex: " + UserInfo->at(1));
 }
 
+
+//////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////
+/// The constructor accepts parameters for displaying information about the group (information about the group, the number of people(list))
 UsersGroupInfo::UsersGroupInfo(QWidget *parent, QString _name, QString _descr, QListWidget *list) :
     QFrame(parent),
     ui(new Ui::UsersGroupInfo)
 {
-    // Этот конструктор принимает инфу о группе, и список пользователей, которые в ней состоят.
-
     ui->setupUi(this);
     initWindow();
 
@@ -43,9 +53,12 @@ UsersGroupInfo::UsersGroupInfo(QWidget *parent, QString _name, QString _descr, Q
 
     ui->userList->setItemDelegate(new UserListDelegate(ui->userList));
 }
-
+//////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////
+/// Setting animation when opening window
 void UsersGroupInfo::initWindow()
 {
+    //To hide the edges of the form and standard buttons.
     this->setWindowFlags(Qt::Popup | Qt::Window);
     setWindowOpacity(0);
     show();

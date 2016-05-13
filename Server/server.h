@@ -14,6 +14,8 @@
 #include "sqlitedb.h"
 #include "user.h"
 
+typedef QList <QPair <QString, QString>> PairStringList;
+
 
 namespace Ui {
 class Server;

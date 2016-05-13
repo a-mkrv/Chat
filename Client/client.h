@@ -37,7 +37,7 @@
 #include <QPair>
 
 typedef QList <QPair <QString, QList<QPair <QString, QString> > > > ChatListVector;
-
+typedef QList <QPair <QString, QString>> PairStringList;
 
 namespace Ui {
 class Client;
@@ -108,6 +108,7 @@ private slots:
     void choice_Window(QString);
     void addGroup_toList(QStringList, QString);
     void on_info_user_button_clicked();
+    void getMessage_UserList(PairStringList &, PairStringList &, ChatListVector &);
 
 public slots:
     void recieveData(QString str, QString pas, QString);

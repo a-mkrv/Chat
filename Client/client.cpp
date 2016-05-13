@@ -162,6 +162,9 @@ void Client::recieveData(QString str, QString pas, QString pubKey)
     }
 }
 
+//////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////
+
 void Client::on_sendMessage_clicked()
 {
     QRegExp rx("<a [^>]*name=\"([^\"]+)\"[^>]*>");      // Регулярные выражения для парсинга смайликов в сообщении
@@ -408,6 +411,15 @@ void Client::AddUser_Chat(QString _username, QString _sex, QList<QPair<QString, 
 
 }
 
+void Client::getMessage_UserList(PairStringList &PublicFriendKey, PairStringList &FriendList, ChatListVector &chatList)
+{
+    for(int i=0; i<PublicFriendKey.size(); i++)
+        pubFriendKey.push_back(qMakePair(PublicFriendKey.at(i).first, PublicFriendKey.at(i).second));
+
+    for(int i=0; i<FriendList.size(); i++)
+        AddUser_Chat(FriendList.at(i).first, FriendList.at(i).second, chatList.at(i).second, i);
+}
+
 void Client::getMessage()
 {
     QString message;
@@ -459,18 +471,12 @@ void Client::getMessage()
 
     case COMMAND::USERLIST:
     {
-        QList <QPair <QString, QString>> FriendKey;
-        QList <QPair<QString, QString> > lst;
+        PairStringList PublicFriendKey;
+        PairStringList FriendList;
         ChatListVector chatList;
 
-        in >> FriendKey >> lst >> chatList;
-
-        for(int i=0; i<FriendKey.size(); i++)
-            pubFriendKey.push_back(qMakePair(FriendKey.at(i).first, FriendKey.at(i).second));
-        //qDebug() << "Key: " << pubFriendKey;
-        for(int i=0; i<lst.size(); i++)
-            AddUser_Chat(lst.at(i).first, lst.at(i).second, chatList.at(i).second, i);
-
+        in >> PublicFriendKey >> FriendList >> chatList;
+        getMessage_UserList(PublicFriendKey, FriendList, chatList);
         break;
     }
 
@@ -712,8 +718,8 @@ void Client::send_personal_data()
         out.setVersion(QDataStream::Qt_5_4);
 
         QString command = "_USR_";
-        QString username = ui->usernameEdit->text();
-        out << quint32(0) << QTime::currentTime() << command << username ;
+        QString UserName = ui->usernameEdit->text();
+        out << quint32(0) << QTime::currentTime() << command << UserName ;
 
         tcpSocket->write(block);
         reg_window->close();
@@ -725,13 +731,13 @@ void Client::onDisconnect()
     personDates = false;
 }
 
-void Client::sendUserCommand(QString command, QString mymsg)
+void Client::sendUserCommand(QString Command, QString myMessage)
 {
     QByteArray msg;
     QDataStream out(&msg, QIODevice::WriteOnly);
     out.setVersion(QDataStream::Qt_5_4);
 
-    out << quint32(0) << QTime::currentTime() << QString("_UCD_") << command << mymsg;
+    out << quint32(0) << QTime::currentTime() << QString("_UCD_") << Command << myMessage;
     tcpSocket->write(msg);
 }
 
@@ -748,9 +754,9 @@ void Client::on_close_setting_button_clicked()
     ui->widget_2->hide();
 }
 
-void Client::whisperOnClick(QListWidgetItem* user)
+void Client::whisperOnClick(QListWidgetItem* User)
 {
-    QString section = user->text();
+    QString section = User->text();
     if (section == "Profile" || section == "Профиль" || section == "Profil")
         ui->stackedWidget->setCurrentIndex(0);
     else if(section=="General" || section == "Основное" || section == "Principal")
@@ -776,15 +782,16 @@ void Client::showEmoji()
 
 void Client::setGlass()
 {
-    QPropertyAnimation* anim = new QPropertyAnimation(ui->glass_button);
+    QPropertyAnimation* animation = new QPropertyAnimation(ui->glass_button);
     QGraphicsOpacityEffect* grEffect = new QGraphicsOpacityEffect(ui->glass_button);
     ui->glass_button->setGraphicsEffect(grEffect);
-    anim->setTargetObject(grEffect);
-    anim->setPropertyName("opacity");
-    anim->setDuration(1000);
-    anim->setStartValue(0.0);
-    anim->setEndValue(1.0);
-    anim->start();
+
+    animation->setTargetObject(grEffect);
+    animation->setPropertyName("opacity");
+    animation->setDuration(1000);
+    animation->setStartValue(0.0);
+    animation->setEndValue(1.0);
+    animation->start();
     ui->glass_button->show();
 }
 
@@ -793,8 +800,8 @@ void Client::showFindCont()
     QPoint p = QCursor::pos();
     findcont->setGeometry(p.x()-200, p.y()-230, 310, 350);
     findcont->show();
-    connect(findcont, SIGNAL(findUsers(QString)), this, SLOT(findtoserv(QString)));
 
+    connect(findcont, SIGNAL(findUsers(QString)), this, SLOT(findtoserv(QString)));
 }
 
 void Client::findtoserv(QString name_user)

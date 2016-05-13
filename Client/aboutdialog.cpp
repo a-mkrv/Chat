@@ -2,6 +2,11 @@
 #include "ui_aboutdialog.h"
 #include <QPropertyAnimation>
 
+/******************************************************/
+/*                                                    */
+/*          Information window about program.         */
+/*                                                    */
+/******************************************************/
 
 AboutDialog::AboutDialog(QWidget *parent) :
     QFrame(parent),

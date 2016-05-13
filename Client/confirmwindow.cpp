@@ -2,6 +2,14 @@
 #include "ui_confirmwindow.h"
 #include <QPropertyAnimation>
 
+/******************************************************/
+/*                                                    */
+/*            The confirmation screen to delete       */
+/*                  a user from the list,             */
+/*              or delete messages from the chat.     */
+/*                                                    */
+/******************************************************/
+
 ConfirmWindow::ConfirmWindow(QWidget *parent, QString _message) :
     QFrame(parent),
     ui(new Ui::ConfirmWindow)
@@ -26,11 +34,17 @@ ConfirmWindow::~ConfirmWindow()
     delete ui;
 }
 
+//////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////
+/// Confirm selection
 void ConfirmWindow::on_ok_Button_clicked()
 {
     emit response(QString("OK"));
 }
 
+//////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////
+/// Cancel selection
 void ConfirmWindow::on_cancel_Button_clicked()
 {
     emit response(QString("Cancel"));

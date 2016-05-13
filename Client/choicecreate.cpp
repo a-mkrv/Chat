@@ -1,6 +1,13 @@
 #include "choicecreate.h"
 #include "ui_choicecreate.h"
 
+/******************************************************/
+/*                                                    */
+/*            Selection window between adding         */
+/*             a contact or group creation            */
+/*                                                    */
+/******************************************************/
+
 ChoiceCreate::ChoiceCreate(QWidget *parent) :
     QFrame(parent),
     ui(new Ui::ChoiceCreate)
@@ -12,6 +19,7 @@ ChoiceCreate::ChoiceCreate(QWidget *parent) :
 
     show();
 
+    // Setting animation when opening window
     QPropertyAnimation* animation = new QPropertyAnimation(this, "windowOpacity");
     animation->setDuration(500);
     animation->setStartValue(0);
@@ -24,6 +32,9 @@ ChoiceCreate::~ChoiceCreate()
     delete ui;
 }
 
+//////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////
+/// Choice of a variant
 void ChoiceCreate::on_next_choice_clicked()
 {
     if(ui->newContact->isChecked())
@@ -39,6 +50,9 @@ void ChoiceCreate::on_next_choice_clicked()
     }
 }
 
+//////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////
+/// Close window
 void ChoiceCreate::on_close_choice_clicked()
 {
     emit choice(QString("close"));

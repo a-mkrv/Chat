@@ -28,6 +28,7 @@ void Server::NewConnect()
     User *newUser = new User;
     newUser->setSocket(tcpServer->nextPendingConnection());
     QTcpSocket *newSocket = newUser->getSocket();                 // Подключение нового клиента
+
     connect(newSocket, SIGNAL(disconnected()), this, SLOT(onDisconnect()));
     connect(newSocket, SIGNAL(readyRead()), this, SLOT(getMessage()));
     clientConnections.append(newUser);
@@ -281,15 +282,14 @@ void Server::NewUser(QTcpSocket *client, QString _user)
     QDataStream out(&block, QIODevice::WriteOnly);
     out.setVersion(QDataStream::Qt_5_4);
 
-    QList <QPair<QString, QString>> lst;
-    ChatListVector chatlst;
+    ChatListVector ChatFriendList;
+    PairStringList FriendsList;
+    PairStringList PublicFriendKeys;
 
-    QList <QPair <QString, QString>> FriendKey;
-    FriendKey = sqlitedb->FriendKeys(UserName);
+    PublicFriendKeys = sqlitedb->FriendKeys(UserName);
+    FriendsList = sqlitedb->FriendList(UserName, ChatFriendList);
 
-    lst = sqlitedb->FriendList(UserName, chatlst);
-
-    out << quint32(0) << QString("FRLST") << FriendKey << lst << chatlst;
+    out << quint32(0) << QString("FRLST") << PublicFriendKeys << FriendsList << ChatFriendList;
     client->write(block);
 
     while (AlreadyName)
@@ -333,10 +333,9 @@ void Server::PrivateMessage(QTcpSocket *client, QString _message, QString _mymsg
         if (i->getSocket() == client)
             fromUser = i;
 
-
     QString recipient = WordList.takeFirst();
-
     QString text;
+
     text.clear();
     for (auto i : WordList)
     {

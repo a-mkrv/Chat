@@ -1,16 +1,34 @@
 #include "chatlistdelegate.h"
 #include <QDebug>
 
+/******************************************************/
+/*                                                    */
+/* ChatListDelegate replaces the standard display a   */
+/*  list of chat and allows combining text and images */
+/*                                                    */
+/******************************************************/
+
 ChatListDelegate::ChatListDelegate(QObject *parent, QString _color)
 {
     color = _color;
 }
 
+//////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////
+/// painter - responsible for drawing.
+/// option  - display area
+/// index   - takes the input parameters:
+//  Sender's name                   - title
+//  Message text                    - description
+//  Definition (who and to whom)    - T/F
+//  Time                            - time
+//  Image                           - mediaIcon (at the transmit / receive file)
+
 void ChatListDelegate::paint ( QPainter * painter, const QStyleOptionViewItem & option, const QModelIndex & index ) const{
     QRect r = option.rect;
 
-    //GET TITLE, DESCRIPTION AND ICON
-    QIcon ic = QIcon(qvariant_cast<QIcon>(index.data(Qt::DecorationRole)));
+    // Get title, description and icon
+    QIcon mediaIcon = QIcon(qvariant_cast<QIcon>(index.data(Qt::DecorationRole)));
     QString title = index.data(Qt::DisplayRole).toString();
     QString description = index.data(Qt::UserRole + 1).toString();
     QString time = index.data(Qt::ToolTipRole).toString();
@@ -21,8 +39,10 @@ void ChatListDelegate::paint ( QPainter * painter, const QStyleOptionViewItem & 
     QString newtime = 0;
 
     tmp_checkitem = time;
-    if(option.state & QStyle::State_Selected){
 
+    // If a message is selected (pressed), changing the color(background) and size of the border area
+    if(option.state & QStyle::State_Selected)
+    {
         QLinearGradient gradientSelected(r.left(),r.top()+3,r.width(),r.height() - 6);
         gradientSelected.setColorAt(0.0, QColor::fromRgb(195,213,255));
         gradientSelected.setColorAt(1.0, QColor::fromRgb(177,215,246));
@@ -31,14 +51,16 @@ void ChatListDelegate::paint ( QPainter * painter, const QStyleOptionViewItem & 
 
         if(tmp_checkitem!=checkitem)
             if(time.size()>14)
-            {    checkitem = time;
+            {   checkitem = time;
                 newtime = checkitem.left(14) + "    Start Download";
             }
 
     } else {
 
-        //BACKGROUND
+        //Background
         painter->setRenderHint(QPainter::Antialiasing);
+
+        // Setting the right message, indents
 
         //painter->setPen("#dbdcff" );
         if(title.size() >= 25 && title.size() <=35)
@@ -54,11 +76,11 @@ void ChatListDelegate::paint ( QPainter * painter, const QStyleOptionViewItem & 
 
         painter->setPen(Qt::white);
 
-        // Установка окна для сообщения.
-
+        // Setting the message box.
         if(description=="FROM")
         {
-            //painter->setBrush(QColor("#ffffff"));
+            // #eeefff - Pale blue  (From message)
+            // #effdde - Pale green (To message)
             painter->setBrush(QColor("#eeefff"));
             painter->drawRoundedRect(r.left()+2, r.top()+3, SizeMesBox, r.height() - 6, 5, 5);
         }
@@ -82,15 +104,14 @@ void ChatListDelegate::paint ( QPainter * painter, const QStyleOptionViewItem & 
     }
 
 
-    // Ужасный код, надо переписывать.. но, пока работает :D
-
     painter->setPen( Qt::black );
     if(description=="FROM" || description == "FROMF")
     {
+        //  The offset for the installation image
         int imageSpace = 10;
-        if (!ic.isNull()) {
+        if (!mediaIcon.isNull()) {
             r = option.rect.adjusted(2, 10, -1, -10);
-            ic.paint(painter, r, Qt::AlignVCenter|Qt::AlignLeft);
+            mediaIcon.paint(painter, r, Qt::AlignVCenter|Qt::AlignLeft);
             imageSpace = 85;
         }
 
@@ -98,6 +119,7 @@ void ChatListDelegate::paint ( QPainter * painter, const QStyleOptionViewItem & 
         r = option.rect.adjusted(imageSpace, 10, -10, -27);
         painter->setFont( QFont( "Lucida Grande", 11, QFont::Normal ) );
         painter->drawText(r.left(), r.top(), r.width(), r.height(), Qt::AlignTop|Qt::AlignLeft, title, &r);
+
         // TIME
         r = option.rect.adjusted(imageSpace, 10, -10, -27);
         painter->setFont( QFont( "Lucida Grande", 8, QFont::Normal ) );
@@ -106,9 +128,9 @@ void ChatListDelegate::paint ( QPainter * painter, const QStyleOptionViewItem & 
     else if (description == "TO" || description == "TOF")
     {
         int imageSpace = 10;
-        if (!ic.isNull()) {
+        if (!mediaIcon.isNull()) {
             r = option.rect.adjusted(10, 10, -10, -10);
-            ic.paint(painter, r, Qt::AlignTop|Qt::AlignRight);
+            mediaIcon.paint(painter, r, Qt::AlignTop|Qt::AlignRight);
             imageSpace = 85;
         }
 
@@ -138,6 +160,9 @@ void ChatListDelegate::paint ( QPainter * painter, const QStyleOptionViewItem & 
     this->sizeHint(option, index);
 }
 
+//////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////
+/// Set the message block size
 QSize ChatListDelegate::sizeHint ( const QStyleOptionViewItem & option, const QModelIndex & index ) const{
     return QSize(200, 70); // very dumb value
 }

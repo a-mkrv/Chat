@@ -24,9 +24,9 @@ void RSACrypt::generationKeys()
         SimpleNumber(q_simple, 1);
 
         module = p_simple*q_simple;
-    } while(module<1500);
+    } while(module < 1500);
 
-    f = (p_simple-1) * (q_simple-1);
+    f = (p_simple - 1) * (q_simple - 1);
 
     for (;;)
     {
@@ -79,7 +79,7 @@ QString RSACrypt::encodeText(QString text, int _e, int _module)
     QString tmpText;
     for(int i=0;i<EnTextSize;i++){
         EncodeInt[i]=modExp(EncodeText[i].unicode(), _e, _module);
-        tmpText.append(QString::number(EncodeInt[i])+" ");
+        tmpText.append(QString::number(EncodeInt[i]) + " ");
     }
     return tmpText;
 }

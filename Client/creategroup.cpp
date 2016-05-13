@@ -1,16 +1,27 @@
 #include "creategroup.h"
 #include "ui_creategroup.h"
 
+/******************************************************/
+/*                                                    */
+/*                 Window create a group              */
+/*           (1 stage - without adding users).        */
+/*       The group name, avatar and description.      */
+/*                                                    */
+/******************************************************/
+
+
 CreateGroup::CreateGroup(QWidget *parent) :
     QFrame(parent),
     ui(new Ui::CreateGroup)
 {
     ui->setupUi(this);
 
+    //To hide the edges of the form and standard buttons.
     this->setWindowFlags(Qt::Popup | Qt::Window);
     setWindowOpacity(0);
     show();
 
+    //Setting animation when opening window
     QPropertyAnimation* animation = new QPropertyAnimation(this, "windowOpacity");
     animation->setDuration(500);
     animation->setStartValue(0);
@@ -19,11 +30,9 @@ CreateGroup::CreateGroup(QWidget *parent) :
 
 }
 
-CreateGroup::~CreateGroup()
-{
-    //delete ui;
-}
-
+//////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////
+///If added to the group name and description, then proceed to add users (sekestkontakt class), the signal is sent.
 void CreateGroup::on_create_group_clicked()
 {
     if(!ui->g_name->text().isEmpty() && !ui->g_description->text().isEmpty())
@@ -33,12 +42,18 @@ void CreateGroup::on_create_group_clicked()
     }
 }
 
+//////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////
+/// Cancel group creation. Close window
 void CreateGroup::on_close_groupW_clicked()
 {
     emit GroupSignal(QString("Close"), 0, 0, 0);
     this->close();
 }
 
+//////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////
+/// Adding an avatar for the group.
 void CreateGroup::on_group_avatar_clicked()
 {
     QString files = QFileDialog::getOpenFileName(this, tr("Select Images"), "" , tr("Images (*.jpg *jpeg *.png)"));
@@ -48,6 +63,7 @@ void CreateGroup::on_group_avatar_clicked()
         QPixmap pixmap(files);
         bool vol = true;
 
+        // Sometimes it badly works and the window disappears, to fix a bug.
         if(vol)
         {
             QIcon ButtonIcon(pixmap);
@@ -62,4 +78,9 @@ void CreateGroup::on_group_avatar_clicked()
             //Error
         }
     }
+}
+
+CreateGroup::~CreateGroup()
+{
+    //delete ui;
 }
