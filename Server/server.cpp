@@ -444,6 +444,11 @@ void Server::SendingFile(QTcpSocket *client)
 }
 
 
+//void Server::CreateAvatar(QString uName)
+//{
+//    QString letter = uName.at(0);
+
+//}
 
 void Server::LogIn(QTcpSocket *client, QString &U, QString &C, QString &P, QString &A, QString &S, QString &PubK, QString &Salt)
 {
@@ -464,7 +469,6 @@ void Server::LogIn(QTcpSocket *client, QString &U, QString &C, QString &P, QStri
         sqlitedb->AddContact(U, S, A.toInt(), C, P, PubK, Salt);
         ui->chatDialog->addItem(timeconnect() + " - User registration: " + U);
         qDebug() << "Новый пользователь: " << U;
-
 
         out  << QString("Welcome!");
         client->write(block);

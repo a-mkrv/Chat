@@ -289,7 +289,7 @@ QPushButton:hover{background: #f6f4ff; border:none;}</string>
     <string/>
    </property>
    <property name="pixmap">
-    <pixmap resource="image.qrc">:/Avatars/Resource/Avatars/4.jpg</pixmap>
+    <pixmap resource="resource.qrc">:/Avatars/Resource/Avatars/4.jpg</pixmap>
    </property>
    <property name="scaledContents">
     <bool>true</bool>
@@ -342,7 +342,7 @@ background-color: rgb(255, 255, 255, 0);</string>
   <zorder>name_label</zorder>
  </widget>
  <resources>
-  <include location="image.qrc"/>
+  <include location="resource.qrc"/>
  </resources>
  <connections/>
 </ui>

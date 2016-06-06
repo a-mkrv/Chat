@@ -41,8 +41,8 @@
        <string/>
       </property>
       <property name="icon">
-       <iconset resource="image.qrc">
-        <normaloff>:/new/prefix1/Resource/group_avatar.png</normaloff>:/new/prefix1/Resource/group_avatar.png</iconset>
+       <iconset resource="resource.qrc">
+        <normaloff>:/Icons/Resource/Icon/ic_group_avatar.png</normaloff>:/Icons/Resource/Icon/ic_group_avatar.png</iconset>
       </property>
       <property name="iconSize">
        <size>
@@ -177,7 +177,7 @@ QPushButton:hover{background: #f6f4ff; border:none;}</string>
   </widget>
  </widget>
  <resources>
-  <include location="image.qrc"/>
+  <include location="resource.qrc"/>
  </resources>
  <connections/>
 </ui>

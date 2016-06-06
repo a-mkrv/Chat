@@ -1,32 +1,105 @@
 #include "registration.h"
 #include "ui_registration.h"
+#include <QTime>
 
-registration::registration(QWidget *parent) :
+Registration::Registration(QWidget *parent) :
     QWidget(parent),
-    ui(new Ui::registration)
+    ui(new Ui::Registration)
 {
+    this->setWindowFlags(Qt::Window | Qt::FramelessWindowHint | Qt::CustomizeWindowHint);
+    socket = new QTcpSocket();
+    rsacrypt = new RSACrypt();
+
     ui->setupUi(this);
-    socket = new QTcpSocket;
-    reg = new NewContact(parent);
-    passhash = new HashMD5;
+    ui->Error_label->hide();
+    ui->Error_label_2->hide();
+
+    rsacrypt->generationKeys();
+
+    connect(socket, SIGNAL(readyRead()), this, SLOT(getMessagee()));
+}
+
+void Registration::getMessagee()
+{
+    QString  received_message;
+
+    QDataStream in(socket);
+    in.setVersion(QDataStream::Qt_5_4);
+    in >> received_message;
+
+    if(received_message == "PassEmpty")
+    {
+        ui->Error_label->hide();
+        ui->Error_label_2->show();
+    }
+    else if(received_message == "Already!")
+    {
+        ui->Error_label_2->hide();
+        ui->Error_label->show();
+    }
+
+    else if(received_message == "Welcome!")
+    {
+        QString nameKey = QDir::homePath() + "/Whisper Close Key/";
+        QFile *receiveFile = new QFile(nameKey + ui->enter_user_name->text()+".txt");
+
+        QTextStream out(receiveFile);
+        receiveFile->open(QIODevice::Append);
+        out << QString::number(rsacrypt->getD()) + " " + QString::number(rsacrypt->getModule());
+
+        receiveFile->close();
+        on_come_back_clicked();
+    }
+}
+
+void Registration::on_accept_button_clicked()
+{
+    if(ui->enter_password->text().isEmpty())
+    {
+        ui->Error_label_2->show();
+        return;
+    }
+    else if(ui->password_confirm->text().isEmpty())
+    {
+        ui->Error_label_2->show();
+        ui->Error_label_2->setText("Confirm pass is empty");
+        return;
+    }
+    else if(ui->password_confirm->text() != ui->enter_password->text())
+    {
+        ui->Error_label_2->show();
+        ui->Error_label_2->setText("Passwords are different");
+        return;
+    }
 
     socket->abort();
     socket->connectToHost("127.0.0.1", 55155);
 
-    connect(ui->pushButton, SIGNAL(clicked()), this, SLOT(onButtonSendUser()));
-    connect(socket, SIGNAL(readyRead()), this, SLOT(getMessage()));
-    connect(socket, SIGNAL(disconnected()), this, SLOT(close()));
-    connect(reg, SIGNAL(sendData(QString)), this, SLOT(recieveData(QString)));
+    QByteArray block;
+    QDataStream out(&block, QIODevice::WriteOnly);
+    out.setVersion(QDataStream::Qt_5_4);
 
-    ui->error_label->hide();
-    ui->errorconnect_label->hide();
-    ui->pass_enter->setEchoMode(QLineEdit::Password);
+    // use password = md5(md5(password) + salt)
 
-    this->setWindowFlags(Qt::Window | Qt::FramelessWindowHint | Qt::CustomizeWindowHint);
-    this->show();
+    QString passmd5 = hashmd5->hashSumPass(ui->enter_password->text());
+    QString salt = hashmd5->saltGeneration();
+    passmd5 = hashmd5->hashSumPass(passmd5 + salt);
+
+    out << quint32(0)
+        << QTime::currentTime()
+        << QString("_REG_")
+        << ui->enter_user_name->text()
+        << ui->enter_city->text()
+        << passmd5
+        << ui->age->text()
+        << ui->sex_person->currentText()
+        << QString::number(rsacrypt->getE()) + "  " + QString::number(rsacrypt->getModule())
+        << salt ;
+
+    socket->write(block);
 }
 
-void registration::mouseMoveEvent(QMouseEvent *event)
+void Registration::mouseMoveEvent(QMouseEvent *event)
 {
     if (event->buttons() && Qt::LeftButton) {
         move(event->globalPos() - m_dragPosition);
@@ -34,7 +107,7 @@ void registration::mouseMoveEvent(QMouseEvent *event)
     }
 }
 
-void registration::mousePressEvent(QMouseEvent *event)
+void Registration::mousePressEvent(QMouseEvent *event)
 {
     if (event->button() == Qt::LeftButton) {
         m_dragPosition = event->globalPos() - frameGeometry().topLeft();
@@ -42,92 +115,29 @@ void registration::mousePressEvent(QMouseEvent *event)
     }
 }
 
-void registration::onButtonSendUser()
+Registration::~Registration()
 {
-    emit sendFindContact(ui->pass_enter->text().simplified());
+    delete ui;
 }
 
-void registration::on_pushButton_clicked()
+void Registration::on_come_back_clicked()
 {
-    if(socket->state()!=QAbstractSocket::ConnectedState)
-        ui->errorconnect_label->show();
-    else
-        ui->errorconnect_label->hide();
+    ui->enter_city->setText("");
+    ui->enter_password->setText("");
+    ui->enter_user_name->setText("");
+    ui->sex_person->setCurrentIndex(0);
+    ui->age->setValue(0);
 
-    QString login = ui->username_enter->text().simplified();
-    QString password = passhash->hashSumPass(ui->pass_enter->text().simplified());
-
-    if(!login.isEmpty() && !ui->pass_enter->text().simplified().isEmpty())
-    {
-        QByteArray block;
-        QDataStream out(&block, QIODevice::WriteOnly);
-        out.setVersion(QDataStream::Qt_5_4);
-
-        out << quint32(0) << QTime::currentTime() << QString("_LOG_IN_") << login << password;
-        socket->write(block);
-    }
+    emit sendData(QString("Show"));
+    this->close();
 }
 
-
-void registration::getMessage()
-{
-    QString received_message, tmp;
-    QDataStream in(socket);
-    in.setVersion(QDataStream::Qt_5_4);
-    in  >> received_message >> tmp;
-
-    qDebug() << "Get" << received_message;
-    if(received_message == "Error_Login_Pass")
-        ui->error_label->show();
-
-    else if(received_message == "LogInOK!" && !ui->username_enter->text().simplified().isEmpty() && !ui->pass_enter->text().simplified().isEmpty())
-    {
-        emit sendData(ui->username_enter->text().simplified(), ui->pass_enter->text().simplified(), tmp);
-        socket->close();
-        socket->disconnectFromHost();
-    }
-}
-
-
-void registration::keyReleaseEvent(QKeyEvent *event)
-{
-    switch(event->key()) {
-    case Qt::Key_Return:
-        on_pushButton_clicked();
-        break;
-    }
-}
-
-void registration::on_reg_button_clicked()
-{
-    if(socket->state()!=QAbstractSocket::ConnectedState)
-        ui->errorconnect_label->show();
-    else
-    {
-        ui->errorconnect_label->hide();
-        reg->show();
-        this->hide();
-    }
-}
-
-
-void registration::recieveData(QString str)
-{
-    if(str=="Show")
-        this->show();
-}
-
-void registration::on_closeregBut_clicked()
+void Registration::on_close_window_clicked()
 {
     this->close();
 }
 
-void registration::on_minimazregBut_clicked()
+void Registration::on_turn_window_clicked()
 {
     this->showMinimized();
-}
-
-registration::~registration()
-{
-    delete ui;
 }

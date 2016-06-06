@@ -52,7 +52,7 @@ Client::Client(QWidget *parent) : QMainWindow(parent), download_path("(C:/...)")
     frameEmoji      = new EmojiFrame();
     emojiMan        = new EmojiManager();
     notice          = new Notification();
-    reg_window      = new registration();
+    authorization   = new Authorization();
     trayIcon        = new TrayIcon(this);
     stackchat       = new QStackedWidget;
     trayIconMenu    = new QMenu(this);
@@ -81,7 +81,7 @@ Client::Client(QWidget *parent) : QMainWindow(parent), download_path("(C:/...)")
     trayIcon->hide();
 
     connect(trayIcon, SIGNAL(activated(QSystemTrayIcon::ActivationReason)), this, SLOT(iconActivated(QSystemTrayIcon::ActivationReason)));
-    connect(reg_window, SIGNAL(sendData(QString, QString, QString)), this, SLOT(recieveData(QString, QString, QString)));
+    connect(authorization, SIGNAL(sendData(QString, QString, QString)), this, SLOT(recieveData(QString, QString, QString)));
     connect(frameEmoji, SIGNAL(sendEmoji(QString)), this, SLOT(insertEmoticon(QString)));
 
     connect(tcpSocket, SIGNAL(readyRead()), this, SLOT(getMessage()));
@@ -132,7 +132,7 @@ void Client::recieveData(QString str, QString pas, QString pubKey)
         name.replace(" ", "_");
         ui->usernameEdit->setText(name);
 
-        QDir keyDir = QDir::homePath() + "/Whisper Close Key/";
+        QDir keyDir = QDir::homePath() + "/WhisperServer/Whisper Close Key/";
         QLineEdit m_ptxtMask("*.txt");
         QStringList listFiles = keyDir.entryList(m_ptxtMask.text().split(" "), QDir::Files);
         myPublicKey = pubKey;
@@ -140,7 +140,7 @@ void Client::recieveData(QString str, QString pas, QString pubKey)
         for(int i=0; i<listFiles.size(); i++)
             if(listFiles.at(i)==name+".txt")
             {
-                QFile myKey(QDir::homePath() + "/Whisper Close Key/" + name + ".txt");
+                QFile myKey(QDir::homePath() + "/WhisperServer/Whisper Close Key/" + name + ".txt");
                 myKey.open(QIODevice::ReadOnly);
                 myPrivateKey = myKey.readAll();
                 break;
@@ -210,7 +210,6 @@ void Client::on_sendMessage_clicked()
         {
             if(RecName==pubFriendKey.at(i).first)
             {
-
                 QString user_key = pubFriendKey.at(i).second;
                 qDebug() << "Ключ друга: " << pubFriendKey.at(i).first << user_key;
                 QStringList _key = user_key.split(" ", QString::SkipEmptyParts);
@@ -722,7 +721,7 @@ void Client::send_personal_data()
         out << quint32(0) << QTime::currentTime() << command << UserName ;
 
         tcpSocket->write(block);
-        reg_window->close();
+        authorization->close();
     }
 }
 

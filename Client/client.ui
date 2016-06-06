@@ -14,8 +14,8 @@
    <string>Whisper</string>
   </property>
   <property name="windowIcon">
-   <iconset resource="image.qrc">
-    <normaloff>:/new/prefix1/Resource/logo.png</normaloff>:/new/prefix1/Resource/logo.png</iconset>
+   <iconset resource="resource.qrc">
+    <normaloff>:/Icons/Resource/Icon/ic_LOGO_64.png</normaloff>:/Icons/Resource/Icon/ic_LOGO_64.png</iconset>
   </property>
   <property name="styleSheet">
    <string notr="true"/>
@@ -91,8 +91,8 @@ background-color: rgb(74, 107, 142);</string>
       <string/>
      </property>
      <property name="icon">
-      <iconset resource="image.qrc">
-       <normaloff>:/new/prefix1/Resource/smiling.png</normaloff>:/new/prefix1/Resource/smiling.png</iconset>
+      <iconset resource="resource.qrc">
+       <normaloff>:/Icons/Resource/Icon/ic_emoji.png</normaloff>:/Icons/Resource/Icon/ic_emoji.png</iconset>
      </property>
      <property name="iconSize">
       <size>
@@ -143,8 +143,8 @@ background-color: rgb(74, 107, 142);</string>
       <string/>
      </property>
      <property name="icon">
-      <iconset resource="image.qrc">
-       <normaloff>:/new/prefix1/Resource/origami28.png</normaloff>:/new/prefix1/Resource/origami28.png</iconset>
+      <iconset resource="resource.qrc">
+       <normaloff>:/Icons/Resource/Icon/ic_send_mess.png</normaloff>:/Icons/Resource/Icon/ic_send_mess.png</iconset>
      </property>
      <property name="iconSize">
       <size>
@@ -208,8 +208,8 @@ background-color: rgb(74, 107, 142);</string>
       <string/>
      </property>
      <property name="icon">
-      <iconset resource="image.qrc">
-       <normaloff>:/new/prefix1/Resource/sendfile.png</normaloff>:/new/prefix1/Resource/sendfile.png</iconset>
+      <iconset resource="resource.qrc">
+       <normaloff>:/Icons/Resource/Icon/ic_send_file.png</normaloff>:/Icons/Resource/Icon/ic_send_file.png</iconset>
      </property>
      <property name="iconSize">
       <size>
@@ -384,8 +384,8 @@ background-color: rgb(99, 137, 168);
       <string/>
      </property>
      <property name="icon">
-      <iconset resource="image.qrc">
-       <normaloff>:/new/prefix1/Resource/double78.png</normaloff>:/new/prefix1/Resource/double78.png</iconset>
+      <iconset resource="resource.qrc">
+       <normaloff>:/Icons/Resource/Icon/ic_back_2.png</normaloff>:/Icons/Resource/Icon/ic_back_2.png</iconset>
      </property>
      <property name="iconSize">
       <size>
@@ -477,8 +477,8 @@ background-color: rgb(99, 137, 168);
        </brush>
       </property>
       <property name="icon">
-       <iconset resource="image.qrc">
-        <normaloff>:/new/prefix1/Resource/profile5.png</normaloff>:/new/prefix1/Resource/profile5.png</iconset>
+       <iconset resource="resource.qrc">
+        <normaloff>:/Icons/Resource/Icon/ic_profile_set.png</normaloff>:/Icons/Resource/Icon/ic_profile_set.png</iconset>
       </property>
      </item>
      <item>
@@ -492,8 +492,8 @@ background-color: rgb(99, 137, 168);
        </font>
       </property>
       <property name="icon">
-       <iconset resource="image.qrc">
-        <normaloff>:/new/prefix1/Resource/squares110.png</normaloff>:/new/prefix1/Resource/squares110.png</iconset>
+       <iconset resource="resource.qrc">
+        <normaloff>:/Icons/Resource/Icon/ic_general_set.png</normaloff>:/Icons/Resource/Icon/ic_general_set.png</iconset>
       </property>
      </item>
      <item>
@@ -507,8 +507,8 @@ background-color: rgb(99, 137, 168);
        </font>
       </property>
       <property name="icon">
-       <iconset resource="image.qrc">
-        <normaloff>:/new/prefix1/Resource/write50.png</normaloff>:/new/prefix1/Resource/write50.png</iconset>
+       <iconset resource="resource.qrc">
+        <normaloff>:/Icons/Resource/Icon/ic_chat_set.png</normaloff>:/Icons/Resource/Icon/ic_chat_set.png</iconset>
       </property>
      </item>
      <item>
@@ -522,8 +522,8 @@ background-color: rgb(99, 137, 168);
        </font>
       </property>
       <property name="icon">
-       <iconset resource="image.qrc">
-        <normaloff>:/new/prefix1/Resource/globe grid.png</normaloff>:/new/prefix1/Resource/globe grid.png</iconset>
+       <iconset resource="resource.qrc">
+        <normaloff>:/Icons/Resource/Icon/ic_network_set.png</normaloff>:/Icons/Resource/Icon/ic_network_set.png</iconset>
       </property>
      </item>
     </widget>
@@ -678,7 +678,7 @@ background-color: rgb(99, 137, 168);</string>
       <string notr="true">background-color: rgb(255, 255, 255);</string>
      </property>
      <property name="currentIndex">
-      <number>2</number>
+      <number>0</number>
      </property>
      <widget class="QWidget" name="page">
       <widget class="QGroupBox" name="groupBox">
@@ -749,7 +749,7 @@ background-color: rgb(99, 137, 168);</string>
          <string/>
         </property>
         <property name="pixmap">
-         <pixmap resource="image.qrc">:/Avatars/Resource/Avatars/5.jpg</pixmap>
+         <pixmap resource="resource.qrc">:/Avatars/Resource/Avatars/5.jpg</pixmap>
         </property>
         <property name="scaledContents">
          <bool>true</bool>
@@ -1200,8 +1200,8 @@ border:none;</string>
      <string/>
     </property>
     <property name="icon">
-     <iconset resource="image.qrc">
-      <normaloff>:/new/prefix1/Resource/square292.png</normaloff>:/new/prefix1/Resource/square292.png</iconset>
+     <iconset resource="resource.qrc">
+      <normaloff>:/Icons/Resource/Icon/ic_create.png</normaloff>:/Icons/Resource/Icon/ic_create.png</iconset>
     </property>
     <property name="iconSize">
      <size>
@@ -1231,8 +1231,8 @@ border:none;</string>
      <string/>
     </property>
     <property name="icon">
-     <iconset resource="image.qrc">
-      <normaloff>:/new/prefix1/Resource/tool257.png</normaloff>:/new/prefix1/Resource/tool257.png</iconset>
+     <iconset resource="resource.qrc">
+      <normaloff>:/Icons/Resource/Icon/ic_setting_2.png</normaloff>:/Icons/Resource/Icon/ic_setting_2.png</iconset>
     </property>
     <property name="iconSize">
      <size>
@@ -1324,8 +1324,8 @@ color: rgb(255, 255, 255);</string>
      <string/>
     </property>
     <property name="icon">
-     <iconset resource="image.qrc">
-      <normaloff>:/new/prefix1/Resource/close34.png</normaloff>:/new/prefix1/Resource/close34.png</iconset>
+     <iconset resource="resource.qrc">
+      <normaloff>:/Icons/Resource/Icon/ic_close_white.png</normaloff>:/Icons/Resource/Icon/ic_close_white.png</iconset>
     </property>
     <property name="flat">
      <bool>true</bool>
@@ -1344,8 +1344,8 @@ color: rgb(255, 255, 255);</string>
      <string/>
     </property>
     <property name="icon">
-     <iconset resource="image.qrc">
-      <normaloff>:/new/prefix1/Resource/minbtn.png</normaloff>:/new/prefix1/Resource/minbtn.png</iconset>
+     <iconset resource="resource.qrc">
+      <normaloff>:/Icons/Resource/Icon/ic_turn_white.png</normaloff>:/Icons/Resource/Icon/ic_turn_white.png</iconset>
     </property>
     <property name="flat">
      <bool>true</bool>
@@ -1364,8 +1364,8 @@ color: rgb(255, 255, 255);</string>
      <string/>
     </property>
     <property name="icon">
-     <iconset resource="image.qrc">
-      <normaloff>:/new/prefix1/Resource/aboutbtn.png</normaloff>:/new/prefix1/Resource/aboutbtn.png</iconset>
+     <iconset resource="resource.qrc">
+      <normaloff>:/Icons/Resource/Icon/ic_about.png</normaloff>:/Icons/Resource/Icon/ic_about.png</iconset>
     </property>
     <property name="flat">
      <bool>true</bool>
@@ -1392,7 +1392,7 @@ color: rgb(255, 255, 255);</string>
      <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:7.8pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:10pt;&quot;&gt;Please select a chat to start messaging  &lt;/span&gt;&lt;/p&gt;
 &lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:10pt;&quot;&gt;or add new friends to communicate&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
     </property>
@@ -1437,7 +1437,7 @@ p, li { white-space: pre-wrap; }
      <string/>
     </property>
     <property name="pixmap">
-     <pixmap resource="image.qrc">:/new/prefix1/Resource/magnifying glass57.png</pixmap>
+     <pixmap resource="resource.qrc">:/Icons/Resource/Icon/ic_search.png</pixmap>
     </property>
     <property name="scaledContents">
      <bool>false</bool>
@@ -1563,7 +1563,7 @@ border:none;</string>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <resources>
-  <include location="image.qrc"/>
+  <include location="resource.qrc"/>
  </resources>
  <connections/>
 </ui>

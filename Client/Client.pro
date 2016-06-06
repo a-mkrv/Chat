@@ -20,8 +20,6 @@ SOURCES +=\
     trayicon.cpp \
     emojimanager.cpp \
     listwidgetemoji.cpp \
-    registration.cpp \
-    newcontact.cpp \
     chatlistdelegate.cpp \
     aboutdialog.cpp \
     notification.cpp \
@@ -33,7 +31,9 @@ SOURCES +=\
     userlistdelegate.cpp \
     choicecreate.cpp \
     selectcontacts.cpp \
-    usersgroupinfo.cpp
+    usersgroupinfo.cpp \
+    authorization.cpp \
+    registration.cpp
 
 HEADERS  += client.h \
     emojiframe.h \
@@ -41,8 +41,6 @@ HEADERS  += client.h \
     trayicon.h \
     emojimanager.h \
     listwidgetemoji.h \
-    registration.h \
-    newcontact.h \
     chatlistdelegate.h \
     aboutdialog.h \
     notification.h \
@@ -53,21 +51,23 @@ HEADERS  += client.h \
     userlistdelegate.h \
     choicecreate.h \
     selectcontacts.h \
-    usersgroupinfo.h
+    usersgroupinfo.h \
+    authorization.h \
+    registration.h
 
 FORMS    += client.ui \
     emojiframe.ui \
     findcontacts.ui \
-    registration.ui \
-    newcontact.ui \
     aboutdialog.ui \
     confirmwindow.ui \
     creategroup.ui \
     choicecreate.ui \
     selectcontacts.ui \
-    usersgroupinfo.ui
+    usersgroupinfo.ui \
+    authorization.ui \
+    registration.ui
 
 RESOURCES += \
-    image.qrc
+    resource.qrc
 
 

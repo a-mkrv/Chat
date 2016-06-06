@@ -13,7 +13,7 @@
 #include "emojiframe.h"
 #include "findcontacts.h"
 #include "trayicon.h"
-#include "registration.h"
+#include "authorization.h"
 #include <QtConcurrent/QtConcurrent>
 #include <QStackedWidget>
 #include "listwidgetemoji.h"
@@ -132,7 +132,7 @@ private:
     EmojiFrame *frameEmoji;
     findcontacts *findcont;
     AboutDialog *aboutdialog;
-    registration *reg_window;
+    Authorization *authorization;
     ConfirmWindow *conf_message;
     CreateGroup *create_group;
     ChoiceCreate *choice_window;

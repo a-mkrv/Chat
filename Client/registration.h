@@ -1,57 +1,49 @@
-#ifndef REGISTRATION_H
-#define REGISTRATION_H
+#ifndef NEWCONTACT_H
+#define NEWCONTACT_H
 
-#include <QDialog>
-#include <QKeyEvent>
+#include <QWidget>
 #include <QTcpSocket>
-#include "newcontact.h"
-#include <QTime>
-
+#include <QMouseEvent>
+#include <QFile>
+#include <QDir>
+#include <QTextStream>
+#include "rsacrypt.h"
+#include "hashmd5.h"
 
 namespace Ui {
-class registration;
+class Registration;
 }
 
-class registration : public QWidget
+class Registration : public QWidget
 {
     Q_OBJECT
 
 public:
-    explicit registration(QWidget *parent = 0);
-    virtual void keyPressEvent(QKeyEvent* event) { key = event->key(); }
-    virtual void keyReleaseEvent(QKeyEvent* event);
-
-    ~registration();
-    bool ok;
-    Ui::registration *ui;
-    NewContact *reg;
-
-private:
-    QPoint m_dragPosition;
-    HashMD5 *passhash;
-
-    int key;
+    explicit Registration(QWidget *parent = 0);
+    ~Registration();
 
 protected:
-    QTcpSocket *socket;
     void mouseMoveEvent(QMouseEvent *event);
     void mousePressEvent(QMouseEvent *event);
 
+private slots:
+    void on_accept_button_clicked();
+    void on_come_back_clicked();
+    void on_close_window_clicked();
+    void on_turn_window_clicked();
+
+    void getMessagee();
+
 signals:
-    void sendData(QString str, QString pas, QString pubKey);
-    void sendFindContact(QString str);
+    void sendData(QString str);
 
+private:
+    Ui::Registration *ui;
 
-private slots:
-    void onButtonSendUser();
-    void recieveData(QString str);
-    void getMessage();
-
-private slots:
-    void on_pushButton_clicked();
-    void on_reg_button_clicked();
-    void on_closeregBut_clicked();
-    void on_minimazregBut_clicked();
+    HashMD5 *hashmd5;
+    RSACrypt *rsacrypt;
+    QTcpSocket *socket;
+    QPoint m_dragPosition;
 };
 
-#endif // REGISTRATION_H
+#endif // NEWCONTACT_H
