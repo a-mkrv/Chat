@@ -80,6 +80,11 @@ void CreateGroup::on_group_avatar_clicked()
     }
 }
 
+void CreateGroup::set_lang(QMap<QString, QString> & lan_dict)
+{
+    ui->
+}
+
 CreateGroup::~CreateGroup()
 {
     //delete ui;

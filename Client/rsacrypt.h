@@ -19,7 +19,6 @@ private:
     int modExp(long long,  long long, long long );
     int NOD(int p, int q);
 
-
 public:
     RSACrypt();
     QString encodeText(QString, int, int);

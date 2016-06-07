@@ -1,0 +1,199 @@
+<?xml version = "1.0" encoding="UTF-8" ?>
+<RU_Language>
+	<Screen w="login">	
+		<item>
+			<line>username_enter</line>
+			<value>Логин</value>
+		</item>
+		<item>
+			<line>pass_enter</line>
+			<value>Пароль</value>
+		</item>
+		<item>
+			<line>error_label</line>
+			<value>Неправильный логин или пароль</value>
+		</item>
+		<item>
+			<line>reg_button</line>
+			<value>Регистрация</value>
+		</item>
+		<item>
+			<line>log_in</line>
+			<value>Вход</value>
+		</item>
+		<item>
+			<line>errorconnect_label</line>
+			<value>Ошибка соединения</value>
+		</item>
+	</Screen>
+
+	<Screen w="register">
+		<item>
+			<line>register_2</line>
+			<value>РЕГИСТРАЦИЯ</value>
+		</item>	
+		<item>
+			<line>username</line>
+			<value>Ваше имя:</value>
+		</item>
+		<item>
+			<line>sex</line>
+			<value>Пол:</value>
+		</item>
+		<item>
+			<line>sex_person</line>
+			<value>Неизвестно, мужчина, женщина</value>
+		</item>
+		<item>
+			<line>age</line>
+			<value>Возраст:</value>
+		</item>
+		<item>
+			<line>city</line>
+			<value>Город:</value>
+		</item>
+		<item>
+			<line>password</line>
+			<value>Пароль:</value>
+		</item>
+		<item>
+			<line>confirm</line>
+			<value>Подтверждение:</value>
+		</item>
+		<item>
+			<line>Error_label</line>
+			<value>Ошибка.. Имя уже существует.</value>
+		</item>
+		<item>
+			<line>Error_label_2</line>
+			<value>Ошибка.. Введите имя пользователя и пароль.</value>
+		</item>
+		<item>
+			<line>accept_button</line>
+			<value>ПОДТВЕРДИТЬ</value>
+		</item>
+	</Screen>
+
+	<Screen w="confirm">	
+		<item>
+			<line>cancel_Button</line>
+			<value>ОТМЕНА</value>
+		</item>
+		<item>
+			<line>ok_Button</line>
+			<value>ПОДТВЕРДИТЬ</value>
+		</item>
+	</Screen>
+
+	<Screen w="find">	
+		<item>
+			<line>add_user</line>
+			<value>Добавить пользователя:</value>
+		</item>
+		<item>
+			<line>username_lineedit</line>
+			<value>Имя пользователя</value>
+		</item>
+		<item>
+			<line>error_lay</line>
+			<value>Пользователь не найден</value>
+		</item>
+		<item>
+			<line>invite_cont_button</line>
+			<value>Добавить</value>
+		</item>
+	</Screen>
+
+	<Screen w="select">	
+		<item>
+			<line>members</line>
+			<value>Участники:</value>
+		</item>
+		<item>
+			<line>crGroup_button</line>
+			<value>СОЗДАТЬ</value>
+		</item>
+		<item>
+			<line>cancel_button</line>
+			<value>ОТМЕНА</value>
+		</item>
+	</Screen>
+ 	
+	<Screen w="setting">	
+		<item>
+			<line>checkBox_3</line>
+			<value>Загрузка при старте системы</value>
+		</item>
+		<item>
+			<line>language</line>
+			<value>Язык: </value>
+		</item>
+		<item>
+			<line>down_path</line>
+			<value>Загрузочный путь: </value>
+		</item>
+		<item>
+			<line>RB_sendEnter</line>
+			<value>Отправка по \"Enter\"</value>
+		</item>
+		<item>
+			<line>RB_send_CEnter</line>
+			<value>Отправка по \"Ctrl + Enter\"</value>
+		</item>
+		<item>
+			<line>ChBox_Notif</line>
+			<value>Уведомления</value>
+		</item>
+		<item>
+			<line>ChBox_PSound</line>
+			<value>Звук</value>
+		</item>
+		<item>
+			<line>background</line>
+			<value>Выбор фона:</value>
+		</item>
+		<item>
+			<line>PB_SelColor</line>
+			<value>Выбрать из палитры:</value>
+		</item>
+		<item>
+			<line>PB_LoadFileBackground</line>
+			<value>Загрузить из файла:</value>
+		</item>
+		<item>
+			<line>username_label</line>
+			<value>Имя пользователя: </value>
+		</item>
+		<item>
+			<line>radioButton</line>
+			<value>По умолчанию</value>
+		</item>
+		<item>
+			<line>radioButton_2</line>
+			<value>Загрузить</value>
+		</item>
+		<item>
+			<line>groupBox</line>
+			<value>Аватар:</value>
+		</item>
+		<item>
+			<line>userList_3</line>
+			<value>Профиль, Основное, Опции чата, Сеть</value>
+		</item>
+		<item>
+			<line>search_line_edit</line>
+			<value>Поиск</value>
+		</item>
+		<item>
+			<line>editText</line>
+			<value>Введите сообщение..</value>
+		</item>
+		<item>
+			<line>start_textBrowser</line>
+			<value>Пожалуйста, выберите диалог, чтобы начать общение или добавьте новых друзей!</value>
+		</item>
+	</Screen>
+</RU_Language>
+
+	
+	

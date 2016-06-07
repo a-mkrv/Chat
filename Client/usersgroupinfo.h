@@ -21,6 +21,9 @@ public:
     void initWindow();
     ~UsersGroupInfo();
 
+public slots:
+    void set_lang(QMap<QString, QString> &);
+
 private:
     Ui::UsersGroupInfo *ui;
 };

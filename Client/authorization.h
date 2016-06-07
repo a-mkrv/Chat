@@ -7,7 +7,6 @@
 #include "registration.h"
 #include <QTime>
 
-
 namespace Ui {
 class Authorization;
 }
@@ -44,12 +43,15 @@ private slots:
     void onButtonSendUser();
     void recieveData(QString rStr);
     void getMessage();
-
-private slots:
     void on_reg_button_clicked();
     void on_close_window_clicked();
     void on_turn_window_clicked();
     void on_log_in_clicked();
+
+public slots:
+    void set_lang(QMap<QString, QString> &);
+
+
 };
 
 #endif // AUTHORIZATION_H

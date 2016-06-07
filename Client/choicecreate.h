@@ -24,6 +24,9 @@ private slots:
 signals:
     void choice(QString);
 
+public slots:
+    void set_lang(QMap<QString, QString> &);
+
 private:
     Ui::ChoiceCreate *ui;
 };

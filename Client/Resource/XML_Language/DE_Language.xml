@@ -1,0 +1,199 @@
+<?xml version = "1.0" encoding="UTF-8" ?>
+<DE_Language>
+	<Screen w="login">	
+		<item>
+			<line>username_enter</line>
+			<value>Login</value>
+		</item>
+		<item>
+			<line>pass_enter</line>
+			<value>Passwort</value>
+		</item>
+		<item>
+			<line>error_label</line>
+			<value>Benutzername oder Passwort falsch</value>
+		</item>
+		<item>
+			<line>reg_button</line>
+			<value>Anmeldung</value>
+		</item>
+		<item>
+			<line>log_in</line>
+			<value>Eingang</value>
+		</item>
+		<item>
+			<line>errorconnect_label</line>
+			<value>Fehler bei der Verbindung</value>
+		</item>
+	</Screen>
+
+	<Screen w="register">
+		<item>
+			<line>register_2</line>
+			<value>ANMELDUNG</value>
+		</item>	
+		<item>
+			<line>username</line>
+			<value>Ihr Name:</value>
+		</item>
+		<item>
+			<line>sex</line>
+			<value>Gender:</value>
+		</item>
+		<item>
+			<line>sex_person</line>
+			<value>Unbekannte, Ein Mann, Frau</value>
+		</item>
+		<item>
+			<line>age</line>
+			<value>Alter:</value>
+		</item>
+		<item>
+			<line>city</line>
+			<value>Stadt:</value>
+		</item>
+		<item>
+			<line>password</line>
+			<value>Passwort:</value>
+		</item>
+		<item>
+			<line>confirm</line>
+			<value>Bestätigung:</value>
+		</item>
+		<item>
+			<line>Error_label</line>
+			<value>Fehler .. Name bereits vorhanden ist.</value>
+		</item>
+		<item>
+			<line>Error_label_2</line>
+			<value>Fehler .. Geben Sie Ihren Benutzernamen und Ihr Passwort ein.</value>
+		</item>
+		<item>
+			<line>accept_button</line>
+			<value>AKZEPTIEREN</value>
+		</item>
+	</Screen>
+
+	<Screen w="confirm">	
+		<item>
+			<line>cancel_Button</line>
+			<value>ZURÜCK</value>
+		</item>
+		<item>
+			<line>ok_Button</line>
+			<value>AKZEPTIEREN</value>
+		</item>
+	</Screen>
+
+	<Screen w="find">	
+		<item>
+			<line>add_user</line>
+			<value>Benutzer hinzufügen:</value>
+		</item>
+		<item>
+			<line>username_lineedit</line>
+			<value>Benutzername</value>
+		</item>
+		<item>
+			<line>error_lay</line>
+			<value>Benutzer nicht gefunden</value>
+		</item>
+		<item>
+			<line>invite_cont_button</line>
+			<value>Hinzufügen</value>
+		</item>
+	</Screen>
+
+	<Screen w="select">	
+		<item>
+			<line>members</line>
+			<value>Участники:</value>
+		</item>
+		<item>
+			<line>crGroup_button</line>
+			<value>СОЗДАТЬ</value>
+		</item>
+		<item>
+			<line>cancel_button</line>
+			<value>ZURÜCK</value>
+		</item>
+	</Screen>
+ 	
+	<Screen w="setting">	
+		<item>
+			<line>checkBox_3</line>
+			<value>Legen Sie beim Start</value>
+		</item>
+		<item>
+			<line>language</line>
+			<value>Sprache: </value>
+		</item>
+		<item>
+			<line>down_path</line>
+			<value>Der Lastweg: </value>
+		</item>
+		<item>
+			<line>RB_sendEnter</line>
+			<value>Senden von \"Enter\"</value>
+		</item>
+		<item>
+			<line>RB_send_CEnter</line>
+			<value>Senden von \"Ctrl + Enter\"</value>
+		</item>
+		<item>
+			<line>ChBox_Notif</line>
+			<value>Bekanntmachung</value>
+		</item>
+		<item>
+			<line>ChBox_PSound</line>
+			<value>Klang</value>
+		</item>
+		<item>
+			<line>background</line>
+			<value>Hintergrund:</value>
+		</item>
+		<item>
+			<line>PB_SelColor</line>
+			<value>Wähle aus Palette:</value>
+		</item>
+		<item>
+			<line>PB_LoadFileBackground</line>
+			<value>Datei hochladen:</value>
+		</item>
+		<item>
+			<line>username_label</line>
+			<value>Benutzername: </value>
+		</item>
+		<item>
+			<line>radioButton</line>
+			<value>Default</value>
+		</item>
+		<item>
+			<line>radioButton_2</line>
+			<value>Download</value>
+		</item>
+		<item>
+			<line>groupBox</line>
+			<value>Avatar:</value>
+		</item>
+		<item>
+			<line>userList_3</line>
+			<value>Profil, Stiftung, Chat Optionen, Netzwerk</value>
+		</item>
+		<item>
+			<line>search_line_edit</line>
+			<value>Suche</value>
+		</item>
+		<item>
+			<line>editText</line>
+			<value>Geben Sie die Mitteilung...</value>
+		</item>
+		<item>
+			<line>start_textBrowser</line>
+			<value>Bitte wählen Sie einen Dialog Dialog zu starten oder neue Freunde hinzuzufügen!</value>
+		</item>
+	</Screen>
+</DE_Language>
+
+	
+	

@@ -147,4 +147,10 @@
         <file>Resource/botton.jpg</file>
         <file>Resource/header.jpg</file>
     </qresource>
+    <qresource prefix="/Language">
+        <file>Resource/XML_Language/DE_Language.xml</file>
+        <file>Resource/XML_Language/EN_Language.xml</file>
+        <file>Resource/XML_Language/FR_Language.xml</file>
+        <file>Resource/XML_Language/RU_Language.xml</file>
+    </qresource>
 </RCC>

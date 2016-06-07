@@ -678,7 +678,7 @@ background-color: rgb(99, 137, 168);</string>
       <string notr="true">background-color: rgb(255, 255, 255);</string>
      </property>
      <property name="currentIndex">
-      <number>0</number>
+      <number>2</number>
      </property>
      <widget class="QWidget" name="page">
       <widget class="QGroupBox" name="groupBox">
@@ -843,7 +843,7 @@ color: rgb(96, 125, 139);</string>
       </widget>
      </widget>
      <widget class="QWidget" name="page_3">
-      <widget class="QCheckBox" name="checkBox_3">
+      <widget class="QCheckBox" name="start_sys">
        <property name="geometry">
         <rect>
          <x>40</x>
@@ -879,7 +879,7 @@ color: rgb(96, 125, 139);</string>
         <string>(C:/...)</string>
        </property>
       </widget>
-      <widget class="QLabel" name="label_2">
+      <widget class="QLabel" name="language">
        <property name="geometry">
         <rect>
          <x>40</x>
@@ -933,7 +933,7 @@ color: rgb(96, 125, 139);</string>
        </property>
        <layout class="QHBoxLayout" name="horizontalLayout_2">
         <item>
-         <widget class="QLabel" name="label_3">
+         <widget class="QLabel" name="down_path">
           <property name="font">
            <font>
             <pointsize>10</pointsize>
@@ -990,7 +990,7 @@ border:none;</string>
          <number>0</number>
         </property>
         <item>
-         <widget class="QLabel" name="label_7">
+         <widget class="QLabel" name="background">
           <property name="font">
            <font>
             <pointsize>10</pointsize>
@@ -1371,7 +1371,7 @@ color: rgb(255, 255, 255);</string>
      <bool>true</bool>
     </property>
    </widget>
-   <widget class="QTextBrowser" name="textBrowser">
+   <widget class="QTextBrowser" name="start_textBrowser">
     <property name="geometry">
      <rect>
       <x>550</x>
@@ -1528,6 +1528,7 @@ border:none;</string>
      <set>Qt::AlignCenter</set>
     </property>
    </widget>
+   <zorder>widget_2</zorder>
    <zorder>glass_button</zorder>
    <zorder>line</zorder>
    <zorder>userList</zorder>
@@ -1542,13 +1543,12 @@ border:none;</string>
    <zorder>pushButton_3</zorder>
    <zorder>pushButton_4</zorder>
    <zorder>pushButton_5</zorder>
-   <zorder>textBrowser</zorder>
+   <zorder>start_textBrowser</zorder>
    <zorder>search_label</zorder>
    <zorder>stackedWidget_2</zorder>
    <zorder>search_list</zorder>
    <zorder>name_label</zorder>
    <zorder>info_user_button</zorder>
-   <zorder>widget_2</zorder>
   </widget>
   <action name="actionShowHideWindow">
    <property name="text">

@@ -21,10 +21,14 @@ public:
 
 signals:
     void SelectUsersSignal(QStringList, QString);
+
 private slots:
     void on_crGroup_button_clicked();
     void on_cancel_button_clicked();
     void on_userList_itemSelectionChanged();
+
+public slots:
+    void set_lang(QMap<QString, QString> &);
 
 private:
     Ui::SelectContacts *ui;

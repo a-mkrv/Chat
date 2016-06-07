@@ -369,6 +369,9 @@ color: rgb(214, 71, 0);</string>
    <property name="text">
     <string>  Incorrect login/password</string>
    </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
+   </property>
   </widget>
   <widget class="QLabel" name="errorconnect_label">
    <property name="geometry">

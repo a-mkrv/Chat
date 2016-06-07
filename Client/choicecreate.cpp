@@ -58,3 +58,11 @@ void ChoiceCreate::on_close_choice_clicked()
     emit choice(QString("close"));
     this->close();
 }
+
+//////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////
+///
+void ChoiceCreate::set_lang(QMap<QString, QString> &lan_dict)
+{
+   ///////
+}

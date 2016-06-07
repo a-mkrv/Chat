@@ -1,0 +1,196 @@
+<?xml version = "1.0" encoding="UTF-8" ?>
+<FR_Language>
+	<Screen w="login">	
+		<item>
+			<line>username_enter</line>
+			<value>Login</value>
+		</item>
+		<item>
+			<line>pass_enter</line>
+			<value>Mot de passe</value>
+		</item>
+		<item>
+			<line>error_label</line>
+			<value>Nom d'utilisateur ou mot de passe incorrect</value>
+		</item>
+		<item>
+			<line>reg_button</line>
+			<value>Enregistrement</value>
+		</item>
+		<item>
+			<line>log_in</line>
+			<value>Entrée</value>
+		</item>
+		<item>
+			<line>errorconnect_label</line>
+			<value>Erreur de connexion</value>
+		</item>
+	</Screen>
+
+	<Screen w="register">
+		<item>
+			<line>register_2</line>
+			<value>ENREGISTREMENT</value>
+		</item>	
+		<item>
+			<line>username</line>
+			<value>Votre nom:</value>
+		</item>
+		<item>
+			<line>sex</line>
+			<value>Sexe:</value>
+		</item>
+		<item>
+			<line>sex_person</line>
+			<value>Unknown, Homme, Femme</value>
+		</item>
+		<item>
+			<line>age</line>
+			<value>Âge:</value>
+		</item>
+		<item>
+			<line>city</line>
+			<value>Ville:</value>
+		</item>
+		<item>
+			<line>password</line>
+			<value>Mot de passe:</value>
+		</item>
+		<item>
+			<line>confirm</line>
+			<value>Confirmation:</value>
+		</item>
+		<item>
+			<line>Error_label</line>
+			<value>Erreur .. Nom existe déjà.</value>
+		</item>
+		<item>
+			<line>Error_label_2</line>
+			<value>Erreur .. Entrez votre nom d'utilisateur et mot de passe.</value>
+		</item>
+		<item>
+			<line>accept_button</line>
+			<value>ACCEPTER</value>
+		</item>
+	</Screen>
+
+	<Screen w="confirm">	
+		<item>
+			<line>cancel_Button</line>
+			<value>ANNULER</value>
+		</item>
+		<item>
+			<line>ok_Button</line>
+			<value>ACCEPTER</value>
+		</item>
+	</Screen>
+
+	<Screen w="find">	
+		<item>
+			<line>add_user</line>
+			<value>Ajouter un utilisateur:</value>
+		</item>
+		<item>
+			<line>username_lineedit</line>
+			<value>Nom d'utilisateur</value>
+		</item>
+		<item>
+			<line>error_lay</line>
+			<value>Utilisateur introuvable</value>
+		</item>
+		<item>
+			<line>invite_cont_button</line>
+			<value>Ajouter</value>
+		</item>
+	</Screen>
+
+	<Screen w="select">	
+		<item>
+			<line>members</line>
+			<value>Participants:</value>
+		</item>
+		<item>
+			<line>crGroup_button</line>
+			<value>CREATE</value>
+		</item>
+		<item>
+			<line>cancel_button</line>
+			<value>ANNULER</value>
+		</item>
+	</Screen>
+
+	<Screen w="setting">	
+		<item>
+			<line>checkBox_3</line>
+			<value>Chargement au lancement</value>
+		</item>
+		<item>
+			<line>language</line>
+			<value>Langue de: </value>
+		</item>
+		<item>
+			<line>down_path</line>
+			<value>Le chemin d'amorçage: </value>
+		</item>
+		<item>
+			<line>RB_sendEnter</line>
+			<value>Envoyer à \"Entrée\"</value>
+		</item>
+		<item>
+			<line>RB_send_CEnter</line>
+			<value>Envoyer à \"Ctrl + Entrée\"</value>
+		</item>
+		<item>
+			<line>ChBox_Notif</line>
+			<value>Notification</value>
+		</item>
+		<item>
+			<line>ChBox_PSound</line>
+			<value>Le son</value>
+		</item>
+		<item>
+			<line>background</line>
+			<value>Sélection de l'fond:</value>
+		</item>
+		<item>
+			<line>PB_SelColor</line>
+			<value>Choisir de palette:</value>
+		</item>
+		<item>
+			<line>PB_LoadFileBackground</line>
+			<value>Télécharger un fichier:</value>
+		</item>
+		<item>
+			<line>username_label</line>
+			<value>Nom d'utilisateur: </value>
+		</item>
+		<item>
+			<line>radioButton</line>
+			<value>Par défaut</value>
+		</item>
+		<item>
+			<line>radioButton_2</line>
+			<value>Download</value>
+		</item>
+		<item>
+			<line>groupBox</line>
+			<value>Image:</value>
+		</item>
+		<item>
+			<line>userList_3</line>
+			<value>Profil, Principal, Options du Chat, Networking</value>
+		</item>
+		<item>
+			<line>search_line_edit</line>
+			<value>Recherche en</value>
+		</item>
+		<item>
+			<line>editText</line>
+			<value>Inscris ton message..</value>
+		</item>
+		<item>
+			<line>start_textBrowser</line>
+			<value>S'il vous plaît sélectionner un dialogue pour démarrer le dialogue ou ajouter de nouveaux amis!</value>
+		</item>
+	</Screen>
+</FR_Language>

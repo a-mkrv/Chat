@@ -11,37 +11,9 @@
 #include <QPropertyAnimation>
 #include <QGraphicsOpacityEffect>
 
-QString gl_fname; //Поиск человека
+#define DEFAULT_LANGUAGE QString("EN_Language")
 
-//СДЕЛАТЬ:
-// Передачу аватарки, а не рандомная загрузка из ресурсов
-// Создание группового чата
-// Смайлики доделать по нормальному
-// Повторное добавление удаленного друга
-
-
-//СДЕЛАНО:
-// Завтра доделать разделение на приватные беседы.  -- Сделано
-// Стэк Списков, вектора на адреса списков.         -- Сделано
-// Попробовать добавить 1-2 языка..                 -- Сделано (Русский)
-// Изменил верхнюю панель, завтра прикручу)         -- Сделано
-// Доделать обновление статуса(последнего сообщения) под ником у друзей                         --Сделано
-// При добавлении в список друзей просматривать Пол, и в зависимости от этого ставить аватар.   -- Сделано
-// Отправку сообщения по текущему диалогу, а не по команде msg User     --Сделано
-// Добавлены уведомления в углу экрана.
-// Дисконнект из-за доп.сокетов и соединений при авторизации. (Правильно прикрутить закрытие сокета) -- Сделано
-// СОХРАНЕНИЕ ПОЛЬЗОВАТЕЛЕЙ Друг у Друга (Через SQLite) --Сделано
-// Сохранение и загрузка личных сообщений(включая файлы, размер, и отдельную иконку). -- Сделано
-// Демо вариант.
-// Возможно исправить делегата, сделав сообщения пузырьком. -- Сделано
-// Устойчивая отправка файлов до клииента                   -- СДЕЛАНО
-// RSA - Осталась отправка. Шифрование сделано.             -- Сделано
-// MD5+Solt Хэширование - Сделано
-// Поиск по контактам.  - Сделано
-// Удаление контакта и удаление истории переписки - Добавлено
-// Информация о друге   - Сделано
-
-
+QString gl_fname; //find user - friend
 
 Client::Client(QWidget *parent) : QMainWindow(parent), download_path("(C:/...)"), personDates(false),ui(new Ui::Client)
 {
@@ -58,6 +30,8 @@ Client::Client(QWidget *parent) : QMainWindow(parent), download_path("(C:/...)")
     trayIconMenu    = new QMenu(this);
     tcpSocket       = new QTcpSocket(this);
     rsaCrypt        = new RSACrypt;
+    set_language    = new XML_Language();
+
 
     QColor defaulcolor(Qt::white);
     colorchat = defaulcolor.name();
@@ -71,6 +45,8 @@ Client::Client(QWidget *parent) : QMainWindow(parent), download_path("(C:/...)")
     ui->search_list->hide();
     ui->glass_button->raise();
     ui->glass_button->hide();
+    set_default_Language();
+
     nextBlockSize = 0;
     FriendCount = 0;
 
@@ -309,7 +285,7 @@ void Client::AddUser_Chat(QString _username, QString _sex, QList<QPair<QString, 
 
         if(count==-2)
         {
-            ui->textBrowser->hide();
+            ui->start_textBrowser->hide();
             ui->stackedWidget_2->show();
             ui->stackedWidget_2->setCurrentIndex(chatvec.size()-1);
             ui->userList->clearSelection();
@@ -580,7 +556,7 @@ void Client::getMessage()
                     chatvec.at(i)->scrollToBottom();
                     vec.at(i)->setSelected(true);
                     whisperOnClickUsers(vec.at(i));
-                    ui->textBrowser->hide();
+                    ui->start_textBrowser->hide();
                     ui->stackedWidget_2->show();
                     ui->stackedWidget_2->setCurrentIndex(i);
 
@@ -641,7 +617,7 @@ void Client::getMessage()
                         chatvec.at(i)->scrollToBottom();
                         vec.at(i)->setSelected(true);
                         whisperOnClickUsers(vec.at(i));
-                        ui->textBrowser->hide();
+                        ui->start_textBrowser->hide();
                         ui->stackedWidget_2->show();
                         ui->stackedWidget_2->setCurrentIndex(i);
 
@@ -926,7 +902,7 @@ void Client::addGroup_toList(QStringList userList, QString state)
         ui->userList->addItem(item);
         ui->userList->scrollToBottom();
 
-        ui->textBrowser->hide();
+        ui->start_textBrowser->hide();
         ui->stackedWidget_2->show();
         ui->stackedWidget_2->setCurrentIndex(chatvec.size()-1);
         ui->userList->clearSelection();
@@ -1135,7 +1111,7 @@ void Client::on_userList_clicked(const QModelIndex &index)
 {
     if (!vec.empty())
     {
-        ui->textBrowser->hide();
+        ui->start_textBrowser->hide();
         ui->stackedWidget_2->show();
         ui->stackedWidget_2->setCurrentIndex(index.row());
     }
@@ -1270,80 +1246,58 @@ void Client::showContextMenuForWidget(const QPoint &pos)
     menu->addAction(deleteDevice);
     menu->popup(mapToGlobal(newPos));
 }
+void Client::set_default_Language()
+{
+    if(!lan_dict.isEmpty())
+        lan_dict.clear();
+
+    lan_dict = set_language->parseXML(DEFAULT_LANGUAGE);
+    set_lang();
+    authorization->set_lang(lan_dict);
+}
+
+void Client::set_lang()
+{
+    ui->language->setText(lan_dict.key(ui->language->objectName()));
+    ui->down_path->setText(lan_dict.key(ui->down_path->objectName()));
+    ui->RB_sendEnter->setText(lan_dict.key(ui->RB_sendEnter->objectName()));
+    ui->RB_send_CEnter->setText(lan_dict.key(ui->RB_send_CEnter->objectName()));
+    ui->ChBox_Notif->setText(lan_dict.key(ui->ChBox_Notif->objectName()));
+    ui->ChBox_PSound->setText(lan_dict.key(ui->ChBox_PSound->objectName()));
+    ui->background->setText(lan_dict.key(ui->background->objectName()));
+    ui->PB_SelColor->setText(lan_dict.key(ui->PB_SelColor->objectName()));
+    ui->PB_LoadFileBackground->setText(lan_dict.key(ui->PB_LoadFileBackground->objectName()));
+    ui->username_label->setText(lan_dict.key(ui->username_label->objectName()));
+    ui->radioButton->setText(lan_dict.key(ui->radioButton->objectName()));
+    ui->radioButton_2->setText(lan_dict.key(ui->radioButton_2->objectName()));
+    ui->groupBox->setTitle(lan_dict.key(ui->groupBox->objectName()));
+    ui->search_line_edit->setPlaceholderText(lan_dict.key(ui->search_line_edit->objectName()));
+    ui->editText->setPlaceholderText(lan_dict.key(ui->editText->objectName()));
+
+    QStringList lst_setting;
+    lst_setting = lan_dict.key("userList_3").split(',');
+
+    for (int i=0; i<lst_setting.size(); i++)
+        ui->userList_3->item(i)->setText(lst_setting[i]);
+
+}
 
 void Client::on_comboBox_currentIndexChanged(int index)
 {
     switch (index) {
     case 0:
     {
-        ui->checkBox_3->setText("Launch when system starts");
-        ui->label_2->setText("Language: ");
-        ui->label_3->setText("Download path: ");
-        ui->RB_sendEnter->setText("Send by Enter");
-        ui->RB_send_CEnter->setText("Send by Ctrl + Enter");
-        ui->ChBox_Notif->setText("Notification");
-        ui->ChBox_PSound->setText("Play Sound");
-        ui->label_7->setText("Chat background:");
-        ui->PB_SelColor->setText("Select color:");
-        ui->PB_LoadFileBackground->setText(" Load from file:");
-        ui->username_label->setText("Username: ");
-        ui->radioButton->setText("Default");
-        ui->radioButton_2->setText("Choose");
-        ui->groupBox->setTitle("Avatar:");
-        ui->userList_3->item(0)->setText("Profile");
-        ui->userList_3->item(1)->setText("General");
-        ui->userList_3->item(2)->setText("Chat options");
-        ui->userList_3->item(3)->setText("Network");
-        ui->search_line_edit->setPlaceholderText("Search");
-        ui->editText->setPlaceholderText("Write a message..");
+
         break;
     }
     case 1:
     {
-        ui->checkBox_3->setText("Загрузка при старте системы");
-        ui->label_2->setText("Язык: ");
-        ui->label_3->setText("Загрузочный путь: ");
-        ui->RB_sendEnter->setText("Отправка по \"Enter\"");
-        ui->RB_send_CEnter->setText("Отправка по \"Ctrl + Enter\"");
-        ui->ChBox_Notif->setText("Уведомления");
-        ui->ChBox_PSound->setText("Звук");
-        ui->label_7->setText("Выбор фона:");
-        ui->PB_SelColor->setText("Выбрать из палитры:");
-        ui->PB_LoadFileBackground->setText("Загрузить из файла:");
-        ui->username_label->setText("Имя пользователя: ");
-        ui->radioButton->setText("По умолчанию");
-        ui->radioButton_2->setText("Загрузить");
-        ui->groupBox->setTitle("Аватар:");
-        ui->userList_3->item(0)->setText("Профиль");
-        ui->userList_3->item(1)->setText("Основное");
-        ui->userList_3->item(2)->setText("Опции чата");
-        ui->userList_3->item(3)->setText("Сеть");
-        ui->search_line_edit->setPlaceholderText("Поиск");
-        ui->editText->setPlaceholderText("Введите сообщение..");
+
         break;
     }
     case 2:
     {
-        ui->checkBox_3->setText("Chargement au lancement");
-        ui->label_2->setText("Langue de: ");
-        ui->label_3->setText("Le chemin d'amorçage: ");
-        ui->RB_sendEnter->setText("Envoyer à \"Entrée\"");
-        ui->RB_send_CEnter->setText("Envoyer à \"Ctrl + Entrée\"");
-        ui->ChBox_Notif->setText("Notification");
-        ui->ChBox_PSound->setText("Le son");
-        ui->label_7->setText("Sélection de l'fond");
-        ui->PB_SelColor->setText("Choisir de palette:");
-        ui->PB_LoadFileBackground->setText("Télécharger un fichier:");
-        ui->username_label->setText("Nom d'utilisateur: ");
-        ui->radioButton->setText("Par défaut");
-        ui->radioButton_2->setText("Download");
-        ui->groupBox->setTitle("Image");
-        ui->userList_3->item(0)->setText("Profil");
-        ui->userList_3->item(1)->setText("Principal");
-        ui->userList_3->item(2)->setText("Options du Chat");
-        ui->userList_3->item(3)->setText("Networking");
-        ui->search_line_edit->setPlaceholderText("Recherche en");
-        ui->editText->setPlaceholderText("Inscris ton message..");
+
         break;
     }
     }
@@ -1404,7 +1358,7 @@ void Client::on_search_list_clicked(const QModelIndex &index)
         if(vec.at(i)->data(Qt::DisplayRole).toString() == index.data(Qt::DisplayRole).toString())
         {
             // Переключение на выбранного человека/чат. Очищение запроса поиска + скрытие результата.
-            ui->textBrowser->hide();
+            ui->start_textBrowser->hide();
             ui->stackedWidget_2->show();
             ui->stackedWidget_2->setCurrentIndex(i);
             ui->userList->setCurrentRow(i);

@@ -1,0 +1,196 @@
+<?xml version = "1.0" encoding="UTF-8" ?>
+<EN_Language>
+	<Screen w="login">	
+		<item>
+			<line>username_enter</line>
+			<value>Username</value>
+		</item>
+		<item>
+			<line>pass_enter</line>
+			<value>Password</value>
+		</item>
+		<item>
+			<line>error_label</line>
+			<value>Incorrect login/password</value>
+		</item>
+		<item>
+			<line>reg_button</line>
+			<value>Registration</value>
+		</item>
+		<item>
+			<line>log_in</line>
+			<value>LOG IN</value>
+		</item>
+		<item>
+			<line>errorconnect_label</line>
+			<value>Error connecting...</value>
+		</item>
+	</Screen>
+
+	<Screen w="register">
+		<item>
+			<line>register_2</line>
+			<value>REGISTRATION</value>
+		</item>	
+		<item>
+			<line>username</line>
+			<value>User Name:</value>
+		</item>
+		<item>
+			<line>sex</line>
+			<value>Sex:</value>
+		</item>
+		<item>
+			<line>sex_person</line>
+			<value>Unknown, Man, Woman</value>
+		</item>
+		<item>
+			<line>age</line>
+			<value>Age:</value>
+		</item>
+		<item>
+			<line>city</line>
+			<value>City:</value>
+		</item>
+		<item>
+			<line>password</line>
+			<value>Password:</value>
+		</item>
+		<item>
+			<line>confirm</line>
+			<value>Confirm pas:</value>
+		</item>
+		<item>
+			<line>Error_label</line>
+			<value>Error.. Name already exists.</value>
+		</item>
+		<item>
+			<line>Error_label_2</line>
+			<value>Error.. Enter username and password.</value>
+		</item>
+		<item>
+			<line>accept_button</line>
+			<value>ACCEPT</value>
+		</item>
+	</Screen>
+
+	<Screen w="confirm">	
+		<item>
+			<line>cancel_Button</line>
+			<value>CANCEL</value>
+		</item>
+		<item>
+			<line>ok_Button</line>
+			<value>ACCEPT</value>
+		</item>
+	</Screen>
+
+	<Screen w="find">	
+		<item>
+			<line>add_user</line>
+			<value>Add contact:</value>
+		</item>
+		<item>
+			<line>username_lineedit</line>
+			<value>User Name</value>
+		</item>
+		<item>
+			<line>error_lay</line>
+			<value>User is not found..</value>
+		</item>
+		<item>
+			<line>invite_cont_button</line>
+			<value>Invite</value>
+		</item>
+	</Screen>
+
+	<Screen w="select">	
+		<item>
+			<line>members</line>
+			<value>Add members:</value>
+		</item>
+		<item>
+			<line>crGroup_button</line>
+			<value>CREATE</value>
+		</item>
+		<item>
+			<line>cancel_button</line>
+			<value>CANCEL</value>
+		</item>
+	</Screen>
+ 	
+	<Screen w="setting">	
+		<item>
+			<line>checkBox_3</line>
+			<value>Launch when system starts</value>
+		</item>
+		<item>
+			<line>language</line>
+			<value>Language: </value>
+		</item>
+		<item>
+			<line>down_path</line>
+			<value>Download path: </value>
+		</item>
+		<item>
+			<line>RB_sendEnter</line>
+			<value>Send by \"Enter\"</value>
+		</item>
+		<item>
+			<line>RB_send_CEnter</line>
+			<value>Send by \"Ctrl + Enter\"</value>
+		</item>
+		<item>
+			<line>ChBox_Notif</line>
+			<value>Notification</value>
+		</item>
+		<item>
+			<line>ChBox_PSound</line>
+			<value>Play Sound</value>
+		</item>
+		<item>
+			<line>background</line>
+			<value>Chat background:</value>
+		</item>
+		<item>
+			<line>PB_SelColor</line>
+			<value>Select color:</value>
+		</item>
+		<item>
+			<line>PB_LoadFileBackground</line>
+			<value>Load from file:</value>
+		</item>
+		<item>
+			<line>username_label</line>
+			<value>Usernameя: </value>
+		</item>
+		<item>
+			<line>radioButton</line>
+			<value>Default</value>
+		</item>
+		<item>
+			<line>radioButton_2</line>
+			<value>Choose</value>
+		</item>
+		<item>
+			<line>groupBox</line>
+			<value>Avatar:</value>
+		</item>
+		<item>
+			<line>userList_3</line>
+			<value>Profile, General, Chat options, Network</value>
+		</item>
+		<item>
+			<line>search_line_edit</line>
+			<value>Search</value>
+		</item>
+		<item>
+			<line>editText</line>
+			<value>Write a message..</value>
+		</item>
+		<item>
+			<line>start_textBrowser</line>
+			<value>Please select a chat to start messaging or add new friends to communicate!</value>
+		</item>
+	</Screen>
+</EN_Language>

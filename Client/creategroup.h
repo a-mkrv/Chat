@@ -26,6 +26,9 @@ private slots:
 signals:
     void GroupSignal(QString, QString, QString, QString);
 
+public slots:
+    void set_lang(QMap<QString, QString> &);
+
 private:
     Ui::CreateGroup *ui;
 };

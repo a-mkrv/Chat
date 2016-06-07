@@ -26,6 +26,9 @@ signals:
 
 private slots:
     void on_invite_cont_button_clicked();
+
+public slots:
+    void set_lang(QMap<QString, QString> &);
 };
 
 #endif // FINDCONTACTS_H

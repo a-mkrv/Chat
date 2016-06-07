@@ -31,6 +31,7 @@
 #include "choicecreate.h"
 #include "selectcontacts.h"
 #include "usersgroupinfo.h"
+#include "xml_language.h"
 #include <QMouseEvent>
 #include <QPoint>
 #include <QTime>
@@ -109,6 +110,8 @@ private slots:
     void addGroup_toList(QStringList, QString);
     void on_info_user_button_clicked();
     void getMessage_UserList(PairStringList &, PairStringList &, ChatListVector &);
+    void set_default_Language();
+    void set_lang();
 
 public slots:
     void recieveData(QString str, QString pas, QString);
@@ -146,8 +149,10 @@ private:
     QVector<QPair<QString, QString> > pubFriendKey;
     QVector<QListWidgetItem*> vec;
     QVector<QListWidget*> chatvec;
+    QMap<QString, QString> lan_dict;
     QStackedWidget *stackchat;
     QFile *sendFile;
+    XML_Language *set_language;
     QString name;
     QString download_path;
     QString colorchat;

@@ -33,7 +33,8 @@ SOURCES +=\
     selectcontacts.cpp \
     usersgroupinfo.cpp \
     authorization.cpp \
-    registration.cpp
+    registration.cpp \
+    xml_language.cpp
 
 HEADERS  += client.h \
     emojiframe.h \
@@ -53,7 +54,8 @@ HEADERS  += client.h \
     selectcontacts.h \
     usersgroupinfo.h \
     authorization.h \
-    registration.h
+    registration.h \
+    xml_language.h
 
 FORMS    += client.ui \
     emojiframe.ui \

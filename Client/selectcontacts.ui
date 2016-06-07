@@ -32,7 +32,7 @@
     <enum>QAbstractItemView::MultiSelection</enum>
    </property>
   </widget>
-  <widget class="QLabel" name="label">
+  <widget class="QLabel" name="members">
    <property name="geometry">
     <rect>
      <x>0</x>

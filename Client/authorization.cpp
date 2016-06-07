@@ -108,6 +108,15 @@ void Authorization::on_reg_button_clicked()
     }
 }
 
+void Authorization::set_lang(QMap<QString, QString> & lan_dict)
+{
+    ui->username_enter->setPlaceholderText(lan_dict.key(ui->username_enter->objectName()));
+    ui->pass_enter->setPlaceholderText(lan_dict.key(ui->pass_enter->objectName()));
+    ui->error_label->setText(lan_dict.key(ui->error_label->objectName()));
+    ui->reg_button->setText(lan_dict.key(ui->reg_button->objectName()));
+    ui->log_in->setText(lan_dict.key(ui->log_in->objectName()));
+    ui->errorconnect_label->setText(lan_dict.key(ui->errorconnect_label->objectName()));
+}
 
 void Authorization::recieveData(QString rStr)
 {

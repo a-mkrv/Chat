@@ -31,8 +31,10 @@ private slots:
     void on_come_back_clicked();
     void on_close_window_clicked();
     void on_turn_window_clicked();
-
     void getMessagee();
+
+public slots:
+    void set_lang(QMap<QString, QString> &);
 
 signals:
     void sendData(QString str);

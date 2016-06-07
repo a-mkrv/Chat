@@ -35,13 +35,13 @@
     <pixmap resource="resource.qrc">:/Icons/Resource/Icon/ic_profile_set.png</pixmap>
    </property>
   </widget>
-  <widget class="QLabel" name="label_2">
+  <widget class="QLabel" name="add_user">
    <property name="geometry">
     <rect>
-     <x>100</x>
+     <x>70</x>
      <y>130</y>
-     <width>101</width>
-     <height>16</height>
+     <width>171</width>
+     <height>20</height>
     </rect>
    </property>
    <property name="font">

@@ -26,6 +26,9 @@ signals:
 private slots:
     void on_ok_Button_clicked();
     void on_cancel_Button_clicked();
+
+public slots:
+    void set_lang(QMap<QString, QString> &);
 };
 
 #endif // CONFIRMWINDOW_H
