@@ -42,7 +42,7 @@
 		</item>
 		<item>
 			<line>sex_person</line>
-			<value>Неизвестно, мужчина, женщина</value>
+			<value>Неизвестно,Мужчина,Женщина</value>
 		</item>
 		<item>
 			<line>age</line>
@@ -65,23 +65,51 @@
 			<value>Ошибка.. Имя уже существует.</value>
 		</item>
 		<item>
-			<line>Error_label_2</line>
-			<value>Ошибка.. Введите имя пользователя и пароль.</value>
+			<line>accept_button</line>
+			<value>Зарегистрироваться</value>
 		</item>
 		<item>
-			<line>accept_button</line>
-			<value>ПОДТВЕРДИТЬ</value>
+			<line>errors1</line>
+			<value>Ошибка.. Введите имя пользователя и пароль. // Ошибка.. Имя уже существует. // Ошибка.. Пароли не совпадают. // Ошибка.. Подтвердите пароль. 
+			</value>
 		</item>
 	</Screen>
 
 	<Screen w="confirm">	
 		<item>
-			<line>cancel_Button</line>
+			<line>cancel_Button_conf</line>
 			<value>ОТМЕНА</value>
 		</item>
 		<item>
 			<line>ok_Button</line>
 			<value>ПОДТВЕРДИТЬ</value>
+		</item>
+		<item>
+			<line>conf_message_del_hist</line>
+			<value>Вы уверены, что хотите очистить историю?</value>
+		</item>
+		<item>
+			<line>conf_message_del_user</line>
+			<value>Вы уверены, что хотите удалить этого пользователя?</value>
+		</item>
+	</Screen>
+
+	<Screen w="creategroup">	
+		<item>
+			<line>g_name</line>
+			<value>Название группы</value>
+		</item>
+		<item>
+			<line>g_description</line>
+			<value>Описание</value>
+		</item>
+		<item>
+			<line>close_groupW</line>
+			<value>ОТМЕНА</value>
+		</item>
+		<item>
+			<line>create_group</line>
+			<value>ДАЛЕЕ</value>
 		</item>
 	</Screen>
 
@@ -95,18 +123,18 @@
 			<value>Имя пользователя</value>
 		</item>
 		<item>
-			<line>error_lay</line>
-			<value>Пользователь не найден</value>
-		</item>
-		<item>
 			<line>invite_cont_button</line>
 			<value>Добавить</value>
+		</item>
+		<item>
+			<line>errors</line>
+			<value>You can not add yourself.. //User is not found.. //User is already added.. </value>
 		</item>
 	</Screen>
 
 	<Screen w="select">	
 		<item>
-			<line>members</line>
+			<line>count_member</line>
 			<value>Участники:</value>
 		</item>
 		<item>
@@ -118,10 +146,37 @@
 			<value>ОТМЕНА</value>
 		</item>
 	</Screen>
+
+	<Screen w="choicecreate">	
+		<item>
+			<line>newContact</line>
+			<value>Добавить пользователя</value>
+		</item>
+		<item>
+			<line>newGroup</line>
+			<value>Создать группу</value>
+		</item>
+		<item>
+			<line>close_choice</line>
+			<value>ОТМЕНА</value>
+		</item>
+		<item>
+			<line>next_choice</line>
+			<value>ДАЛЕЕ</value>
+		</item>
+		<item>
+			<line>contact_descr</line>
+			<value>Добавить нового пользователя в список друзей</value>
+		</item>
+		<item>
+			<line>group_descr</line>
+			<value>Создать комнату для коллективного общения</value>
+		</item>
+	</Screen>
  	
 	<Screen w="setting">	
 		<item>
-			<line>checkBox_3</line>
+			<line>start_sys</line>
 			<value>Загрузка при старте системы</value>
 		</item>
 		<item>
@@ -133,12 +188,16 @@
 			<value>Загрузочный путь: </value>
 		</item>
 		<item>
+			<line>Download_path_PB</line>
+			<value>Изменить </value>
+		</item>
+		<item>
 			<line>RB_sendEnter</line>
-			<value>Отправка по \"Enter\"</value>
+			<value>Отправка по "Enter"</value>
 		</item>
 		<item>
 			<line>RB_send_CEnter</line>
-			<value>Отправка по \"Ctrl + Enter\"</value>
+			<value>Отправка по "Ctrl + Enter"</value>
 		</item>
 		<item>
 			<line>ChBox_Notif</line>

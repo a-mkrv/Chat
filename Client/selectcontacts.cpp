@@ -85,7 +85,16 @@ void SelectContacts::on_userList_itemSelectionChanged()
         if(ui->userList->item(i)->isSelected())
             count ++;
     }
-    ui->count_member->setText("Add members: " + QString::number(count) + "/" + QString::number(ui->userList->count()));
+    //"Add members: "
+    ui->count_member->setText(languageMembers + QString::number(count) + "/" + QString::number(ui->userList->count()));
+}
+
+void SelectContacts::set_lang(QMap<QString, QString> & lan_dict)
+{
+    languageMembers = lan_dict.value(ui->count_member->objectName());
+    ui->count_member->setText(languageMembers + "0" + "/" + QString::number(ui->userList->count()));
+    ui->crGroup_button->setText(lan_dict.value(ui->crGroup_button->objectName()));
+    ui->cancel_button->setText(lan_dict.value(ui->cancel_button->objectName()));
 }
 
 SelectContacts::~SelectContacts()

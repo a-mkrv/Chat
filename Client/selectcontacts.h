@@ -32,6 +32,7 @@ public slots:
 
 private:
     Ui::SelectContacts *ui;
+    QString languageMembers;
 };
 
 #endif // SELECTCONTACTS_H

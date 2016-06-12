@@ -678,7 +678,7 @@ background-color: rgb(99, 137, 168);</string>
       <string notr="true">background-color: rgb(255, 255, 255);</string>
      </property>
      <property name="currentIndex">
-      <number>2</number>
+      <number>1</number>
      </property>
      <widget class="QWidget" name="page">
       <widget class="QGroupBox" name="groupBox">
@@ -897,7 +897,7 @@ color: rgb(96, 125, 139);</string>
         <string>Language:</string>
        </property>
       </widget>
-      <widget class="QComboBox" name="comboBox">
+      <widget class="QComboBox" name="select_language_box">
        <property name="geometry">
         <rect>
          <x>210</x>
@@ -913,12 +913,17 @@ color: rgb(96, 125, 139);</string>
        </item>
        <item>
         <property name="text">
-         <string>Russian</string>
+         <string>Français</string>
         </property>
        </item>
        <item>
         <property name="text">
-         <string>French</string>
+         <string>Deutsch</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Русский</string>
         </property>
        </item>
       </widget>
@@ -1528,7 +1533,6 @@ border:none;</string>
      <set>Qt::AlignCenter</set>
     </property>
    </widget>
-   <zorder>widget_2</zorder>
    <zorder>glass_button</zorder>
    <zorder>line</zorder>
    <zorder>userList</zorder>
@@ -1549,6 +1553,7 @@ border:none;</string>
    <zorder>search_list</zorder>
    <zorder>name_label</zorder>
    <zorder>info_user_button</zorder>
+   <zorder>widget_2</zorder>
   </widget>
   <action name="actionShowHideWindow">
    <property name="text">

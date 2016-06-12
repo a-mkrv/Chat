@@ -22,7 +22,7 @@ public:
     ~UsersGroupInfo();
 
 public slots:
-    void set_lang(QMap<QString, QString> &);
+    //void set_lang(QMap<QString, QString> &);
 
 private:
     Ui::UsersGroupInfo *ui;

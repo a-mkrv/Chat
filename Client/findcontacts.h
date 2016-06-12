@@ -3,6 +3,7 @@
 
 #include <QFrame>
 #include <QTcpSocket>
+#include <QVector>
 
 namespace Ui {
 class findcontacts;
@@ -11,6 +12,9 @@ class findcontacts;
 class findcontacts : public QFrame
 {
     Q_OBJECT
+
+private:
+    QStringList errors;
 
 public:
     explicit findcontacts(QWidget *parent = 0);

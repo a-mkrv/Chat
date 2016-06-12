@@ -48,12 +48,11 @@ void ConfirmWindow::on_cancel_Button_clicked()
 
 //////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////
-/// Cancel selection
+/// Language setting.
 void ConfirmWindow::set_lang(QMap<QString, QString> & lan_dict)
 {
-    ui->cancel_Button->setText(lan_dict.key(ui->cancel_Button->objectName()));
-    ui->confirm_message->setText(lan_dict.key(ui->confirm_message->objectName()));
-    ui->ok_Button->setText(lan_dict.key(ui->ok_Button->objectName()));
+    ui->cancel_Button->setText(lan_dict.value("cancel_Button_conf"));
+    ui->ok_Button->setText(lan_dict.value(ui->ok_Button->objectName()));
 }
 
 ConfirmWindow::~ConfirmWindow()

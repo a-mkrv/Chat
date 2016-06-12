@@ -11,7 +11,7 @@
 #include <QPropertyAnimation>
 #include <QGraphicsOpacityEffect>
 
-#define DEFAULT_LANGUAGE QString("EN_Language")
+#define DEFAULT_LANGUAGE QString("RU_Language")
 
 QString gl_fname; //find user - friend
 
@@ -731,12 +731,15 @@ void Client::on_close_setting_button_clicked()
 
 void Client::whisperOnClick(QListWidgetItem* User)
 {
+    QStringList lst_options;
+    lst_options = lan_dict.value("userList_3").split(',');
+
     QString section = User->text();
-    if (section == "Profile" || section == "Профиль" || section == "Profil")
+    if (section == lst_options.at(0))
         ui->stackedWidget->setCurrentIndex(0);
-    else if(section=="General" || section == "Основное" || section == "Principal")
+    else if(section==lst_options.at(1))
         ui->stackedWidget->setCurrentIndex(1);
-    else if (section == "Chat options" || section == "Опции чата" || section == "Options du Chat" )
+    else if (section == lst_options.at(2))
         ui->stackedWidget->setCurrentIndex(2);
     else
         ui->stackedWidget->setCurrentIndex(3);
@@ -814,6 +817,7 @@ void Client::findtoserv(QString name_user)
 void Client::on_newContact_Button_clicked()
 {
     choice_window = new ChoiceCreate(this);
+    choice_window->set_lang(lan_dict);
     choice_window->setGeometry(this->x()+359, this->y()+130, 343, 220);
     setGlass();
     choice_window->show();
@@ -829,11 +833,13 @@ void Client::choice_Window(QString str)
     else if(str == "newContact")
     {
         findcont = new findcontacts();
+        findcont->set_lang(lan_dict);
         showFindCont();
     }
     else if (str == "newGroup")
     {
         create_group = new CreateGroup(this);
+        create_group->set_lang(lan_dict);
         showCreateGroup();
     }
 }
@@ -857,6 +863,7 @@ void Client::getCreateGroupSig(QString state, QString group_name, QString group_
     else if(state == "Create")
     {
         selectContacts = new SelectContacts(this, ui->userList);
+        selectContacts->set_lang(lan_dict);
         selectContacts->setGeometry(this->x()+350, this->y()+40, 361, 540);
         selectContacts->show();
 
@@ -1134,9 +1141,8 @@ void Client::clearHistory()
 {
     // Очистить историю.
     // Пока сеансово, добавть подтверждение и запрос в БД на очистку переписки.
-
-    QString message = "Are you sure you want to clear history?";
-    conf_message = new ConfirmWindow(this, message);
+    conf_message = new ConfirmWindow(this, lan_dict.value("conf_message_del_hist"));
+    conf_message->set_lang(lan_dict);
     conf_message->setGeometry(this->x()+355, this->y()+100, 350, 170);
     setGlass();
     conf_message->show();
@@ -1258,24 +1264,25 @@ void Client::set_default_Language()
 
 void Client::set_lang()
 {
-    ui->language->setText(lan_dict.key(ui->language->objectName()));
-    ui->down_path->setText(lan_dict.key(ui->down_path->objectName()));
-    ui->RB_sendEnter->setText(lan_dict.key(ui->RB_sendEnter->objectName()));
-    ui->RB_send_CEnter->setText(lan_dict.key(ui->RB_send_CEnter->objectName()));
-    ui->ChBox_Notif->setText(lan_dict.key(ui->ChBox_Notif->objectName()));
-    ui->ChBox_PSound->setText(lan_dict.key(ui->ChBox_PSound->objectName()));
-    ui->background->setText(lan_dict.key(ui->background->objectName()));
-    ui->PB_SelColor->setText(lan_dict.key(ui->PB_SelColor->objectName()));
-    ui->PB_LoadFileBackground->setText(lan_dict.key(ui->PB_LoadFileBackground->objectName()));
-    ui->username_label->setText(lan_dict.key(ui->username_label->objectName()));
-    ui->radioButton->setText(lan_dict.key(ui->radioButton->objectName()));
-    ui->radioButton_2->setText(lan_dict.key(ui->radioButton_2->objectName()));
-    ui->groupBox->setTitle(lan_dict.key(ui->groupBox->objectName()));
-    ui->search_line_edit->setPlaceholderText(lan_dict.key(ui->search_line_edit->objectName()));
-    ui->editText->setPlaceholderText(lan_dict.key(ui->editText->objectName()));
+    ui->language->setText(lan_dict.value(ui->language->objectName()));
+    ui->down_path->setText(lan_dict.value(ui->down_path->objectName()));
+    ui->RB_sendEnter->setText(lan_dict.value(ui->RB_sendEnter->objectName()));
+    ui->RB_send_CEnter->setText(lan_dict.value(ui->RB_send_CEnter->objectName()));
+    ui->ChBox_Notif->setText(lan_dict.value(ui->ChBox_Notif->objectName()));
+    ui->ChBox_PSound->setText(lan_dict.value(ui->ChBox_PSound->objectName()));
+    ui->background->setText(lan_dict.value(ui->background->objectName()));
+    ui->PB_SelColor->setText(lan_dict.value(ui->PB_SelColor->objectName()));
+    ui->PB_LoadFileBackground->setText(lan_dict.value(ui->PB_LoadFileBackground->objectName()));
+    ui->username_label->setText(lan_dict.value(ui->username_label->objectName()));
+    ui->radioButton->setText(lan_dict.value(ui->radioButton->objectName()));
+    ui->radioButton_2->setText(lan_dict.value(ui->radioButton_2->objectName()));
+    ui->groupBox->setTitle(lan_dict.value(ui->groupBox->objectName()));
+    ui->search_line_edit->setPlaceholderText(lan_dict.value(ui->search_line_edit->objectName()));
+    ui->editText->setPlaceholderText(lan_dict.value(ui->editText->objectName()));
+    ui->start_sys->setText(lan_dict.value(ui->start_sys->objectName()));
 
     QStringList lst_setting;
-    lst_setting = lan_dict.key("userList_3").split(',');
+    lst_setting = lan_dict.value("userList_3").split(',');
 
     for (int i=0; i<lst_setting.size(); i++)
         ui->userList_3->item(i)->setText(lst_setting[i]);
@@ -1309,8 +1316,8 @@ void Client::DeleteUser()
     // И запрос на сервер в БД, удалить из таблицы.
     // Хз что пока делать на стороне удаляемого, вдруг он будет писать, а его уже нет =(((
 
-    QString message = "Are you sure you want to delete this user?";
-    conf_message = new ConfirmWindow(this, message);
+    conf_message = new ConfirmWindow(this, lan_dict.value("conf_message_del_user"));
+    conf_message->set_lang(lan_dict);
     conf_message->setGeometry(this->x()+355, this->y()+100, 350, 170);
     setGlass();
     conf_message->show();

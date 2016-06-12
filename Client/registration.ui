@@ -195,7 +195,7 @@ border-width: 1px;
     <rect>
      <x>152</x>
      <y>284</y>
-     <width>35</width>
+     <width>71</width>
      <height>21</height>
     </rect>
    </property>
@@ -213,7 +213,7 @@ border-width: 1px;
     <rect>
      <x>152</x>
      <y>330</y>
-     <width>34</width>
+     <width>71</width>
      <height>21</height>
     </rect>
    </property>
@@ -231,7 +231,7 @@ border-width: 1px;
     <rect>
      <x>152</x>
      <y>379</y>
-     <width>77</width>
+     <width>101</width>
      <height>21</height>
     </rect>
    </property>
@@ -453,7 +453,7 @@ border-width: 1px;
     <rect>
      <x>260</x>
      <y>450</y>
-     <width>221</width>
+     <width>261</width>
      <height>16</height>
     </rect>
    </property>

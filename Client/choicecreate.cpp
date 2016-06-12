@@ -61,8 +61,13 @@ void ChoiceCreate::on_close_choice_clicked()
 
 //////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////
-///
+/// Language setting.
 void ChoiceCreate::set_lang(QMap<QString, QString> &lan_dict)
 {
-   ///////
+    ui->newContact->setText(lan_dict.value(ui->newContact->objectName()));
+    ui->newGroup->setText(lan_dict.value(ui->newGroup->objectName()));
+    ui->close_choice->setText(lan_dict.value(ui->close_choice->objectName()));
+    ui->next_choice->setText(lan_dict.value(ui->next_choice->objectName()));
+    ui->contact_descr->setText(lan_dict.value(ui->contact_descr->objectName()));
+    ui->group_descr->setText(lan_dict.value(ui->group_descr->objectName()));
 }

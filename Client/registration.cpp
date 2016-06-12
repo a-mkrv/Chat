@@ -30,11 +30,13 @@ void Registration::getMessagee()
     if(received_message == "PassEmpty")
     {
         ui->Error_label->hide();
+        ui->Error_label_2->setText(errors.at(0));
         ui->Error_label_2->show();
     }
     else if(received_message == "Already!")
     {
         ui->Error_label_2->hide();
+        ui->Error_label->setText(errors.at(1));
         ui->Error_label->show();
     }
 
@@ -62,14 +64,14 @@ void Registration::on_accept_button_clicked()
     else if(ui->password_confirm->text().isEmpty())
     {
         ui->Error_label_2->show();
-        ui->Error_label_2->setText("Confirm pass is empty");
-        return;
+        ui->Error_label_2->setText(errors.at(3));
+        return;     //"Confirm pass is empty"
     }
     else if(ui->password_confirm->text() != ui->enter_password->text())
     {
         ui->Error_label_2->show();
-        ui->Error_label_2->setText("Passwords are different");
-        return;
+        ui->Error_label_2->setText(errors.at(2));
+        return;     //"Passwords are different"
     }
 
     socket->abort();
@@ -115,9 +117,28 @@ void Registration::mousePressEvent(QMouseEvent *event)
     }
 }
 
-Registration::~Registration()
+void Registration::set_lang(QMap<QString, QString> & lan_dict)
 {
-    delete ui;
+    ui->register_2->setText(lan_dict.value(ui->register_2->objectName()));
+    ui->username->setText(lan_dict.value(ui->username->objectName()));
+    ui->sex->setText(lan_dict.value(ui->sex->objectName()));
+    ui->age_2->setText(lan_dict.value(ui->age->objectName()));
+    ui->city->setText(lan_dict.value(ui->city->objectName()));
+    ui->password->setText(lan_dict.value(ui->password->objectName()));
+    ui->confirm->setText(lan_dict.value(ui->confirm->objectName()));
+    ui->accept_button->setText(lan_dict.value(ui->accept_button->objectName()));
+    errors = lan_dict.value("errors1").split("//");
+
+    if(errors.size() == 4)
+    {
+        ui->Error_label->setText(errors.at(1));
+        ui->Error_label_2->setText(errors.at(0));
+    }
+    QStringList lst_setting;
+    lst_setting = lan_dict.value("sex_person").split(',');
+
+    for (int i=0; i<lst_setting.size(); i++)
+        ui->sex_person->setItemText(i, lst_setting[i]);
 }
 
 void Registration::on_come_back_clicked()
@@ -140,4 +161,9 @@ void Registration::on_close_window_clicked()
 void Registration::on_turn_window_clicked()
 {
     this->showMinimized();
+}
+
+Registration::~Registration()
+{
+    delete ui;
 }

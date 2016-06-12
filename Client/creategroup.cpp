@@ -80,9 +80,15 @@ void CreateGroup::on_group_avatar_clicked()
     }
 }
 
+//////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////
+/// Language setting.
 void CreateGroup::set_lang(QMap<QString, QString> & lan_dict)
 {
-    ui->
+    ui->g_name->setPlaceholderText(lan_dict.value(ui->g_name->objectName()));
+    ui->g_description->setPlaceholderText(lan_dict.value(ui->g_description->objectName()));
+    ui->close_groupW->setText(lan_dict.value(ui->close_groupW->objectName()));
+    ui->create_group->setText(lan_dict.value(ui->create_group->objectName()));
 }
 
 CreateGroup::~CreateGroup()

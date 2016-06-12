@@ -30,7 +30,7 @@ QMap<QString, QString> XML_Language::parseXML(QString fileName)
             else if (xml.name() == "value")
             {
                 xml.readNext();
-                dictionary.insert(xml.text().toString(), line_tag);
+                dictionary.insert(line_tag, xml.text().toString());
             }
         }
         xml.readNext();
@@ -38,7 +38,7 @@ QMap<QString, QString> XML_Language::parseXML(QString fileName)
 
     QMap<QString, QString>::iterator i;
     for (i = dictionary.begin(); i != dictionary.end(); ++i)
-        //qDebug() << i.key() << ": " << i.value();
+        qDebug() << i.key() << ": " << i.value();
 
    return dictionary;
 }

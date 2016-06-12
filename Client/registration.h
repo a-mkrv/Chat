@@ -46,6 +46,7 @@ private:
     RSACrypt *rsacrypt;
     QTcpSocket *socket;
     QPoint m_dragPosition;
+    QStringList errors;
 };
 
 #endif // NEWCONTACT_H

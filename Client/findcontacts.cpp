@@ -52,18 +52,30 @@ void findcontacts::SetErrorLayout(int _show)
 {
     switch (_show) {
     case 0:
-        ui->error_lay->setText("You can not add yourself..");
+        ui->error_lay->setText(errors.at(0)); //You can not add yourself..
         ui->error_lay->show();
         break;
     case 1:
-        ui->error_lay->setText("User is not found..");
+        ui->error_lay->setText(errors.at(1)); //User is not found..
         ui->error_lay->show();
         break;
     case 2:
-        ui->error_lay->setText("User is already added..");
+        ui->error_lay->setText(errors.at(2)); //User is already added..
         ui->error_lay->show();
         break;
     }
+}
+
+//////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////
+/// Language setting.
+void findcontacts::set_lang(QMap<QString, QString> & lan_dict)
+{
+    ui->add_user->setText(lan_dict.value(ui->add_user->objectName()));
+    ui->username_lineedit->setPlaceholderText(lan_dict.value(ui->username_lineedit->objectName()));
+    ui->invite_cont_button->setText(lan_dict.value(ui->invite_cont_button->objectName()));
+
+    errors = lan_dict.value("errors").split('//');
 }
 
 findcontacts::~findcontacts()

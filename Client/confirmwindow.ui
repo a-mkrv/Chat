@@ -23,7 +23,7 @@
       <widget class="QLabel" name="confirm_message">
        <property name="font">
         <font>
-         <pointsize>10</pointsize>
+         <pointsize>11</pointsize>
         </font>
        </property>
        <property name="text">
