@@ -64,24 +64,52 @@
 			<line>Error_label</line>
 			<value>Error.. Name already exists.</value>
 		</item>
-		<item>
-			<line>Error_label_2</line>
-			<value>Error.. Enter username and password.</value>
-		</item>
-		<item>
+	<item>
 			<line>accept_button</line>
 			<value>ACCEPT</value>
 		</item>
+		<item>
+			<line>errors1</line>
+			<value>Error.. Enter username and password. // Error.. Name already exists. // Error .. Passwords are not equal. // Error .. Confirm password.</value>
+		</item>
+	
 	</Screen>
 
 	<Screen w="confirm">	
 		<item>
-			<line>cancel_Button</line>
+			<line>cancel_Button_conf</line>
 			<value>CANCEL</value>
 		</item>
 		<item>
 			<line>ok_Button</line>
 			<value>ACCEPT</value>
+	</item>
+		<item>
+			<line>conf_message_del_hist</line>
+			<value>Are you sure you want to clear history?</value>
+		</item>
+		<item>
+			<line>conf_message_del_user</line>
+			<value>Are you sure you want to delete this user?</value>
+		</item>
+	</Screen>
+
+	<Screen w="creategroup">	
+		<item>
+			<line>g_name</line>
+			<value>Group name</value>
+		</item>
+		<item>
+			<line>g_description</line>
+			<value>Group description</value>
+		</item>
+		<item>
+			<line>close_groupW</line>
+			<value>CANCEL</value>
+		</item>
+		<item>
+			<line>create_group</line>
+			<value>NEXT</value>
 		</item>
 	</Screen>
 
@@ -95,18 +123,18 @@
 			<value>User Name</value>
 		</item>
 		<item>
-			<line>error_lay</line>
-			<value>User is not found..</value>
-		</item>
-		<item>
 			<line>invite_cont_button</line>
 			<value>Invite</value>
+		</item>
+	<item>
+			<line>errors</line>
+			<value>You can not add yourself.. //User is not found.. //User is already added.. </value>
 		</item>
 	</Screen>
 
 	<Screen w="select">	
 		<item>
-			<line>members</line>
+			<line>count_member</line>
 			<value>Add members:</value>
 		</item>
 		<item>
@@ -119,9 +147,36 @@
 		</item>
 	</Screen>
  	
+	<Screen w="choicecreate">	
+		<item>
+			<line>newContact</line>
+			<value>New contact</value>
+		</item>
+		<item>
+			<line>newGroup</line>
+			<value>Create group</value>
+		</item>
+		<item>
+			<line>close_choice</line>
+			<value>CANCEL</value>
+		</item>
+		<item>
+			<line>next_choice</line>
+			<value>NEXT</value>
+		</item>
+		<item>
+			<line>contact_descr</line>
+			<value>Add a new user to your friend list</value>
+		</item>
+		<item>
+			<line>group_descr</line>
+			<value>Create a group room for collective dialogue</value>
+		</item>
+	</Screen>
+
 	<Screen w="setting">	
 		<item>
-			<line>checkBox_3</line>
+			<line>start_sys</line>
 			<value>Launch when system starts</value>
 		</item>
 		<item>
@@ -133,12 +188,16 @@
 			<value>Download path: </value>
 		</item>
 		<item>
+			<line>Download_path_PB</line>
+			<value>Change</value>
+		</item>
+		<item>
 			<line>RB_sendEnter</line>
-			<value>Send by \"Enter\"</value>
+			<value>Send by "Enter"</value>
 		</item>
 		<item>
 			<line>RB_send_CEnter</line>
-			<value>Send by \"Ctrl + Enter\"</value>
+			<value>Send by "Ctrl + Enter"</value>
 		</item>
 		<item>
 			<line>ChBox_Notif</line>
@@ -193,4 +252,66 @@
 			<value>Please select a chat to start messaging or add new friends to communicate!</value>
 		</item>
 	</Screen>
+
+	<Screen w="other">	
+		<item>
+			<line>ContextDelUser</line>
+			<value>Delete user</value>
+		</item>
+		<item>
+			<line>ContextClearSelection</line>
+			<value>Clear selection</value>
+		</item>
+		<item>
+			<line>ContextClearHistory</line>
+			<value>Clear history</value>
+		</item>
+		<item>
+			<line>fileWindow</line>
+			<value>Select file to send</value>
+		</item>
+		<item>
+			<line>SelectImages</line>
+			<value>Selecting the image</value>
+		</item>
+		<item>
+			<line>NewGroup_msg</line>
+			<value>You have created a new group dialogue</value>
+		</item>
+		<item>
+			<line>notice_msg</line>
+			<value>New message</value>
+		</item>
+		<item>
+			<line>File</line>
+			<value>File</value>
+		</item>
+		<item>
+			<line>Ad_User</line>
+			<value>You added user</value>
+		</item>
+		<item>
+			<line>Invate_msg</line>
+			<value>Hey, let me add you to the list of contacts?</value>
+		</item>
+	</Screen>
+
+	<Screen w="error">
+		<item>
+			<line>Disconnected_1</line>
+			<value>Disconnected from Server.</value>
+		</item>
+		<item>
+			<line>ServerNF</line>
+			<value>The host was not found.\nPlease check the hostname and port settings.</value>
+		</item>
+		<item>
+			<line>Disconnected_2</line>
+			<value>The connection was aborted by the client.</value>
+		</item>
+		<item>
+			<line>Occurred_err</line>
+			<value>The following error occurred: </value>
+		</item>
+	</Screen>	
 </EN_Language>

@@ -101,7 +101,6 @@ private slots:
     void ClearSelect();
     void DeleteUser();
     void setGlass();
-    void on_comboBox_currentIndexChanged(int index);
     void AddUser_Chat(QString, QString, QList<QPair<QString, QString> >, int);
     void on_search_line_edit_textChanged(const QString &arg1);
     void on_search_list_clicked(const QModelIndex &index);
@@ -112,6 +111,7 @@ private slots:
     void getMessage_UserList(PairStringList &, PairStringList &, ChatListVector &);
     void set_default_Language();
     void set_lang();
+    void on_select_language_box_currentIndexChanged(int index);
 
 public slots:
     void recieveData(QString str, QString pas, QString);

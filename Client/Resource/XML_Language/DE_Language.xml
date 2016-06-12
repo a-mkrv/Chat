@@ -65,12 +65,12 @@
 			<value>Fehler .. Name bereits vorhanden ist.</value>
 		</item>
 		<item>
-			<line>Error_label_2</line>
-			<value>Fehler .. Geben Sie Ihren Benutzernamen und Ihr Passwort ein.</value>
-		</item>
-		<item>
 			<line>accept_button</line>
 			<value>AKZEPTIEREN</value>
+		</item>
+		<item>
+			<line>errors1</line>
+			<value>Fehler.. Geben Sie Ihren Benutzernamen und Ihr Passwort ein. // Fehler.. Name bereits vorhanden ist. // Fehler .. Passwörter stimmen nicht überein. // Fehler.. Passwort bestätigen.</value>
 		</item>
 	</Screen>
 
@@ -82,6 +82,33 @@
 		<item>
 			<line>ok_Button</line>
 			<value>AKZEPTIEREN</value>
+		</item>
+		<item>
+			<line>conf_message_del_hist</line>
+			<value>Sind Sie sicher, dass Sie die Geschichte zu löschen?</value>
+		</item>
+		<item>
+			<line>conf_message_del_user</line>
+			<value>Sind Sie sicher, dass Sie diesen Benutzer löschen?</value>
+		</item>
+	</Screen>
+
+<Screen w="creategroup">	
+		<item>
+			<line>g_name</line>
+			<value>Gruppennamen</value>
+		</item>
+		<item>
+			<line>g_description</line>
+			<value>Beschreibung</value>
+		</item>
+		<item>
+			<line>close_groupW</line>
+			<value>ZURÜCK</value>
+		</item>
+		<item>
+			<line>create_group</line>
+			<value>FERNER</value>
 		</item>
 	</Screen>
 
@@ -95,23 +122,23 @@
 			<value>Benutzername</value>
 		</item>
 		<item>
-			<line>error_lay</line>
-			<value>Benutzer nicht gefunden</value>
-		</item>
-		<item>
 			<line>invite_cont_button</line>
 			<value>Hinzufügen</value>
+		</item>
+		<item>
+			<line>errors</line>
+			<value>Sie können sich nicht fügen.. // Benutzer nicht gefunden.. // Benutzer bereits hinzugefügt..</value>
 		</item>
 	</Screen>
 
 	<Screen w="select">	
 		<item>
-			<line>members</line>
-			<value>Участники:</value>
+			<line>count_member</line>
+			<value>Beteiligten:</value>
 		</item>
 		<item>
 			<line>crGroup_button</line>
-			<value>СОЗДАТЬ</value>
+			<value>CREATE</value>
 		</item>
 		<item>
 			<line>cancel_button</line>
@@ -119,9 +146,36 @@
 		</item>
 	</Screen>
  	
+ 	<Screen w="choicecreate">	
+		<item>
+			<line>newContact</line>
+			<value>Benutzer hinzufügen</value>
+		</item>
+		<item>
+			<line>newGroup</line>
+			<value>Gruppe erstellen</value>
+		</item>
+		<item>
+			<line>close_choice</line>
+			<value>ZURÜCK</value>
+		</item>
+		<item>
+			<line>next_choice</line>
+			<value>FERNER</value>
+		</item>
+		<item>
+			<line>contact_descr</line>
+			<value>Fügen Sie einen neuen Benutzer zu Ihrer Freundesliste</value>
+		</item>
+		<item>
+			<line>group_descr</line>
+			<value>Erstellen Raum für gemeinsame Dialog</value>
+		</item>
+	</Screen>
+
 	<Screen w="setting">	
 		<item>
-			<line>checkBox_3</line>
+			<line>start_sys</line>
 			<value>Legen Sie beim Start</value>
 		</item>
 		<item>
@@ -133,12 +187,16 @@
 			<value>Der Lastweg: </value>
 		</item>
 		<item>
+			<line>Download_path_PB</line>
+			<value>Ändern</value>
+		</item>
+		<item>
 			<line>RB_sendEnter</line>
-			<value>Senden von \"Enter\"</value>
+			<value>Senden von "Enter"</value>
 		</item>
 		<item>
 			<line>RB_send_CEnter</line>
-			<value>Senden von \"Ctrl + Enter\"</value>
+			<value>Senden von "Ctrl + Enter"</value>
 		</item>
 		<item>
 			<line>ChBox_Notif</line>
@@ -193,6 +251,69 @@
 			<value>Bitte wählen Sie einen Dialog Dialog zu starten oder neue Freunde hinzuzufügen!</value>
 		</item>
 	</Screen>
+
+
+	<Screen w="other">	
+		<item>
+			<line>ContextDelUser</line>
+			<value>Entfernen von Benutzer</value>
+		</item>
+		<item>
+			<line>ContextClearSelection</line>
+			<value>Auswahl aufzuheben</value>
+		</item>
+		<item>
+			<line>ContextClearHistory</line>
+			<value>löschen Geschichte</value>
+		</item>
+		<item>
+			<line>fileWindow</line>
+			<value>Wählen Sie Datei senden</value>
+		</item>
+		<item>
+			<line>SelectImages</line>
+			<value>Auswählen der Bild</value>
+		</item>
+		<item>
+			<line>NewGroup_msg</line>
+			<value>Sie haben eine neue Gruppe Dialog geschaffen</value>
+		</item>
+		<item>
+			<line>notice_msg</line>
+			<value>Neuer Beitrag</value>
+		</item>
+		<item>
+			<line>File</line>
+			<value>Datei</value>
+		</item>
+		<item>
+			<line>Ad_User</line>
+			<value>Sie haben Benutzer</value>
+		</item>
+		<item>
+			<line>Invate_msg</line>
+			<value>Hey, lassen Sie mich hinzufügen, die Sie zu ihrer Kontaktliste?</value>
+		</item>
+	</Screen>
+
+	<Screen w="error">
+		<item>
+			<line>Disconnected_1</line>
+			<value>Verlust der Verbindung an den Server.</value>
+		</item>
+		<item>
+			<line>ServerNF</line>
+			<value>Server nicht gefunden. \nBitte geben Sie Ihre korrekte Adresse und Port des Servers.</value>
+		</item>
+		<item>
+			<line>Disconnected_2</line>
+			<value>Die Verbindung wurde durch den Client beendet.</value>
+		</item>
+		<item>
+			<line>Occurred_err</line>
+			<value>Folgender Fehler ist aufgetreten: </value>
+		</item>
+	</Screen>	
 </DE_Language>
 
 	

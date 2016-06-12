@@ -65,23 +65,51 @@
 			<value>Erreur .. Nom existe déjà.</value>
 		</item>
 		<item>
-			<line>Error_label_2</line>
-			<value>Erreur .. Entrez votre nom d'utilisateur et mot de passe.</value>
-		</item>
-		<item>
 			<line>accept_button</line>
 			<value>ACCEPTER</value>
+		</item>
+		<item>
+			<line>errors1</line>
+			<value> Erreur.. Entrez votre nom d'utilisateur et mot de passe. // Erreur.. nom existe déjà. // Erreur.. Les mots de passe ne correspondent pas. // Erreur .. Confirmer mot de passe.
+			</value>
 		</item>
 	</Screen>
 
 	<Screen w="confirm">	
 		<item>
-			<line>cancel_Button</line>
+			<line>cancel_Button_conf</line>
 			<value>ANNULER</value>
 		</item>
 		<item>
 			<line>ok_Button</line>
 			<value>ACCEPTER</value>
+		</item>
+		<item>
+			<line>conf_message_del_hist</line>
+			<value>Êtes-vous sûr de vouloir effacer l'historique?</value>
+		</item>
+		<item>
+			<line>conf_message_del_user</line>
+			<value>Êtes-vous sûr de vouloir supprimer cet utilisateur?</value>
+		</item>
+	</Screen>
+
+	<Screen w="creategroup">	
+		<item>
+			<line>g_name</line>
+			<value>Nom de groupe</value>
+		</item>
+		<item>
+			<line>g_description</line>
+			<value>Description</value>
+		</item>
+		<item>
+			<line>close_groupW</line>
+			<value>ANNULER</value>
+		</item>
+		<item>
+			<line>create_group</line>
+			<value>PUIS</value>
 		</item>
 	</Screen>
 
@@ -95,12 +123,12 @@
 			<value>Nom d'utilisateur</value>
 		</item>
 		<item>
-			<line>error_lay</line>
-			<value>Utilisateur introuvable</value>
-		</item>
-		<item>
 			<line>invite_cont_button</line>
 			<value>Ajouter</value>
+		</item>
+		<item>
+			<line>errors</line>
+			<value>Vous ne pouvez pas ajouter vous-même.. // Utilisateur introuvable.. // Utilisateur déjà ajouté..</value>
 		</item>
 	</Screen>
 
@@ -119,9 +147,35 @@
 		</item>
 	</Screen>
 
+	<Screen w="choicecreate">	
+		<item>
+			<line>newContact</line>
+			<value>Ajouter un utilisateur</value>
+		</item>
+		<item>
+			<line>newGroup</line>
+			<value>Créer un groupe</value>
+		</item>
+		<item>
+			<line>close_choice</line>
+			<value>ANNULER</value>
+		</item>
+		<item>
+			<line>next_choice</line>
+			<value>PUIS</value>
+		</item>
+		<item>
+			<line>contact_descr</line>
+			<value>Ajouter un nouvel utilisateur à votre liste d'amis</value>
+		</item>
+		<item>
+			<line>group_descr</line>
+			<value>Créer un espace de dialogue collective</value>
+		</item>
+	</Screen>
 	<Screen w="setting">	
 		<item>
-			<line>checkBox_3</line>
+			<line>start_sys</line>
 			<value>Chargement au lancement</value>
 		</item>
 		<item>
@@ -133,12 +187,16 @@
 			<value>Le chemin d'amorçage: </value>
 		</item>
 		<item>
+			<line>Download_path_PB</line>
+			<value>Modifier</value>
+		</item>
+		<item>
 			<line>RB_sendEnter</line>
-			<value>Envoyer à \"Entrée\"</value>
+			<value>Envoyer à "Entrée"</value>
 		</item>
 		<item>
 			<line>RB_send_CEnter</line>
-			<value>Envoyer à \"Ctrl + Entrée\"</value>
+			<value>Envoyer à "Ctrl + Entrée"</value>
 		</item>
 		<item>
 			<line>ChBox_Notif</line>
@@ -193,4 +251,66 @@
 			<value>S'il vous plaît sélectionner un dialogue pour démarrer le dialogue ou ajouter de nouveaux amis!</value>
 		</item>
 	</Screen>
+
+	<Screen w="other">	
+		<item>
+			<line>ContextDelUser</line>
+			<value>Supprimer l'utilisateur</value>
+		</item>
+		<item>
+			<line>ContextClearSelection</line>
+			<value>Désélectionner</value>
+		</item>
+		<item>
+			<line>ContextClearHistory</line>
+			<value>Effacer l'historique</value>
+		</item>
+		<item>
+			<line>fileWindow</line>
+			<value>Selektearje triem te stjoeren</value>
+		</item>
+		<item>
+			<line>SelectImages</line>
+			<value>Selektearje image</value>
+		</item>
+		<item>
+			<line>NewGroup_msg</line>
+			<value>Jo hawwe dien in nije groep dialooch</value>
+		</item>
+		<item>
+			<line>notice_msg</line>
+			<value>New post</value>
+		</item>
+		<item>
+			<line>File</line>
+			<value>Triem</value>
+		</item>
+		<item>
+			<line>Ad_User</line>
+			<value>Jo tafoege brûker</value>
+		</item>
+		<item>
+			<line>Invate_msg</line>
+			<value>Hey, lit my foegje jo nei har kontakt list?</value>
+		</item>
+	</Screen>
+
+	<Screen w="error">
+		<item>
+			<line>Disconnected_1</line>
+			<value>Ferlies fan ferbining mei de tsjinner.</value>
+		</item>
+		<item>
+			<line>ServerNF</line>
+			<value>Tsjinner net fûn. \nTink bieden jo korrekte adres en poarte fan 'e tsjinner.</value>
+		</item>
+		<item>
+			<line>Disconnected_2</line>
+			<value>De ferbining waard beëinige wurde troch de kliînt.</value>
+		</item>
+		<item>
+			<line>Occurred_err</line>
+			<value>De folgjende fout die him foar: </value>
+		</item>
+	</Screen>	
 </FR_Language>

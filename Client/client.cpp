@@ -11,14 +11,17 @@
 #include <QPropertyAnimation>
 #include <QGraphicsOpacityEffect>
 
-#define DEFAULT_LANGUAGE QString("RU_Language")
+#define DEFAULT_LANGUAGE QString("EN_Language")
 
-QString gl_fname; //find user - friend
+
+QString gl_fname;
 
 Client::Client(QWidget *parent) : QMainWindow(parent), download_path("(C:/...)"), personDates(false),ui(new Ui::Client)
 {
     srand((time(NULL)));
     ui->setupUi(this);
+
+
     this->setWindowFlags(Qt::Window | Qt::FramelessWindowHint | Qt::CustomizeWindowHint);
 
     frameEmoji      = new EmojiFrame();
@@ -268,9 +271,9 @@ void Client::AddUser_Chat(QString _username, QString _sex, QList<QPair<QString, 
         item->setData(Qt::ToolTipRole, QDateTime::currentDateTime().toString("dd.MM.yy hh:mm"));
         if (count==-2)
         {   QListWidgetItem *item2 = new QListWidgetItem();
-            item->setData(Qt::UserRole + 1, "You added a user");
+            item->setData(Qt::UserRole + 1, lan_dict.value("Ad_User"));
             item2->setData(Qt::UserRole + 1, "FROM");
-            item2->setData(Qt::DisplayRole, "Hey, let me add you to the list of contacts?");
+            item2->setData(Qt::DisplayRole, lan_dict.value("Invate_msg"));
             item2->setData(Qt::ToolTipRole, QDateTime::currentDateTime().toString("dd.MM.yy hh:mm"));
             chatlist->addItem(item2);
         }
@@ -332,7 +335,7 @@ void Client::AddUser_Chat(QString _username, QString _sex, QList<QPair<QString, 
                 item2->setData(Qt::ToolTipRole, fsize.remove(0,5) +  "  " +timeStr);
                 item2->setData(Qt::UserRole + 1, "FROMF");
                 item2->setData(Qt::DecorationRole, pic);
-                item->setData(Qt::UserRole + 1, "File: " + msg);
+                item->setData(Qt::UserRole + 1, lan_dict.value("File") + ": " + msg);
             }
             else
             {
@@ -543,12 +546,12 @@ void Client::getMessage()
                     item->setData(Qt::DisplayRole, filename);
                     item->setData(Qt::ToolTipRole, QString::number((float)fileSize/1024, 'f', 2)  + " KB  " +  QDateTime::currentDateTime().toString("dd.MM.yy hh:mm"));
                     item->setData(Qt::DecorationRole, pic);
-                    vec.at(i)->setData(Qt::UserRole + 1, "File: " + filename);
+                    vec.at(i)->setData(Qt::UserRole + 1, lan_dict.value("File") + ": " + filename);
                     vec.at(i)->setData(Qt::ToolTipRole, QDateTime::currentDateTime().toString("dd.MM.yy hh:mm"));
 
                     if(!this->isVisible() && ui->ChBox_Notif->isChecked())
                     {
-                        notice->setPopupText("New message (" + fromname + "):\n" + "File: " + filename);
+                        notice->setPopupText(lan_dict.value("notice_msg") + " (" + fromname + "):\n" + lan_dict.value("File") + ": " + filename);
                         notice->show();
                     }
 
@@ -610,7 +613,7 @@ void Client::getMessage()
 
                         if(!this->isVisible())
                         {
-                            notice->setPopupText("New message (" + fromname + "):\n" + decodmsg);
+                            notice->setPopupText(lan_dict.value("notice_msg") + " (" + fromname + "):\n" + decodmsg);
                             notice->show();
                         }
                         chatvec.at(i)->addItem(item);
@@ -662,23 +665,20 @@ void Client::show_Error(QAbstractSocket::SocketError errorSocket)
     switch (errorSocket)
     {
     case QAbstractSocket::RemoteHostClosedError:
-        QMessageBox::information(this, tr("Chat Client"),
-                                 tr("Disconnected from Server."));
+        QMessageBox::information(this, tr("W-H-I-S-P-E-R"),
+                                 lan_dict.value("Disconnected_1"));
         break;
     case QAbstractSocket::HostNotFoundError:
-        QMessageBox::information(this, tr("Chat Client"),
-                                 tr("The host was not found.\nPlease check the hostname and port settings."));
+        QMessageBox::information(this, tr("W-H-I-S-P-E-R"),
+                               lan_dict.value("ServerNF"));
         break;
     case QAbstractSocket::ConnectionRefusedError:
-        QMessageBox::information(this, tr("Chat Client"),
-                                 tr("The connection was refused by the peer.\n"
-                                    "Make sure the server is running,\n"
-                                    "and check that the host name and port\n"
-                                    "settings are correct."));
+        QMessageBox::information(this, tr("W-H-I-S-P-E-R"),
+                                 lan_dict.value("Disconnected_2"));
         break;
     default:
-        QMessageBox::information(this, tr("Chat Client"),
-                                 tr("The following error occurred: %1.").arg(tcpSocket->errorString()));
+        QMessageBox::information(this, tr("W-H-I-S-P-E-R"),
+                                 lan_dict.value("Occurred_err") + QString("%1.").arg(tcpSocket->errorString()));
     }
 }
 
@@ -900,7 +900,7 @@ void Client::addGroup_toList(QStringList userList, QString state)
 
         QListWidgetItem *item2 = new QListWidgetItem();
         item2->setData(Qt::UserRole + 1, "TO");
-        item2->setData(Qt::DisplayRole, "You have created a new room \"" + groupData.at(0) + "\"");
+        item2->setData(Qt::DisplayRole, lan_dict.value("NewGroup_msg") + " \"" + groupData.at(0) + "\"");
         item2->setData(Qt::ToolTipRole, QDateTime::currentDateTime().toString("dd.MM.yy hh:mm"));
         chatlist->addItem(item2);
 
@@ -992,7 +992,7 @@ void Client::on_PB_SelColor_clicked()
 
 void Client::on_PB_LoadFileBackground_clicked()
 {
-    QString files = QFileDialog::getOpenFileName(this, tr("Select Images"), "" , tr("Images (*.jpg *jpeg *.png)"));
+    QString files = QFileDialog::getOpenFileName(this, lan_dict.value("SelectImages"), "" , tr("Images (*.jpg *jpeg *.png)"));
 
     if(QString::compare(files, QString())!=0)
     {
@@ -1013,7 +1013,7 @@ void Client::on_PB_LoadFileBackground_clicked()
 
 void Client::on_radioButton_2_clicked()
 {
-    QString files = QFileDialog::getOpenFileName(this, tr("Select Images"), "" , tr("Images (*.jpg *jpeg *.png)"));
+    QString files = QFileDialog::getOpenFileName(this, lan_dict.value("SelectImages"), "" , tr("Images (*.jpg *jpeg *.png)"));
 
     if(QString::compare(files, QString())!=0)
     {
@@ -1041,7 +1041,7 @@ void Client::on_radioButton_clicked()
 
 void Client::on_Download_path_PB_clicked()
 {
-    QString path = QFileDialog::getExistingDirectory(this, tr("Select Images"), "");
+    QString path = QFileDialog::getExistingDirectory(this, lan_dict.value("SelectImages"), "");
 
     if(QString::compare(path, QString())!=0)
     {
@@ -1058,9 +1058,8 @@ void Client::on_pushButton_2_clicked()
     if(ui->stackedWidget_2->isHidden())
         return;
 
-    QString filePatch = QFileDialog::getOpenFileName(this,
-                                                     QObject::trUtf8("Выбор файла для отправки"), "",
-                                                     QObject::trUtf8("(*.*)"));
+    QString filePatch = QFileDialog::getOpenFileName(this, lan_dict.value("fileWindow"), "", QObject::trUtf8("(*.*)"));
+
     if (filePatch.isEmpty())
         return;
 
@@ -1218,7 +1217,7 @@ void Client::showContextMenuForChat(const QPoint &pos)
     newPos.setY(pos.y()+30);
 
     QMenu * menu = new QMenu(this);
-    QAction * deleteDevice = new QAction(trUtf8("Clear history"), this);
+    QAction * deleteDevice = new QAction(lan_dict.value("ContextClearHistory"), this);
     QAction * delSelect = NULL;
     menu->addAction(deleteDevice);
 
@@ -1226,7 +1225,7 @@ void Client::showContextMenuForChat(const QPoint &pos)
     if(ui->stackedWidget_2->count()!=0)
         if(!chatvec.at(ui->stackedWidget_2->currentIndex())->selectedItems().isEmpty())
         {
-            delSelect = new QAction(trUtf8("Clear selection"), this);
+            delSelect = new QAction(lan_dict.value("ContextClearSelection"), this);
             menu->addAction(delSelect);
         }
 
@@ -1247,7 +1246,7 @@ void Client::showContextMenuForWidget(const QPoint &pos)
     newPos.setY(pos.y()+45);
 
     QMenu * menu = new QMenu(this);
-    QAction * deleteDevice = new QAction(trUtf8("Delete user"), this);
+    QAction * deleteDevice = new QAction(lan_dict.value("ContextDelUser"), this);
     connect(deleteDevice, SIGNAL(triggered()), this, SLOT(DeleteUser())); // Обработчик удаления записи
     menu->addAction(deleteDevice);
     menu->popup(mapToGlobal(newPos));
@@ -1280,6 +1279,7 @@ void Client::set_lang()
     ui->search_line_edit->setPlaceholderText(lan_dict.value(ui->search_line_edit->objectName()));
     ui->editText->setPlaceholderText(lan_dict.value(ui->editText->objectName()));
     ui->start_sys->setText(lan_dict.value(ui->start_sys->objectName()));
+    //ui->start_textBrowser->setText(lan_dict.value(ui->start_textBrowser->objectName()));
 
     QStringList lst_setting;
     lst_setting = lan_dict.value("userList_3").split(',');
@@ -1288,28 +1288,6 @@ void Client::set_lang()
         ui->userList_3->item(i)->setText(lst_setting[i]);
 
 }
-
-void Client::on_comboBox_currentIndexChanged(int index)
-{
-    switch (index) {
-    case 0:
-    {
-
-        break;
-    }
-    case 1:
-    {
-
-        break;
-    }
-    case 2:
-    {
-
-        break;
-    }
-    }
-}
-
 
 void Client::DeleteUser()
 {
@@ -1378,11 +1356,6 @@ void Client::on_search_list_clicked(const QModelIndex &index)
     }
 }
 
-Client::~Client()
-{
-    delete ui;
-}
-
 
 void Client::on_glass_button_clicked()
 {
@@ -1402,3 +1375,40 @@ void Client::on_info_user_button_clicked()
     out << quint32(0) << QTime::currentTime() << QString("_USERINFO_") << name_user;
     tcpSocket->write(msg);
 }
+
+void Client::on_select_language_box_currentIndexChanged(int index)
+{
+    lan_dict.clear();
+
+    switch (index) {
+    case 0:
+    {
+        lan_dict = set_language->parseXML(DEFAULT_LANGUAGE);
+        break;
+    }
+    case 1:
+    {
+        lan_dict = set_language->parseXML("FR_Language");
+        break;
+    }
+    case 2:
+    {
+        lan_dict = set_language->parseXML("DE_Language");
+        break;
+    }
+    case 3:
+    {
+        lan_dict = set_language->parseXML("RU_Language");
+        break;
+    }
+    }
+
+    set_lang();
+}
+
+
+Client::~Client()
+{
+    delete ui;
+}
+

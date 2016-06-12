@@ -41,8 +41,6 @@ SelectContacts::SelectContacts(QWidget *parent, QListWidget *list) :
         item->setData(Qt::DecorationRole, list->item(i)->data(Qt::DecorationRole));
         ui->userList->addItem(item);
     }
-
-    ui->count_member->setText("Add members: 0/" + QString::number(list->count()));
 }
 
 //////////////////////////////////////////////////////////
@@ -85,7 +83,7 @@ void SelectContacts::on_userList_itemSelectionChanged()
         if(ui->userList->item(i)->isSelected())
             count ++;
     }
-    //"Add members: "
+
     ui->count_member->setText(languageMembers + QString::number(count) + "/" + QString::number(ui->userList->count()));
 }
 

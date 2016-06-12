@@ -70,7 +70,7 @@
 		</item>
 		<item>
 			<line>errors1</line>
-			<value>Ошибка.. Введите имя пользователя и пароль. // Ошибка.. Имя уже существует. // Ошибка.. Пароли не совпадают. // Ошибка.. Подтвердите пароль. 
+			<value> Ошибка.. Введите имя пользователя и пароль. // Ошибка.. Имя уже существует. // Ошибка.. Пароли не совпадают. // Ошибка.. Подтвердите пароль. 
 			</value>
 		</item>
 	</Screen>
@@ -128,7 +128,7 @@
 		</item>
 		<item>
 			<line>errors</line>
-			<value>You can not add yourself.. //User is not found.. //User is already added.. </value>
+			<value>Вы не можете добавить себя.. //Пользователь не найден.. //Пользователь уже добавлен.. </value>
 		</item>
 	</Screen>
 
@@ -189,7 +189,7 @@
 		</item>
 		<item>
 			<line>Download_path_PB</line>
-			<value>Изменить </value>
+			<value>Изменить</value>
 		</item>
 		<item>
 			<line>RB_sendEnter</line>
@@ -252,6 +252,68 @@
 			<value>Пожалуйста, выберите диалог, чтобы начать общение или добавьте новых друзей!</value>
 		</item>
 	</Screen>
+
+	<Screen w="other">	
+		<item>
+			<line>ContextDelUser</line>
+			<value>Удалить пользователя</value>
+		</item>
+		<item>
+			<line>ContextClearSelection</line>
+			<value>Отменить выделение</value>
+		</item>
+		<item>
+			<line>ContextClearHistory</line>
+			<value>Очистить историю</value>
+		</item>
+		<item>
+			<line>fileWindow</line>
+			<value>Выбор файла для отправки</value>
+		</item>
+		<item>
+			<line>SelectImages</line>
+			<value>Выбор изображения</value>
+		</item>
+		<item>
+			<line>NewGroup_msg</line>
+			<value>Вы создали новый групповой диалог</value>
+		</item>
+		<item>
+			<line>notice_msg</line>
+			<value>Новое сообщение</value>
+		</item>
+		<item>
+			<line>File</line>
+			<value>Файл</value>
+		</item>
+		<item>
+			<line>Ad_User</line>
+			<value>Вы добавили пользователя</value>
+		</item>
+		<item>
+			<line>Invate_msg</line>
+			<value>Привет, позвольте мне добавить вас в список контактов?</value>
+		</item>
+	</Screen>
+
+	<Screen w="error">
+		<item>
+			<line>Disconnected_1</line>
+			<value>Потеря соединения с сервером.</value>
+		</item>
+		<item>
+			<line>ServerNF</line>
+			<value>Сервер не найден. \nПожалуйста, укажите правильный адрес и порт сервера.</value>
+		</item>
+		<item>
+			<line>Disconnected_2</line>
+			<value>Соединение было разорвано клиентом.</value>
+		</item>
+		<item>
+			<line>Occurred_err</line>
+			<value>Произошла следующая ошибка: </value>
+		</item>
+	</Screen>	
 </RU_Language>
 
 	
