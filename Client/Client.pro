@@ -55,7 +55,8 @@ HEADERS  += client.h \
     usersgroupinfo.h \
     authorization.h \
     registration.h \
-    xml_language.h
+    xml_language.h \
+    client_define.h
 
 FORMS    += client.ui \
     emojiframe.ui \

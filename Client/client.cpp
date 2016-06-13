@@ -1,17 +1,16 @@
 #include "client.h"
 #include "ui_client.h"
-#include <QDebug>
-#include <QPixmap>
-#include <QImage>
-#include <QIcon>
-#include <QFileDialog>
-#include <QString>
-#include <QPainter>
 #include <time.h>
-#include <QPropertyAnimation>
-#include <QGraphicsOpacityEffect>
+#include "client_define.h"
 
-#define DEFAULT_LANGUAGE QString("EN_Language")
+/****************************************************************/
+/*                                                              */
+/*   The main class that performs most of the work application. */
+/*                Receiving a request from the server,          */
+/*                    install the necessary settings,           */
+/*                        and opening windows.                  */
+/*                                                              */
+/****************************************************************/
 
 
 QString gl_fname;
@@ -20,9 +19,8 @@ Client::Client(QWidget *parent) : QMainWindow(parent), download_path("(C:/...)")
 {
     srand((time(NULL)));
     ui->setupUi(this);
-
-
     this->setWindowFlags(Qt::Window | Qt::FramelessWindowHint | Qt::CustomizeWindowHint);
+
 
     frameEmoji      = new EmojiFrame();
     emojiMan        = new EmojiManager();
@@ -38,24 +36,25 @@ Client::Client(QWidget *parent) : QMainWindow(parent), download_path("(C:/...)")
 
     QColor defaulcolor(Qt::white);
     colorchat = defaulcolor.name();
-    ui->RB_sendEnter->setChecked(true);
-    ui->userList->setContextMenuPolicy(Qt::CustomContextMenu);
-    ui->stackedWidget_2->setContextMenuPolicy(Qt::CustomContextMenu);
-    ui->userList->setItemDelegate(new UserListDelegate(ui->userList));
-    ui->search_list->setItemDelegate(new UserListDelegate(ui->search_list));
-    ui->label_6->setText(QDir::homePath() + "/Whisper/");
-    ui->widget_2->hide();
-    ui->search_list->hide();
-    ui->glass_button->raise();
-    ui->glass_button->hide();
+
+    U_RB_sendEnter->setChecked(true);
+    U_userList->setContextMenuPolicy(Qt::CustomContextMenu);
+    U_stackedWidget_2->setContextMenuPolicy(Qt::CustomContextMenu);
+    U_userList->setItemDelegate(new UserListDelegate(U_userList));
+    U_search_list->setItemDelegate(new UserListDelegate(U_search_list));
+    U_label_6->setText(QDir::homePath() + "/Whisper/");
+    U_widget_2->hide();
+    U_search_list->hide();
+    U_glass_button->raise();
+    U_glass_button->hide();
     set_default_Language();
 
     nextBlockSize = 0;
     FriendCount = 0;
 
-    trayIconMenu->addAction(ui->actionShowHideWindow);
+    trayIconMenu->addAction(U_actionShowHideWindow);
     trayIconMenu->addSeparator();
-    trayIconMenu->addAction(ui->actionExit);
+    trayIconMenu->addAction(U_actionExit);
     trayIcon->setContextMenu(trayIconMenu);
     trayIcon->hide();
 
@@ -68,50 +67,29 @@ Client::Client(QWidget *parent) : QMainWindow(parent), download_path("(C:/...)")
     connect(tcpSocket, SIGNAL(connected()), this, SLOT(send_personal_data()));
     connect(tcpSocket, SIGNAL(disconnected()), this, SLOT(onDisconnect()));
 
-    connect(ui->userSetting_button, SIGNAL(clicked()), this, SLOT(on_userSetting_clicked()));
-    connect(ui->close_setting_button_2, SIGNAL(clicked()), this, SLOT(on_close_setting_button_clicked()));
-    connect(ui->userList_3, SIGNAL(itemClicked(QListWidgetItem*)), SLOT(whisperOnClick(QListWidgetItem*)));
-    connect(ui->userList, SIGNAL(itemDoubleClicked(QListWidgetItem*)), SLOT(whisperOnClickUsers(QListWidgetItem*)));
-    connect(ui->userList, SIGNAL(itemClicked(QListWidgetItem*)), SLOT(whisperOnClickSelectUsers(QListWidgetItem*)));
-    connect(ui->actionExit, SIGNAL(triggered()), this, SLOT(close()));
-    connect(ui->stackedWidget_2, SIGNAL(customContextMenuRequested(const QPoint &)), SLOT(showContextMenuForChat(const QPoint &)));
-    connect(ui->userList, SIGNAL(customContextMenuRequested(const QPoint &)), SLOT(showContextMenuForWidget(const QPoint &)));
+    connect(U_userSetting_button, SIGNAL(clicked()), this, SLOT(on_userSetting_clicked()));
+    connect(U_close_setting_button_2, SIGNAL(clicked()), this, SLOT(on_close_setting_button_clicked()));
+    connect(U_userList_3, SIGNAL(itemClicked(QListWidgetItem*)), SLOT(whisperOnClick(QListWidgetItem*)));
+    connect(U_userList, SIGNAL(itemDoubleClicked(QListWidgetItem*)), SLOT(whisperOnClickUsers(QListWidgetItem*)));
+    connect(U_userList, SIGNAL(itemClicked(QListWidgetItem*)), SLOT(whisperOnClickSelectUsers(QListWidgetItem*)));
+    connect(U_actionExit, SIGNAL(triggered()), this, SLOT(close()));
+    connect(U_stackedWidget_2, SIGNAL(customContextMenuRequested(const QPoint &)), SLOT(showContextMenuForChat(const QPoint &)));
+    connect(U_userList, SIGNAL(customContextMenuRequested(const QPoint &)), SLOT(showContextMenuForWidget(const QPoint &)));
 
 }
 
-void Client::keyReleaseEvent(QKeyEvent *event)
-{
-    if(ui->RB_sendEnter->isChecked())
-    {
-        switch(event->key()) {
-        case Qt::Key_Escape:
-            // Обработка нажатия Esc
-            break;
-        case Qt::Key_Enter:
-        case Qt::Key_Return:
-            if(ui->widget_2->isHidden() && ui->RB_sendEnter->isChecked())
-                on_sendMessage_clicked();
-            break;
-            // Обработчики других клавиш
-        }
-    }
-
-    if(ui->RB_send_CEnter->isChecked())
-        if(event->modifiers()==Qt::ControlModifier)
-            if(event->key() == Qt::Key_Return)
-                if(ui->widget_2->isHidden() && ui->RB_send_CEnter->isChecked())
-                    on_sendMessage_clicked();
-}
-
+//////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////
+/// Sending personal data at authorization and receiving keys.
 void Client::recieveData(QString str, QString pas, QString pubKey)
 {
     if(str!="" && pas!="")
     {
         name = str;
         name.replace(" ", "_");
-        ui->usernameEdit->setText(name);
+        U_usernameEdit->setText(name);
 
-        QDir keyDir = QDir::homePath() + "/WhisperServer/Whisper Close Key/";
+        QDir keyDir = HOME_PATH_KEY;
         QLineEdit m_ptxtMask("*.txt");
         QStringList listFiles = keyDir.entryList(m_ptxtMask.text().split(" "), QDir::Files);
         myPublicKey = pubKey;
@@ -119,12 +97,12 @@ void Client::recieveData(QString str, QString pas, QString pubKey)
         for(int i=0; i<listFiles.size(); i++)
             if(listFiles.at(i)==name+".txt")
             {
-                QFile myKey(QDir::homePath() + "/WhisperServer/Whisper Close Key/" + name + ".txt");
+                QFile myKey(HOME_PATH_KEY + name + ".txt");
                 myKey.open(QIODevice::ReadOnly);
                 myPrivateKey = myKey.readAll();
                 break;
             }
-        qDebug() << "Закрытый ключ: " << myPrivateKey;
+
         QString hostname = "127.0.0.1";
         quint32 port = 55155;
         tcpSocket->abort();
@@ -143,13 +121,12 @@ void Client::recieveData(QString str, QString pas, QString pubKey)
 
 //////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////
-
+/// Sending a personal message
 void Client::on_sendMessage_clicked()
 {
-    QRegExp rx("<a [^>]*name=\"([^\"]+)\"[^>]*>");      // Регулярные выражения для парсинга смайликов в сообщении
-    QString str = ui->editText->text();                 // Получение сообщения для отправки
+    QRegExp rx("<a [^>]*name=\"([^\"]+)\"[^>]*>");       // Regular expressions to parse emoticons in a message
+    QString str = U_editText->text();                    // Getting the message for sending
     QString message = str;
-
 
     QStringList list;
     QString encodemsg;
@@ -170,18 +147,18 @@ void Client::on_sendMessage_clicked()
     }
 
     QTextDocument doc;
-    doc.setHtml(ui->textEdit1->toPlainText());
+    doc.setHtml(U_textEdit1->toPlainText());
     doc.toPlainText();
 
-    ui->editText->clear();
+    U_editText->clear();
     blockSize = 0;
 
-    if (!message.isEmpty() && vec.size()!=0)              //Отправка сообщений
+    if (!message.isEmpty() && vec.size()!=0)              // Sending messages
     {
-        if(ui->ChBox_PSound->isChecked())
-            QSound::play(":/new/prefix1/Resource/to.wav");
+        if(U_ChBox_PSound->isChecked())
+            QSound::play(SOUND_TO);
 
-        QString RecName = vec.at(ui->userList->currentRow())->data(Qt::DisplayRole).toString();
+        QString RecName = vec.at(U_userList->currentRow())->data(Qt::DisplayRole).toString();
         QStringList lst = myPublicKey.split(" ", QString::SkipEmptyParts);
         QString MyMsg = rsaCrypt->encodeText(message, lst.at(0).toInt(), lst.at(1).toInt());
 
@@ -190,28 +167,32 @@ void Client::on_sendMessage_clicked()
             if(RecName==pubFriendKey.at(i).first)
             {
                 QString user_key = pubFriendKey.at(i).second;
-                qDebug() << "Ключ друга: " << pubFriendKey.at(i).first << user_key;
+                qDebug() << "Friend key: " << pubFriendKey.at(i).first << user_key;
+
                 QStringList _key = user_key.split(" ", QString::SkipEmptyParts);
                 encodemsg = rsaCrypt->encodeText(message, _key.at(0).toInt(), _key.at(1).toInt());
-                qDebug() << "Отправил: " << encodemsg;
+                qDebug() << "Submitted: " << encodemsg;
                 break;
             }
         }
 
-        QString new_mes = "/msg " + vec.at(ui->userList->currentRow())->data(Qt::DisplayRole).toString() + " " + encodemsg;
+        QString new_mes = "/msg " + vec.at(U_userList->currentRow())->data(Qt::DisplayRole).toString() + " " + encodemsg;
         sendUserCommand(new_mes, MyMsg);
     }
 }
 
+//////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////
+/// Insert emoticon in message
 void Client::insertEmoticon(QString symbol)
 {
-    QTextCursor cursor(ui->textEdit1->textCursor());
+    QTextCursor cursor(U_textEdit1->textCursor());
 
     if (!cursor.isNull()) {
         cursor.insertHtml(symbol);
     }
 
-    QTextCursor cursor2(ui->textEdit1->document()->find(symbol));
+    QTextCursor cursor2(U_textEdit1->document()->find(symbol));
 
     QString emojiNumber = emojiMan->getEmojiNumberFromSymbol(symbol);
     QString binDir = QCoreApplication::applicationDirPath();
@@ -234,37 +215,49 @@ void Client::insertEmoticon(QString symbol)
     }
 }
 
-void Client::AddUser_Chat(QString _username, QString _sex, QList<QPair<QString, QString>> lst, int count)
+//////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////
+/// Adding users to contact list
+void Client::AddUser_Chat(QString _username, QString _sex, PairStringList lst, int count)
 {
     int rand_avatar;
-    QString sex = _sex;
+    QIcon pic;
+    QString first_letter = _username.at(0).toLower();
+    QString RU_Full_Path = RU_AVATARS_PATH + first_letter +".jpg";
+    QString EN_Full_Path = EN_AVATARS_PATH + first_letter +".jpg";
 
-    // В зависимости от пола рандомно устаналиваю аватар из списка.
+    if (QFile::exists(EN_Full_Path))
+    {
+        pic.addFile(EN_Full_Path);
+    }
+    else if (QFile::exists(RU_Full_Path))
+    {
+        pic.addFile(RU_Full_Path);
+    }
+    else {
+        if(_sex=="Man")
+            rand_avatar = rand()%18+1;
+        else if(_sex=="Woman")
+            rand_avatar = rand()%13+19;
+        else if(_sex=="Unknown")
+            rand_avatar = rand()%20+32;
+        pic.addFile(":/Avatars/Resource/Avatars/"+QString::number(rand_avatar)+".jpg");
+    }
 
-    if(sex=="Man")
-        rand_avatar = rand()%18+1;
-    else if(sex=="Woman")
-        rand_avatar = rand()%13+19;
-    else if(sex=="Unknown")
-        rand_avatar = rand()%20+32;
-
-    QIcon pic(":/Avatars/Resource/Avatars/"+QString::number(rand_avatar)+".jpg");
-
-
-    // Проверка на повторное добавление человека в список - выходим.
+    // Check the reinclusion person on the list - return.
     if (!vec.empty())
         for(int i=0; i<vec.size(); i++)
             if(vec.at(i)->data(Qt::DisplayRole)==_username)
                 return;
 
-    //Создание Списка на каждую страницу стека, для отдельного отображения чат переписки и через делегат управляю свойством Item'a
-
+    //Create a list on each page stack to display a separate correspondence and chat through a delegate managed property Item'a
     QListWidgetItem *item = new QListWidgetItem();
     QListWidget *chatlist = new QListWidget();
     chatlist->setItemDelegate(new ChatListDelegate(chatlist, colorchat));
-    ui->stackedWidget_2->addWidget(chatlist);
+    U_stackedWidget_2->addWidget(chatlist);
 
-    // Добавление нового пользователя через Поиск.
+    // Adding a new user through the search.
+    // count - just flag
     if (count==-1 || count == -2)
     {
         item->setData(Qt::DisplayRole, _username);
@@ -283,29 +276,30 @@ void Client::AddUser_Chat(QString _username, QString _sex, QList<QPair<QString, 
 
         vec.push_back(item);
         chatvec.push_back(chatlist);
-        ui->userList->addItem(item);
-        ui->userList->scrollToBottom();
+        U_userList->addItem(item);
+        U_userList->scrollToBottom();
 
         if(count==-2)
         {
-            ui->start_textBrowser->hide();
-            ui->stackedWidget_2->show();
-            ui->stackedWidget_2->setCurrentIndex(chatvec.size()-1);
-            ui->userList->clearSelection();
+            U_start_textBrowser->hide();
+            U_stackedWidget_2->show();
+            U_stackedWidget_2->setCurrentIndex(chatvec.size()-1);
+            U_userList->clearSelection();
             vec.at(vec.size()-1)->setSelected(true);
             whisperOnClickUsers(vec.at(vec.size()-1));
         }
         return;
     }
 
-    // Добавление пользователя(друга) из БД
+    // Adding a user (friend) from the database
     item->setData(Qt::DisplayRole, _username);
     item->setData(Qt::ToolTipRole, QDateTime::currentDateTime().toString("dd.MM.yy hh:mm"));
     item->setData(Qt::DecorationRole, pic);
     vec.push_back(item);
     chatvec.push_back(chatlist);
 
-    // Загрузка Вашей переписки.
+    // Loading chat history.
+    // F - From, T - To
     for(int i=0; i<lst.size(); i++)
     {
         QListWidgetItem *item2 = new QListWidgetItem();
@@ -331,7 +325,7 @@ void Client::AddUser_Chat(QString _username, QString _sex, QList<QPair<QString, 
             {
                 msg.remove(0,5);
                 QString fsize = lst.at(i).second;
-                QIcon pic(":/new/prefix1/Resource/sendfiles.png");
+                QIcon pic(ICON_FILE_PATH);
                 item2->setData(Qt::ToolTipRole, fsize.remove(0,5) +  "  " +timeStr);
                 item2->setData(Qt::UserRole + 1, "FROMF");
                 item2->setData(Qt::DecorationRole, pic);
@@ -350,8 +344,6 @@ void Client::AddUser_Chat(QString _username, QString _sex, QList<QPair<QString, 
         }
         else if (lst.at(i).second.left(1) == "T")
         {
-
-
             if(msg.left(1)=="F")
             {
 
@@ -361,12 +353,11 @@ void Client::AddUser_Chat(QString _username, QString _sex, QList<QPair<QString, 
                 msg = rsaCrypt->decodeText(msg, _lst.at(0).toInt(), _lst.at(1).toInt());
             }
 
-
             if(TFile=="FILE")
             {
                 msg.remove(0,5);
                 QString fsize = lst.at(i).second;
-                QIcon pic(":/new/prefix1/Resource/sendfiles.png");
+                QIcon pic(ICON_FILE_PATH);
                 item2->setData(Qt::ToolTipRole, fsize.remove(0,3) + "  " + timeStr);
                 item2->setData(Qt::UserRole + 1, "TOF");
                 item2->setData(Qt::DecorationRole, pic);
@@ -383,12 +374,15 @@ void Client::AddUser_Chat(QString _username, QString _sex, QList<QPair<QString, 
         chatvec.at(count)->addItem(item2);
     }
     chatvec.at(count)->scrollToBottom();
-    ui->userList->clearSelection();
-    ui->stackedWidget_2->hide();
-    ui->userList->addItem(item);
+    U_userList->clearSelection();
+    U_stackedWidget_2->hide();
+    U_userList->addItem(item);
 
 }
 
+//////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////
+/// Get a list of friends and keys. Adding through Client::AddUser_Chat(...)
 void Client::getMessage_UserList(PairStringList &PublicFriendKey, PairStringList &FriendList, ChatListVector &chatList)
 {
     for(int i=0; i<PublicFriendKey.size(); i++)
@@ -398,6 +392,9 @@ void Client::getMessage_UserList(PairStringList &PublicFriendKey, PairStringList
         AddUser_Chat(FriendList.at(i).first, FriendList.at(i).second, chatList.at(i).second, i);
 }
 
+//////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////
+/// Receiving a message from a user / server
 void Client::getMessage()
 {
     QString message;
@@ -418,6 +415,8 @@ void Client::getMessage()
     QStringList commandList;
     QString fromname;
 
+    // Parsing of an incoming message.
+
     enum class COMMAND { NONE, USERLIST, FINDUSER, INVITE, GETFILE, USINFO};
     COMMAND cmd = COMMAND::NONE;
 
@@ -437,7 +436,7 @@ void Client::getMessage()
             return;
         fromname = commandList.at(1);
 
-        QStringRef checkCmd(&message, 0, 5);        //Создание строки из заданного диапозона пришедшего сообщения
+        QStringRef checkCmd(&message, 0, 5);
         if (checkCmd == "_FIN_")
             cmd = COMMAND::FINDUSER;
         if (checkCmd == "_INV_")
@@ -447,6 +446,7 @@ void Client::getMessage()
     switch (cmd)
     {
 
+    // Friends List, keys and chat dialogue
     case COMMAND::USERLIST:
     {
         PairStringList PublicFriendKey;
@@ -458,6 +458,7 @@ void Client::getMessage()
         break;
     }
 
+    // Response to a request on the search friend
     case COMMAND::FINDUSER:
     {
         QString find_user = commandList.at(1);
@@ -473,20 +474,21 @@ void Client::getMessage()
         }
         else
             findcont->SetErrorLayout(1);
-        //qDebug() << "Поиск:(Ключ друга) " << pubFriendKey;
         break;
     }
 
+    // Response for an invitation to friends
     case COMMAND::INVITE:
     {
         QList <QPair<QString, QString> > a;
         QString pubKey = commandList.at(3) + " " + commandList.at(4);
         pubFriendKey.push_back(qMakePair(commandList.at(1), pubKey));
+
         AddUser_Chat(commandList.at(1), commandList.at(2), a , -2);
-        //qDebug() << "Инвайт:(Ключ друга) " << pubFriendKey;
         break;
     }
 
+    // Information about the user or group
     case COMMAND::USINFO:
     {
         QStringList *usData = new QStringList;
@@ -502,13 +504,14 @@ void Client::getMessage()
         break;
     }
 
+    // Receiving file
     case COMMAND::GETFILE:
     {
         QByteArray buffer;
         QString filename;
         qint64 fileSize;
 
-        QString dirDownloads = ui->label_6->text();
+        QString dirDownloads = U_label_6->text();
         QDir(dirDownloads).mkdir(dirDownloads);
 
         in >> fromname >> filename >> fileSize;
@@ -535,7 +538,7 @@ void Client::getMessage()
         receiveFile.close();
         buffer.clear();
 
-        QIcon pic(":/new/prefix1/Resource/sendfiles.png");
+        QIcon pic(ICON_FILE_PATH);
         if (!vec.empty())
         {
             for(int i=0; i<vec.size(); i++)
@@ -549,7 +552,7 @@ void Client::getMessage()
                     vec.at(i)->setData(Qt::UserRole + 1, lan_dict.value("File") + ": " + filename);
                     vec.at(i)->setData(Qt::ToolTipRole, QDateTime::currentDateTime().toString("dd.MM.yy hh:mm"));
 
-                    if(!this->isVisible() && ui->ChBox_Notif->isChecked())
+                    if(!this->isVisible() && U_ChBox_Notif->isChecked())
                     {
                         notice->setPopupText(lan_dict.value("notice_msg") + " (" + fromname + "):\n" + lan_dict.value("File") + ": " + filename);
                         notice->show();
@@ -559,9 +562,9 @@ void Client::getMessage()
                     chatvec.at(i)->scrollToBottom();
                     vec.at(i)->setSelected(true);
                     whisperOnClickUsers(vec.at(i));
-                    ui->start_textBrowser->hide();
-                    ui->stackedWidget_2->show();
-                    ui->stackedWidget_2->setCurrentIndex(i);
+                    U_start_textBrowser->hide();
+                    U_stackedWidget_2->show();
+                    U_stackedWidget_2->setCurrentIndex(i);
 
                     break;
                 }
@@ -570,7 +573,9 @@ void Client::getMessage()
 
         break;
     }
-    default:                                                // Получение обычного текстового сообщения. Звук и добавление в ЧатЛист
+
+    // Standard text message
+    default:
 
         if(QStringRef(&message, 0, 3)=="*To")
         {
@@ -583,14 +588,15 @@ void Client::getMessage()
             item->setData(Qt::DisplayRole, myMsg);
             item->setData(Qt::ToolTipRole, QDateTime::currentDateTime().toString("dd.MM.yy hh:mm"));
 
-            chatvec.at(ui->stackedWidget_2->currentIndex())->addItem(item);
-            chatvec.at(ui->stackedWidget_2->currentIndex())->scrollToBottom();
+            chatvec.at(U_stackedWidget_2->currentIndex())->addItem(item);
+            chatvec.at(U_stackedWidget_2->currentIndex())->scrollToBottom();
 
         }
         else
         {
-            if(ui->ChBox_PSound->isChecked())
-                QSound::play(":/new/prefix1/Resource/from.wav");
+            // Sound notification
+            if(U_ChBox_PSound->isChecked())
+                QSound::play(SOUND_FROM);
 
             fromname.chop(1);
             if (!vec.empty())
@@ -599,7 +605,7 @@ void Client::getMessage()
                     if(vec.at(i)->data(Qt::DisplayRole)==fromname)
                     {
                         QString decodmsg = message.remove(0, 9+fromname.size());
-                        qDebug() << "Принял: " << decodmsg;
+                        qDebug() << "Accepted: " << decodmsg;
                         QStringList lst = myPrivateKey.split(" ", QString::SkipEmptyParts);
                         decodmsg = rsaCrypt->decodeText(decodmsg, lst.at(0).toInt(), lst.at(1).toInt());
 
@@ -611,6 +617,7 @@ void Client::getMessage()
                         vec.at(i)->setData(Qt::UserRole + 1, decodmsg);
                         vec.at(i)->setData(Qt::ToolTipRole, QDateTime::currentDateTime().toString("dd.MM.yy hh:mm"));
 
+                        // Visual notification
                         if(!this->isVisible())
                         {
                             notice->setPopupText(lan_dict.value("notice_msg") + " (" + fromname + "):\n" + decodmsg);
@@ -620,14 +627,14 @@ void Client::getMessage()
                         chatvec.at(i)->scrollToBottom();
                         vec.at(i)->setSelected(true);
                         whisperOnClickUsers(vec.at(i));
-                        ui->start_textBrowser->hide();
-                        ui->stackedWidget_2->show();
-                        ui->stackedWidget_2->setCurrentIndex(i);
+                        U_start_textBrowser->hide();
+                        U_stackedWidget_2->show();
+                        U_stackedWidget_2->setCurrentIndex(i);
 
                         break;
                     }
-                // Если пользователь не из списка (удален ранее), добавить заного в список.
-                // Сделать попозже. Добавить в текущей беседе и вновь в БД на сервере.
+                // If the user is not in the list (previously removed) to add to the list again.
+                // Make later. Add to the current conversation and again in the database on the server.
 
                 //QList <QPair<QString, QString> > a;
                 //AddUser_Chat(fromname, commandList.at(2), a , -1);
@@ -637,13 +644,18 @@ void Client::getMessage()
     }
 }
 
-
+//////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////
+/// Cleaning message input when switching chat
 void Client::whisperOnClickUsers(QListWidgetItem* user)
 {
-    ui->editText->clear();
-    ui->editText->setFocus();
+    U_editText->clear();
+    U_editText->setFocus();
 }
 
+//////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////
+/// The movement in the capture window on any area of the window
 void Client::mouseMoveEvent(QMouseEvent *event)
 {
     if (event->buttons() && Qt::LeftButton) {
@@ -652,6 +664,9 @@ void Client::mouseMoveEvent(QMouseEvent *event)
     }
 }
 
+//////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////
+/// The movement in the capture window on any area of the window
 void Client::mousePressEvent(QMouseEvent *event)
 {
     if (event->button() == Qt::LeftButton) {
@@ -660,6 +675,9 @@ void Client::mousePressEvent(QMouseEvent *event)
     }
 }
 
+//////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////
+/// Information error box
 void Client::show_Error(QAbstractSocket::SocketError errorSocket)
 {
     switch (errorSocket)
@@ -670,7 +688,7 @@ void Client::show_Error(QAbstractSocket::SocketError errorSocket)
         break;
     case QAbstractSocket::HostNotFoundError:
         QMessageBox::information(this, tr("W-H-I-S-P-E-R"),
-                               lan_dict.value("ServerNF"));
+                                 lan_dict.value("ServerNF"));
         break;
     case QAbstractSocket::ConnectionRefusedError:
         QMessageBox::information(this, tr("W-H-I-S-P-E-R"),
@@ -682,6 +700,9 @@ void Client::show_Error(QAbstractSocket::SocketError errorSocket)
     }
 }
 
+//////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////
+/// Sending data when connected to a server
 void Client::send_personal_data()
 {
     if(!personDates)
@@ -693,7 +714,7 @@ void Client::send_personal_data()
         out.setVersion(QDataStream::Qt_5_4);
 
         QString command = "_USR_";
-        QString UserName = ui->usernameEdit->text();
+        QString UserName = U_usernameEdit->text();
         out << quint32(0) << QTime::currentTime() << command << UserName ;
 
         tcpSocket->write(block);
@@ -701,11 +722,17 @@ void Client::send_personal_data()
     }
 }
 
+//////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////
+/// Disconnect
 void Client::onDisconnect()
 {
     personDates = false;
 }
 
+//////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////
+/// Send a personal message. Converting data.
 void Client::sendUserCommand(QString Command, QString myMessage)
 {
     QByteArray msg;
@@ -716,19 +743,28 @@ void Client::sendUserCommand(QString Command, QString myMessage)
     tcpSocket->write(msg);
 }
 
+//////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////
+/// Opening the settings window.
 void Client::on_userSetting_clicked()
 {
-    ui->widget_2->show();
+    U_widget_2->show();
 }
 
+//////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////
+/// Closing the settings window.
 void Client::on_close_setting_button_clicked()
 {
-    ui->userList_3->clearFocus();
-    ui->userList_3->clearSelection();
-    ui->stackedWidget->setCurrentIndex(0);
-    ui->widget_2->hide();
+    U_userList_3->clearFocus();
+    U_userList_3->clearSelection();
+    U_stackedWidget->setCurrentIndex(0);
+    U_widget_2->hide();
 }
 
+//////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////
+/// Changing the settings menu.
 void Client::whisperOnClick(QListWidgetItem* User)
 {
     QStringList lst_options;
@@ -736,20 +772,26 @@ void Client::whisperOnClick(QListWidgetItem* User)
 
     QString section = User->text();
     if (section == lst_options.at(0))
-        ui->stackedWidget->setCurrentIndex(0);
+        U_stackedWidget->setCurrentIndex(0);
     else if(section==lst_options.at(1))
-        ui->stackedWidget->setCurrentIndex(1);
+        U_stackedWidget->setCurrentIndex(1);
     else if (section == lst_options.at(2))
-        ui->stackedWidget->setCurrentIndex(2);
+        U_stackedWidget->setCurrentIndex(2);
     else
-        ui->stackedWidget->setCurrentIndex(3);
+        U_stackedWidget->setCurrentIndex(3);
 }
 
+//////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////
+/// Opening a list of Emoji
 void Client::on_pushButton_clicked()
 {
     showEmoji();
 }
 
+//////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////
+/// Opening a list of Emoji
 void Client::showEmoji()
 {
     QPoint p = QCursor::pos();
@@ -758,11 +800,14 @@ void Client::showEmoji()
 
 }
 
+//////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////
+/// Smooth dimming the screen.
 void Client::setGlass()
 {
-    QPropertyAnimation* animation = new QPropertyAnimation(ui->glass_button);
-    QGraphicsOpacityEffect* grEffect = new QGraphicsOpacityEffect(ui->glass_button);
-    ui->glass_button->setGraphicsEffect(grEffect);
+    QPropertyAnimation* animation = new QPropertyAnimation(U_glass_button);
+    QGraphicsOpacityEffect* grEffect = new QGraphicsOpacityEffect(U_glass_button);
+    U_glass_button->setGraphicsEffect(grEffect);
 
     animation->setTargetObject(grEffect);
     animation->setPropertyName("opacity");
@@ -770,9 +815,12 @@ void Client::setGlass()
     animation->setStartValue(0.0);
     animation->setEndValue(1.0);
     animation->start();
-    ui->glass_button->show();
+    U_glass_button->show();
 }
 
+//////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////
+/// Opening the user search window
 void Client::showFindCont()
 {
     QPoint p = QCursor::pos();
@@ -782,6 +830,9 @@ void Client::showFindCont()
     connect(findcont, SIGNAL(findUsers(QString)), this, SLOT(findtoserv(QString)));
 }
 
+//////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////
+/// Sending a user's search request
 void Client::findtoserv(QString name_user)
 {
     gl_fname = name_user;
@@ -814,6 +865,9 @@ void Client::findtoserv(QString name_user)
         tmp=true;
 }
 
+//////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////
+/// Selection window, to add a user or group creation
 void Client::on_newContact_Button_clicked()
 {
     choice_window = new ChoiceCreate(this);
@@ -825,6 +879,9 @@ void Client::on_newContact_Button_clicked()
 
 }
 
+//////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////
+/// Selection window, to add a user or group creation
 void Client::choice_Window(QString str)
 {
     if(str == "close")
@@ -844,6 +901,9 @@ void Client::choice_Window(QString str)
     }
 }
 
+//////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////
+/// Create a group
 void Client::showCreateGroup()
 {
     QPoint p = QCursor::pos();
@@ -853,16 +913,17 @@ void Client::showCreateGroup()
     connect(create_group, SIGNAL(GroupSignal(QString, QString, QString, QString)), SLOT(getCreateGroupSig(QString, QString, QString, QString)));
 }
 
+//////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////
+/// Create a group
 void Client::getCreateGroupSig(QString state, QString group_name, QString group_descr, QString path_avatar)
 {
-
     if(state=="Close"){
         on_glass_button_clicked();
-
     }
     else if(state == "Create")
     {
-        selectContacts = new SelectContacts(this, ui->userList);
+        selectContacts = new SelectContacts(this, U_userList);
         selectContacts->set_lang(lan_dict);
         selectContacts->setGeometry(this->x()+350, this->y()+40, 361, 540);
         selectContacts->show();
@@ -875,8 +936,12 @@ void Client::getCreateGroupSig(QString state, QString group_name, QString group_
     }
 }
 
+//////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////
+/// Sending a request to create a group. Adding a group to the list
 void Client::addGroup_toList(QStringList userList, QString state)
 {
+    // If click the Close button, the request is not sent, the window closes.
     if(state == "Cancel")
     {
         if(!groupData.isEmpty())
@@ -889,7 +954,7 @@ void Client::addGroup_toList(QStringList userList, QString state)
         QListWidgetItem *item = new QListWidgetItem();
         QListWidget *chatlist = new QListWidget();
         chatlist->setItemDelegate(new ChatListDelegate(chatlist, colorchat));
-        ui->stackedWidget_2->addWidget(chatlist);
+        U_stackedWidget_2->addWidget(chatlist);
 
         QIcon pic(":/new/prefix1/Resource/group-1.png");
         item->setData(Qt::DisplayRole, groupData.at(0));
@@ -906,13 +971,13 @@ void Client::addGroup_toList(QStringList userList, QString state)
 
         vec.push_back(item);
         chatvec.push_back(chatlist);
-        ui->userList->addItem(item);
-        ui->userList->scrollToBottom();
+        U_userList->addItem(item);
+        U_userList->scrollToBottom();
 
-        ui->start_textBrowser->hide();
-        ui->stackedWidget_2->show();
-        ui->stackedWidget_2->setCurrentIndex(chatvec.size()-1);
-        ui->userList->clearSelection();
+        U_start_textBrowser->hide();
+        U_stackedWidget_2->show();
+        U_stackedWidget_2->setCurrentIndex(chatvec.size()-1);
+        U_userList->clearSelection();
         vec.at(vec.size()-1)->setSelected(true);
         whisperOnClickUsers(vec.at(vec.size()-1));
         on_glass_button_clicked();
@@ -927,16 +992,53 @@ void Client::addGroup_toList(QStringList userList, QString state)
     }
 }
 
+
+//////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////
+///Processor key
+void Client::keyReleaseEvent(QKeyEvent *event)
+{
+    if(U_RB_sendEnter->isChecked())
+    {
+        switch(event->key()) {
+        case Qt::Key_Escape:
+            // Processing pressing Esc
+            break;
+        case Qt::Key_Enter:
+        case Qt::Key_Return:
+            if(U_widget_2->isHidden() && U_RB_sendEnter->isChecked())
+                on_sendMessage_clicked();
+            break;
+            // Handlers of other keys
+        }
+    }
+
+    if(U_RB_send_CEnter->isChecked())
+        if(event->modifiers()==Qt::ControlModifier)
+            if(event->key() == Qt::Key_Return)
+                if(U_widget_2->isHidden() && U_RB_send_CEnter->isChecked())
+                    on_sendMessage_clicked();
+}
+
+//////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////
+/// Minimize the window. Hide to tray
 void Client::on_actionShowHideWindow_triggered()
 {
     showHideWindow();
 }
 
+//////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////
+/// Minimize the window. Hide to tray
 void Client::on_actionExit_triggered()
 {
     QApplication::exit();
 }
 
+//////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////
+/// Minimize the window. Hide to tray
 void Client::iconActivated(QSystemTrayIcon::ActivationReason reason)
 {
     switch (reason) {
@@ -956,25 +1058,34 @@ void Client::iconActivated(QSystemTrayIcon::ActivationReason reason)
     }
 }
 
+//////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////
+/// Minimize the window. Hide to tray
 void Client::showHideWindow()
 {
     if (this->isVisible()) {
         hide();
-        ui->actionShowHideWindow->setText(tr("Restore"));
+        U_actionShowHideWindow->setText(tr("Restore"));
     }
     else {
         show();
-        ui->actionShowHideWindow->setText(tr("Hide"));
+        U_actionShowHideWindow->setText(tr("Hide"));
     }
 }
 
+//////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////
+/// Overriding the Close button. Hide to tray
 void Client::closeEvent(QCloseEvent *event)
 {
     showHideWindow();
     event->ignore();
 }
 
-
+//////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////
+/// Opening the palette to change the background of the chat
+/// Setting single color
 void Client::on_PB_SelColor_clicked()
 {
     QColor color = QColorDialog::getColor(Qt::black, this, "Text Color",  QColorDialog::DontUseNativeDialog);
@@ -986,10 +1097,14 @@ void Client::on_PB_SelColor_clicked()
     painter.drawRect(0,0,16,16);
     painter.fillRect(0,0,16,16,QBrush(QColor(color)));
     painter.end();
-    ui->imageLabel->setPixmap(pixmap);
-    ui->chat_back_lab->setPixmap(pixmap);
+    U_imageLabel->setPixmap(pixmap);
+    U_chat_back_lab->setPixmap(pixmap);
 }
 
+//////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////
+/// Opening the file selection to change chat background.
+/// Setting images
 void Client::on_PB_LoadFileBackground_clicked()
 {
     QString files = QFileDialog::getOpenFileName(this, lan_dict.value("SelectImages"), "" , tr("Images (*.jpg *jpeg *.png)"));
@@ -1001,16 +1116,19 @@ void Client::on_PB_LoadFileBackground_clicked()
 
         if(vol)
         {
-            ui->chat_back_lab->setPixmap(QPixmap::fromImage(image));
-            ui->imageLabel->setPixmap(QPixmap::fromImage(image));
+            U_chat_back_lab->setPixmap(QPixmap::fromImage(image));
+            U_imageLabel->setPixmap(QPixmap::fromImage(image));
         }
         else
         {
-            //Error
+            return;
         }
     }
 }
 
+//////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////
+/// Select and install a new user avatars.
 void Client::on_radioButton_2_clicked()
 {
     QString files = QFileDialog::getOpenFileName(this, lan_dict.value("SelectImages"), "" , tr("Images (*.jpg *jpeg *.png)"));
@@ -1022,8 +1140,8 @@ void Client::on_radioButton_2_clicked()
 
         if(vol)
         {
-            ui->avatar_label->setPixmap(QPixmap::fromImage(image));
-            ui->avatar_label->setFixedSize(120,120);
+            U_avatar_label->setPixmap(QPixmap::fromImage(image));
+            U_avatar_label->setFixedSize(120,120);
         }
         else
         {
@@ -1032,13 +1150,20 @@ void Client::on_radioButton_2_clicked()
     }
 }
 
+//////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////
+/// Standard for the avatar icons.
+/// Change then.
 void Client::on_radioButton_clicked()
 {
     QImage image(":/Avatars/Resource/Avatars/5.jpg");
-    ui->avatar_label->setPixmap(QPixmap::fromImage(image));
-    ui->avatar_label->setFixedSize(120,120);
+    U_avatar_label->setPixmap(QPixmap::fromImage(image));
+    U_avatar_label->setFixedSize(120,120);
 }
 
+//////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////
+/// Selecting the new folder to download files.
 void Client::on_Download_path_PB_clicked()
 {
     QString path = QFileDialog::getExistingDirectory(this, lan_dict.value("SelectImages"), "");
@@ -1046,16 +1171,18 @@ void Client::on_Download_path_PB_clicked()
     if(QString::compare(path, QString())!=0)
     {
         download_path = path;
-        ui->label_6->setText(path);
+        U_label_6->setText(path);
     }
     else
-        ui->label_6->setText(download_path);
+        U_label_6->setText(download_path);
 }
 
-
+//////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////
+/// Select file for sending to the user from the list.
 void Client::on_pushButton_2_clicked()
 {
-    if(ui->stackedWidget_2->isHidden())
+    if(U_stackedWidget_2->isHidden())
         return;
 
     QString filePatch = QFileDialog::getOpenFileName(this, lan_dict.value("fileWindow"), "", QObject::trUtf8("(*.*)"));
@@ -1077,7 +1204,7 @@ void Client::on_pushButton_2_clicked()
     fileSize = fi.size();
 
     QByteArray buffer = sendFile->readAll();
-    QString receiver_name = vec.at(ui->userList->currentRow())->data(Qt::DisplayRole).toString();
+    QString receiver_name = vec.at(U_userList->currentRow())->data(Qt::DisplayRole).toString();
 
     out << quint32(0) << QTime::currentTime() << QString("_FILE_") << receiver_name
         << fileName << fileSize << buffer;
@@ -1087,7 +1214,7 @@ void Client::on_pushButton_2_clicked()
 
     tcpSocket->write(arrBlock);
 
-    QIcon pic(":/new/prefix1/Resource/sendfiles.png");
+    QIcon pic(ICON_FILE_PATH);
     int pos;
     QListWidgetItem *item = new QListWidgetItem();
     item->setData(Qt::UserRole + 1, "TOF");
@@ -1108,26 +1235,34 @@ void Client::on_pushButton_2_clicked()
     item->setData(Qt::DisplayRole, fileName);
     item->setData(Qt::ToolTipRole, QString::number((float)fileSize/1024, 'f', 2)  + " KB  " + QDateTime::currentDateTime().toString("dd.MM.yy hh:mm"));
     item->setData(Qt::DecorationRole, pic);
-    chatvec.at(ui->stackedWidget_2->currentIndex())->addItem(item);
-    chatvec.at(ui->stackedWidget_2->currentIndex())->scrollToBottom();
+    chatvec.at(U_stackedWidget_2->currentIndex())->addItem(item);
+    chatvec.at(U_stackedWidget_2->currentIndex())->scrollToBottom();
 }
 
-
+//////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////
+/// Select User from the list.
 void Client::on_userList_clicked(const QModelIndex &index)
 {
     if (!vec.empty())
     {
-        ui->start_textBrowser->hide();
-        ui->stackedWidget_2->show();
-        ui->stackedWidget_2->setCurrentIndex(index.row());
+        U_start_textBrowser->hide();
+        U_stackedWidget_2->show();
+        U_stackedWidget_2->setCurrentIndex(index.row());
     }
 }
 
+//////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////
+/// Close - hide in the system tray
 void Client::on_pushButton_3_clicked()
 {
     this->close();
 }
 
+//////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////
+/// Dialogue Program
 void Client::on_pushButton_5_clicked()
 {
     aboutdialog = new AboutDialog(this);
@@ -1136,10 +1271,13 @@ void Client::on_pushButton_5_clicked()
     aboutdialog->show();
 }
 
+//////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////
+/// Clear history
 void Client::clearHistory()
 {
-    // Очистить историю.
-    // Пока сеансово, добавть подтверждение и запрос в БД на очистку переписки.
+    // While the session, add a confirmation and a request to the database to clean up correspondence.
+
     conf_message = new ConfirmWindow(this, lan_dict.value("conf_message_del_hist"));
     conf_message->set_lang(lan_dict);
     conf_message->setGeometry(this->x()+355, this->y()+100, 350, 170);
@@ -1149,17 +1287,20 @@ void Client::clearHistory()
     connect(conf_message, SIGNAL(response(QString)), this, SLOT(clearCurHistory(QString)));
 }
 
+//////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////
+/// Sending a request to the server to clean up the history of the user
 void Client::clearCurHistory(QString cmd)
 {
     if(cmd=="OK")
     {
-        chatvec.at(ui->stackedWidget_2->currentIndex())->clear();
+        chatvec.at(U_stackedWidget_2->currentIndex())->clear();
 
         QByteArray msg;
         QDataStream out(&msg, QIODevice::WriteOnly);
         out.setVersion(QDataStream::Qt_5_4);
 
-        QString to = vec.at(ui->userList->currentRow())->data(Qt::DisplayRole).toString();
+        QString to = vec.at(U_userList->currentRow())->data(Qt::DisplayRole).toString();
         out << quint32(0) << QTime::currentTime() << QString("_CLNHISTORY_") << name << to;
         tcpSocket->write(msg);
     }
@@ -1167,49 +1308,55 @@ void Client::clearCurHistory(QString cmd)
     conf_message->~ConfirmWindow();
 }
 
+//////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////
+/// Removing a user from the list
 void Client::clearCurUser(QString cmd)
 {
     if(cmd=="OK")
     {
-        // Если есть контакты в списке, удалить нужного.
-        if(!ui->userList->size().isEmpty())
+        // If you have contacts in the list, remove the right.
+        if(!U_userList->size().isEmpty())
         {
             QByteArray msg;
             QDataStream out(&msg, QIODevice::WriteOnly);
             out.setVersion(QDataStream::Qt_5_4);
 
-            QString delfriend = vec.at(ui->userList->currentRow())->data(Qt::DisplayRole).toString();
+            QString delfriend = vec.at(U_userList->currentRow())->data(Qt::DisplayRole).toString();
             out << quint32(0) << QTime::currentTime() << QString("_DELFRIEND_") << name << delfriend;
             tcpSocket->write(msg);
 
-            //Вытаскивание виджета из Стека Виджетов >_<
-            QWidget* widget = ui->stackedWidget_2->widget(ui->userList->currentRow());
-            // и удалить
-            ui->stackedWidget_2->removeWidget(widget);
+            // Removing a widget from the Widget Stack
+            QWidget* widget = U_stackedWidget_2->widget(U_userList->currentRow());
+            // and remove
+            U_stackedWidget_2->removeWidget(widget);
 
-            // Очистить вектора
-            vec.erase(vec.begin()+ui->userList->currentRow());
-            chatvec.erase(chatvec.begin()+ui->userList->currentRow());
-            ui->userList->removeItemWidget(ui->userList->takeItem(ui->userList->currentRow()));
+            // Clean vector
+            vec.erase(vec.begin()+U_userList->currentRow());
+            chatvec.erase(chatvec.begin()+U_userList->currentRow());
+            U_userList->removeItemWidget(U_userList->takeItem(U_userList->currentRow()));
             update();
         }
     }
 
     on_glass_button_clicked();
     conf_message->~ConfirmWindow();
-
 }
+
+//////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////
+/// Take off selection from posts
 void Client::ClearSelect()
 {
-    // Очистить выделенные сообщения
-    chatvec.at(ui->stackedWidget_2->currentIndex())->clearSelection();
+    chatvec.at(U_stackedWidget_2->currentIndex())->clearSelection();
 }
 
+//////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////
+/// Context menu for a chat
 void Client::showContextMenuForChat(const QPoint &pos)
 {
-    // Контекстное меню для чата.
-
-    if(ui->stackedWidget_2->count()==0 || ui->stackedWidget->isHidden() || chatvec.at(ui->stackedWidget_2->currentIndex())->count()==0)
+    if(U_stackedWidget_2->count()==0 || U_stackedWidget->isHidden() || chatvec.at(U_stackedWidget_2->currentIndex())->count()==0)
         return;
 
     QPoint newPos = pos;
@@ -1221,9 +1368,9 @@ void Client::showContextMenuForChat(const QPoint &pos)
     QAction * delSelect = NULL;
     menu->addAction(deleteDevice);
 
-    // Если есть выделенные сообщения, добавить в меню возможность скипнуть.
-    if(ui->stackedWidget_2->count()!=0)
-        if(!chatvec.at(ui->stackedWidget_2->currentIndex())->selectedItems().isEmpty())
+    // If there is a selected messages, add the menu skipnut opportunity.
+    if(U_stackedWidget_2->count()!=0)
+        if(!chatvec.at(U_stackedWidget_2->currentIndex())->selectedItems().isEmpty())
         {
             delSelect = new QAction(lan_dict.value("ContextClearSelection"), this);
             menu->addAction(delSelect);
@@ -1234,11 +1381,12 @@ void Client::showContextMenuForChat(const QPoint &pos)
     connect(deleteDevice, SIGNAL(triggered()), this, SLOT(clearHistory()));
 }
 
+//////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////
+/// Context menu for a contact list
 void Client::showContextMenuForWidget(const QPoint &pos)
 {
-    // Контекстное меню для списка контактов.
-
-    if(ui->userList->count()==0 || ui->userList->selectedItems().isEmpty())
+    if(U_userList->count()==0 || U_userList->selectedItems().isEmpty())
         return;
 
     QPoint newPos = pos;
@@ -1251,6 +1399,10 @@ void Client::showContextMenuForWidget(const QPoint &pos)
     menu->addAction(deleteDevice);
     menu->popup(mapToGlobal(newPos));
 }
+
+//////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////
+/// Loading standard language when the application starts.
 void Client::set_default_Language()
 {
     if(!lan_dict.isEmpty())
@@ -1261,38 +1413,44 @@ void Client::set_default_Language()
     authorization->set_lang(lan_dict);
 }
 
+//////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////
+/// Setting the standard language when the application starts.
 void Client::set_lang()
 {
-    ui->language->setText(lan_dict.value(ui->language->objectName()));
-    ui->down_path->setText(lan_dict.value(ui->down_path->objectName()));
-    ui->RB_sendEnter->setText(lan_dict.value(ui->RB_sendEnter->objectName()));
-    ui->RB_send_CEnter->setText(lan_dict.value(ui->RB_send_CEnter->objectName()));
-    ui->ChBox_Notif->setText(lan_dict.value(ui->ChBox_Notif->objectName()));
-    ui->ChBox_PSound->setText(lan_dict.value(ui->ChBox_PSound->objectName()));
-    ui->background->setText(lan_dict.value(ui->background->objectName()));
-    ui->PB_SelColor->setText(lan_dict.value(ui->PB_SelColor->objectName()));
-    ui->PB_LoadFileBackground->setText(lan_dict.value(ui->PB_LoadFileBackground->objectName()));
-    ui->username_label->setText(lan_dict.value(ui->username_label->objectName()));
-    ui->radioButton->setText(lan_dict.value(ui->radioButton->objectName()));
-    ui->radioButton_2->setText(lan_dict.value(ui->radioButton_2->objectName()));
-    ui->groupBox->setTitle(lan_dict.value(ui->groupBox->objectName()));
-    ui->search_line_edit->setPlaceholderText(lan_dict.value(ui->search_line_edit->objectName()));
-    ui->editText->setPlaceholderText(lan_dict.value(ui->editText->objectName()));
-    ui->start_sys->setText(lan_dict.value(ui->start_sys->objectName()));
-    //ui->start_textBrowser->setText(lan_dict.value(ui->start_textBrowser->objectName()));
+    U_language->setText(lan_dict.value(U_language->objectName()));
+    U_down_path->setText(lan_dict.value(U_down_path->objectName()));
+    U_RB_sendEnter->setText(lan_dict.value(U_RB_sendEnter->objectName()));
+    U_RB_send_CEnter->setText(lan_dict.value(U_RB_send_CEnter->objectName()));
+    U_ChBox_Notif->setText(lan_dict.value(U_ChBox_Notif->objectName()));
+    U_ChBox_PSound->setText(lan_dict.value(U_ChBox_PSound->objectName()));
+    U_background->setText(lan_dict.value(U_background->objectName()));
+    U_PB_SelColor->setText(lan_dict.value(U_PB_SelColor->objectName()));
+    U_PB_LoadFileBackground->setText(lan_dict.value(U_PB_LoadFileBackground->objectName()));
+    U_username_label->setText(lan_dict.value(U_username_label->objectName()));
+    U_radioButton->setText(lan_dict.value(U_radioButton->objectName()));
+    U_radioButton_2->setText(lan_dict.value(U_radioButton_2->objectName()));
+    U_groupBox->setTitle(lan_dict.value(U_groupBox->objectName()));
+    U_search_line_edit->setPlaceholderText(lan_dict.value(U_search_line_edit->objectName()));
+    U_editText->setPlaceholderText(lan_dict.value(U_editText->objectName()));
+    U_start_sys->setText(lan_dict.value(U_start_sys->objectName()));
+    //U_start_textBrowser->setText(lan_dict.value(U_start_textBrowser->objectName()));
 
     QStringList lst_setting;
     lst_setting = lan_dict.value("userList_3").split(',');
 
     for (int i=0; i<lst_setting.size(); i++)
-        ui->userList_3->item(i)->setText(lst_setting[i]);
+        U_userList_3->item(i)->setText(lst_setting[i]);
 
 }
 
+//////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////
+/// Removing a user
 void Client::DeleteUser()
 {
-    // И запрос на сервер в БД, удалить из таблицы.
-    // Хз что пока делать на стороне удаляемого, вдруг он будет писать, а его уже нет =(((
+    // And the request to the server to the database, remove from the table.
+    // Don't know that it was time to do on the side of the remote, then he would write, and he's gone.
 
     conf_message = new ConfirmWindow(this, lan_dict.value("conf_message_del_user"));
     conf_message->set_lang(lan_dict);
@@ -1304,78 +1462,89 @@ void Client::DeleteUser()
 }
 
 
-// Поиск по контакт - листу. Вызывается при изменении текст. поля.
+//////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////
+/// Search for the contact - list. Called when text is changed. field.
 void Client::on_search_line_edit_textChanged(const QString &arg1)
 {
-    // Если запрос пуст, удаление предыдщуих результатов поиска + скрытие виджета.
+    // If the query is empty, delete the previous search results + hide the widget.
     if(arg1.isEmpty()){
-        ui->search_list->clear();
-        ui->search_list->hide();
+        U_search_list->clear();
+        U_search_list->hide();
         return;
     }
 
-
-    // Если список контактов не пуст, нахожу вхождение поиск-запроса в имена друзей.
+    //If the contacts list is empty, I find occurrences of the search query in the names of friends.
     if(!vec.isEmpty())
     {
-        ui->search_list->show();
-        ui->search_list->clear();
+        U_search_list->show();
+        U_search_list->clear();
         for(int i=0; i<vec.size(); i++)
             if(vec.at(i)->data(Qt::DisplayRole).toString().contains(arg1, Qt::CaseInsensitive))
             {
-                // Во временный список добавляю элементы, которые удовлетворяют поиску(вхождение подстроки)
-                // Переписать: не копировать все элементы, а брать их по ссылке.
+                // To add a temporary list of items that match the search (occurrence of a string)
+                // Rewrite not copy all of the items and take them to the link.
                 QListWidgetItem *item = new QListWidgetItem();
                 item->setData(Qt::DisplayRole, vec.at(i)->data(Qt::DisplayRole).toString());
                 item->setData(Qt::ToolTipRole, vec.at(i)->data(Qt::ToolTipRole).toString());
                 item->setData(Qt::UserRole + 1, vec.at(i)->data(Qt::UserRole + 1).toString());
                 item->setData(Qt::DecorationRole, vec.at(i)->data(Qt::DecorationRole));
-                ui->search_list->addItem(item);
+                U_search_list->addItem(item);
             }
     }
 }
 
-// Выбор контакта из поискового запроса (списка)
+//////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////
+/// Selecting a contact from the search query (list)
 void Client::on_search_list_clicked(const QModelIndex &index)
 {
     for(int i=0; i<vec.size(); i++)
     {
         if(vec.at(i)->data(Qt::DisplayRole).toString() == index.data(Qt::DisplayRole).toString())
         {
-            // Переключение на выбранного человека/чат. Очищение запроса поиска + скрытие результата.
-            ui->start_textBrowser->hide();
-            ui->stackedWidget_2->show();
-            ui->stackedWidget_2->setCurrentIndex(i);
-            ui->userList->setCurrentRow(i);
-            ui->search_line_edit->clear();
-            ui->search_line_edit->clearFocus();
-            ui->search_list->hide();
-            ui->search_list->clear();
+            // Switching to a selected person / chat. Cleansing search request + Hiding result.
+            U_start_textBrowser->hide();
+            U_stackedWidget_2->show();
+            U_stackedWidget_2->setCurrentIndex(i);
+            U_userList->setCurrentRow(i);
+            U_search_line_edit->clear();
+            U_search_line_edit->clearFocus();
+            U_search_list->hide();
+            U_search_list->clear();
             return;
         }
     }
 }
 
-
+//////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////
+/// Hide darkened window
 void Client::on_glass_button_clicked()
 {
-    ui->glass_button->hide();
+    U_glass_button->hide();
 }
 
+//////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////
+/// Request for information about the user
 void Client::on_info_user_button_clicked()
 {
-    if(ui->stackedWidget_2->count()==0 || ui->stackedWidget->isHidden())
+    if(U_stackedWidget_2->count()==0 || U_stackedWidget->isHidden())
         return;
 
     QByteArray msg;
     QDataStream out(&msg, QIODevice::WriteOnly);
     out.setVersion(QDataStream::Qt_5_4);
 
-    QString name_user = vec.at(ui->userList->currentRow())->data(Qt::DisplayRole).toString();
+    QString name_user = vec.at(U_userList->currentRow())->data(Qt::DisplayRole).toString();
     out << quint32(0) << QTime::currentTime() << QString("_USERINFO_") << name_user;
     tcpSocket->write(msg);
 }
 
+//////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////
+/// Switching and installation of a new language
 void Client::on_select_language_box_currentIndexChanged(int index)
 {
     lan_dict.clear();
@@ -1406,7 +1575,9 @@ void Client::on_select_language_box_currentIndexChanged(int index)
     set_lang();
 }
 
-
+//////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////
+/// Dumb destructor. Append.
 Client::~Client()
 {
     delete ui;

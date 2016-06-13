@@ -4,8 +4,9 @@
 #include <QDialog>
 #include <QKeyEvent>
 #include <QTcpSocket>
-#include "registration.h"
 #include <QTime>
+
+#include "registration.h"
 
 namespace Ui {
 class Authorization;
@@ -50,8 +51,6 @@ private slots:
 
 public slots:
     void set_lang(QMap<QString, QString> &);
-
-
 };
 
 #endif // AUTHORIZATION_H
