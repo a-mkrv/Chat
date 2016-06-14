@@ -876,7 +876,6 @@ void Client::on_newContact_Button_clicked()
     setGlass();
     choice_window->show();
     connect(choice_window, SIGNAL(choice(QString)), this, SLOT(choice_Window(QString)));
-
 }
 
 //////////////////////////////////////////////////////////
@@ -1292,6 +1291,9 @@ void Client::clearHistory()
 /// Sending a request to the server to clean up the history of the user
 void Client::clearCurHistory(QString cmd)
 {
+    conf_message->hide();
+    on_glass_button_clicked();
+
     if(cmd=="OK")
     {
         chatvec.at(U_stackedWidget_2->currentIndex())->clear();
@@ -1304,8 +1306,10 @@ void Client::clearCurHistory(QString cmd)
         out << quint32(0) << QTime::currentTime() << QString("_CLNHISTORY_") << name << to;
         tcpSocket->write(msg);
     }
-    on_glass_button_clicked();
-    conf_message->~ConfirmWindow();
+
+
+
+    //conf_message->~ConfirmWindow();
 }
 
 //////////////////////////////////////////////////////////
@@ -1313,6 +1317,8 @@ void Client::clearCurHistory(QString cmd)
 /// Removing a user from the list
 void Client::clearCurUser(QString cmd)
 {
+    conf_message->hide();
+
     if(cmd=="OK")
     {
         // If you have contacts in the list, remove the right.
@@ -1340,7 +1346,7 @@ void Client::clearCurUser(QString cmd)
     }
 
     on_glass_button_clicked();
-    conf_message->~ConfirmWindow();
+    //conf_message->~ConfirmWindow();
 }
 
 //////////////////////////////////////////////////////////
@@ -1441,7 +1447,6 @@ void Client::set_lang()
 
     for (int i=0; i<lst_setting.size(); i++)
         U_userList_3->item(i)->setText(lst_setting[i]);
-
 }
 
 //////////////////////////////////////////////////////////
@@ -1494,6 +1499,7 @@ void Client::on_search_line_edit_textChanged(const QString &arg1)
     }
 }
 
+
 //////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////
 /// Selecting a contact from the search query (list)
@@ -1522,6 +1528,7 @@ void Client::on_search_list_clicked(const QModelIndex &index)
 /// Hide darkened window
 void Client::on_glass_button_clicked()
 {
+    //delete choice_window;
     U_glass_button->hide();
 }
 

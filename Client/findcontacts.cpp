@@ -75,7 +75,8 @@ void findcontacts::set_lang(QMap<QString, QString> & lan_dict)
     ui->username_lineedit->setPlaceholderText(lan_dict.value(ui->username_lineedit->objectName()));
     ui->invite_cont_button->setText(lan_dict.value(ui->invite_cont_button->objectName()));
 
-    errors = lan_dict.value("errors").split('//');
+    errors = lan_dict.value("errors").split("//");
+
 }
 
 findcontacts::~findcontacts()

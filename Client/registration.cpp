@@ -42,7 +42,7 @@ void Registration::getMessagee()
 
     else if(received_message == "Welcome!")
     {
-        QString nameKey = QDir::homePath() + "/Whisper Close Key/";
+        QString nameKey = QDir::homePath() + "/WhisperServer/Whisper Close Key/";
         QFile *receiveFile = new QFile(nameKey + ui->enter_user_name->text()+".txt");
 
         QTextStream out(receiveFile);

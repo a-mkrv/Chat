@@ -70,7 +70,7 @@
 		</item>
 		<item>
 			<line>errors1</line>
-			<value>Error.. Enter username and password. // Error.. Name already exists. // Error .. Passwords are not equal. // Error .. Confirm password.</value>
+                        <value>Error.. Enter username and password. //Error.. Name already exists. //Error .. Passwords are not equal. //Error .. Confirm password.</value>
 		</item>
 	
 	</Screen>
