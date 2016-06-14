@@ -29,6 +29,7 @@ public slots:
     QString FindInDB(QString, QString);
     void ClearHistory(QString, QString);
     void delFriend(QString, QString);
+    void UpOnlineStatus(const QString&, const QString&);
     QString CorrectInput(QString, QString);
     QStringList UserData(QString);
 

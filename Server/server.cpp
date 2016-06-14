@@ -60,6 +60,7 @@ void Server::onDisconnect()
                     {
                         ui->userList->removeItemWidget(ui->userList->takeItem(j));
                         ui->chatDialog->addItem(timeconnect() + " - " + disconnectedUser->getUserName() + " disconnected ");
+                        sqlitedb->UpOnlineStatus("Offline", disconnectedUser->getUserName());
                     }
             }
         }
@@ -286,6 +287,7 @@ void Server::NewUser(QTcpSocket *client, QString _user)
     PairStringList FriendsList;
     PairStringList PublicFriendKeys;
 
+    sqlitedb->UpOnlineStatus("Online", UserName);
     PublicFriendKeys = sqlitedb->FriendKeys(UserName);
     FriendsList = sqlitedb->FriendList(UserName, ChatFriendList);
 

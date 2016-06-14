@@ -24,9 +24,10 @@ SQLiteDB::~SQLiteDB()
 }
 
 void SQLiteDB::AddContact(QString UserName, QString Sex, int Age, QString City, QString Pas, QString PubK, QString Salt)
-{   qDebug() << Salt;
+{
     QSqlQuery query(myDB);
-    query.prepare("INSERT INTO Users (UserName, Sex, Age, City, Password, PubKey, Salt) VALUES (:UserName, :Sex, :Age, :City, :Password, :Pub, :Salt)");
+    query.prepare("INSERT INTO Users (UserName, Sex, Age, City, Password, PubKey, Salt, OnlineStatus) "
+                  "VALUES (:UserName, :Sex, :Age, :City, :Password, :Pub, :Salt, :OnlineStatus)");
     query.bindValue(":UserName", UserName);
     query.bindValue(":Sex", Sex);
     query.bindValue(":Age", Age);
@@ -34,6 +35,7 @@ void SQLiteDB::AddContact(QString UserName, QString Sex, int Age, QString City, 
     query.bindValue(":Password", Pas);
     query.bindValue(":Pub", PubK);
     query.bindValue(":Salt", Salt);
+    query.bindValue(":OnlineStatus", QDateTime::currentDateTime().toString("dd.MM.yyyy hh:mm"));
     query.exec();
 
     QSqlQuery queryCreate(myDB);
@@ -191,6 +193,19 @@ void SQLiteDB::delFriend(QString from, QString delfriend)
     if(!query.exec())
         qDebug() << query.lastError();
 
+}
+
+void SQLiteDB::UpOnlineStatus(const QString &status, const QString &user_name)
+{
+    QSqlQuery query(myDB);
+
+    if(status=="Online")
+        query.prepare("UPDATE Users SET OnlineStatus='Online' WHERE UserName='" + user_name + "'");
+
+    else if (status=="Offline")
+        query.prepare(QString("UPDATE Users SET OnlineStatus='%1' WHERE UserName='" + user_name + "'").arg(QDateTime::currentDateTime().toString("dd.MM.yyyy hh:mm")));
+
+    query.exec();
 }
 
 QStringList SQLiteDB::UserData(QString name)
