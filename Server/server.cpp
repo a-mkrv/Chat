@@ -44,7 +44,7 @@ void Server::NewConnect()
 void Server::onDisconnect()
 {
     QTcpSocket *socket = qobject_cast<QTcpSocket*>(sender());
-    qDebug() << "Start Disconnect";
+    qDebug() << "Disconnect";
 
     User* disconnectedUser;
     for (auto i : clientConnections)
@@ -68,7 +68,7 @@ void Server::onDisconnect()
     clientConnections.removeAll(disconnectedUser);
 }
 
-void Server::sendToID(QString message, int ID)
+void Server::SendResponseToID(QString message, int ID)
 {
     // - Отправка конкретному пользователю
 
@@ -169,7 +169,7 @@ void Server::getMessage()
 
         if (result!="false")
         {
-            sendToID("_FIN_ OKFIN " + result, client->socketDescriptor());
+            SendResponseToID("_FIN_ OKFIN " + result, client->socketDescriptor());
             sqlitedb->addChatTable(whoFind, findUser);
             sqlitedb->addChatTable(findUser, whoFind);  // Инвайт
             sqlitedb->FindInDB(whoFind, findUser);      // инвайт
@@ -179,12 +179,12 @@ void Server::getMessage()
                 if (i->getUserName() == findUser)
                 {
                     result = sqlitedb->FindInDB(whoFind, 0);
-                    sendToID("_INV_ " + whoFind + " " + result, i->getSocket()->socketDescriptor());
+                    SendResponseToID("_INV_ " + whoFind + " " + result, i->getSocket()->socketDescriptor());
                 }
 
         }
         else
-            sendToID("_FIN_ NOFIN", client->socketDescriptor() );
+            SendResponseToID("_FIN_ NOFIN", client->socketDescriptor() );
 
         break;
     }
@@ -283,17 +283,21 @@ void Server::NewUser(QTcpSocket *client, QString _user)
     QDataStream out(&block, QIODevice::WriteOnly);
     out.setVersion(QDataStream::Qt_5_4);
 
+    QStringList SendMyStatus;
+    QHash<QString, QString> FriendOnlineStatus;
     ChatListVector ChatFriendList;
     PairStringList FriendsList;
     PairStringList PublicFriendKeys;
 
     sqlitedb->UpOnlineStatus("Online", UserName);
+    sqlitedb->getOnlineStatus(UserName, FriendOnlineStatus, SendMyStatus);
     PublicFriendKeys = sqlitedb->FriendKeys(UserName);
     FriendsList = sqlitedb->FriendList(UserName, ChatFriendList);
 
-    out << quint32(0) << QString("FRLST") << PublicFriendKeys << FriendsList << ChatFriendList;
+    out << quint32(0) << QString("FRLST") << PublicFriendKeys << FriendsList << ChatFriendList << FriendOnlineStatus;
     client->write(block);
 
+    NotificationNetwork(UserName, SendMyStatus);
     while (AlreadyName)
     {
         AlreadyName = false;
@@ -318,6 +322,30 @@ void Server::NewUser(QTcpSocket *client, QString _user)
             ui->userList->addItem(i->getUserName());
             ui->chatDialog->addItem(timeconnect() + " - " + i->getUserName() + " is online (" + QString::number(client->socketDescriptor()) + ")");
         }
+}
+
+void Server::NotificationNetwork(const QString username, const QStringList &friend_list)
+{
+    QStringList online_now;
+
+    QString message = "STATE " + username;
+
+    for (int i=0; i < ui->userList->count(); i++)
+        online_now.push_back(ui->userList->item(i)->text());
+
+    QSet<QString> whom_alert = friend_list.toSet().intersect(online_now.toSet());
+
+    for (auto i : clientConnections)
+    {
+        for (int j=0; j<whom_alert.size(); j++)
+        {
+            if (whom_alert.contains(i->getUserName()))
+            {
+                SendResponseToID(message, i->getSocket()->socketDescriptor());
+                break;
+            }
+        }
+    }
 }
 
 void Server::PrivateMessage(QTcpSocket *client, QString _message, QString _mymsg)
@@ -352,13 +380,13 @@ void Server::PrivateMessage(QTcpSocket *client, QString _message, QString _mymsg
                 toUser = i;
 
     QString newMessage = "*To: " + recipient + ": " + _mymsg;
-    sendToID(newMessage, fromUser->getSocket()->socketDescriptor());
+    SendResponseToID(newMessage, fromUser->getSocket()->socketDescriptor());
 
     if (toUser != nullptr)
     {
         newMessage.clear();
         newMessage = "*From: " + fromUser->getUserName() + ": " + text;
-        sendToID(newMessage, toUser->getSocket()->socketDescriptor());
+        SendResponseToID(newMessage, toUser->getSocket()->socketDescriptor());
 
         ui->chatDialog->addItem(timeconnect() + " - PM: " + fromUser->getUserName() + " -> " + toUser->getUserName() + ":  " + text);
         sqlitedb->addMessInChat(fromUser->getUserName(), toUser->getUserName(), _mymsg, QString("To"));

@@ -252,6 +252,45 @@
 		</item>
 	</Screen>
 
+	<Screen w="date/time">
+		<item>
+			<line>was_yesterday</line>
+			<value>Est venu hier en </value>
+		</item>
+		<item>
+			<line>was_today</line>
+			<value>Est venu aujourd'hui en </value>
+		</item>
+		<item>
+			<line>was_online</line>
+			<value> sur le réseau </value>
+		</item>
+		<item>
+			<line>ago</line>
+			<value> il ya</value>
+		</item>
+		<item>
+			<line>she_was</line>
+			<value>Elle était</value>
+		</item>
+		<item>
+			<line>he_was</line>
+			<value>Il était</value>
+		</item>
+		<item>
+			<line>days</line>
+			<value>journées</value>
+		</item>
+		<item>
+			<line>day</line>
+			<value>jour</value>
+		</item>
+		<item>
+			<line>of_the_day</line>
+			<value>jour</value>
+		</item>
+	</Screen>
+
 	<Screen w="other">	
 		<item>
 			<line>ContextDelUser</line>

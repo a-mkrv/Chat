@@ -122,6 +122,8 @@ private slots:
     void getMessage_UserList(PairStringList &, PairStringList &, ChatListVector &);
     void set_default_Language();
     void set_lang();
+    QString SuffixDay(int day);
+    QString Pronoun(QString username);
 
 public slots:
     void recieveData(QString str, QString pas, QString);
@@ -147,6 +149,8 @@ private:
     QVector<QListWidgetItem*> vec;
     QVector<QListWidget*> chatvec;
     QMap<QString, QString> lan_dict;
+    QHash<QString, QString> FriendOnlineStatus;
+    QHash<QString, QString> SexOfUsers;
 
     QStringList groupData;
     QString name;

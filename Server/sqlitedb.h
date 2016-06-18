@@ -30,9 +30,9 @@ public slots:
     void ClearHistory(QString, QString);
     void delFriend(QString, QString);
     void UpOnlineStatus(const QString&, const QString&);
+    void getOnlineStatus(const QString&, QHash<QString, QString> &, QStringList &);
     QString CorrectInput(QString, QString);
     QStringList UserData(QString);
-
 };
 
 #endif // SQLITEDB_H

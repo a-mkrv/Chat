@@ -1533,6 +1533,49 @@ border:none;</string>
      <set>Qt::AlignCenter</set>
     </property>
    </widget>
+   <widget class="QLabel" name="head_name">
+    <property name="geometry">
+     <rect>
+      <x>400</x>
+      <y>30</y>
+      <width>231</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>16</pointsize>
+     </font>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">color: rgb(255, 255, 255);</string>
+    </property>
+    <property name="text">
+     <string>Веснушка</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="online_status">
+    <property name="geometry">
+     <rect>
+      <x>400</x>
+      <y>59</y>
+      <width>211</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>10</pointsize>
+     </font>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">color: rgb(255, 255, 255);</string>
+    </property>
+    <property name="text">
+     <string>Была сегодня в 23.44</string>
+    </property>
+   </widget>
+   <zorder>widget_2</zorder>
    <zorder>glass_button</zorder>
    <zorder>line</zorder>
    <zorder>userList</zorder>
@@ -1553,7 +1596,8 @@ border:none;</string>
    <zorder>search_list</zorder>
    <zorder>name_label</zorder>
    <zorder>info_user_button</zorder>
-   <zorder>widget_2</zorder>
+   <zorder>head_name</zorder>
+   <zorder>online_status</zorder>
   </widget>
   <action name="actionShowHideWindow">
    <property name="text">

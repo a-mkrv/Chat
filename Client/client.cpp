@@ -226,6 +226,7 @@ void Client::AddUser_Chat(QString _username, QString _sex, PairStringList lst, i
     QString RU_Full_Path = RU_AVATARS_PATH + first_letter +".jpg";
     QString EN_Full_Path = EN_AVATARS_PATH + first_letter +".jpg";
 
+    SexOfUsers.insert(_username, _sex);
     if (QFile::exists(EN_Full_Path))
     {
         pic.addFile(EN_Full_Path);
@@ -417,7 +418,7 @@ void Client::getMessage()
 
     // Parsing of an incoming message.
 
-    enum class COMMAND { NONE, USERLIST, FINDUSER, INVITE, GETFILE, USINFO};
+    enum class COMMAND { NONE, USERLIST, FINDUSER, INVITE, GETFILE, USINFO, ISONLINE};
     COMMAND cmd = COMMAND::NONE;
 
     if (message=="FRLST")
@@ -441,6 +442,9 @@ void Client::getMessage()
             cmd = COMMAND::FINDUSER;
         if (checkCmd == "_INV_")
             cmd = COMMAND::INVITE;
+        if (checkCmd == "STATE")
+            cmd = COMMAND::ISONLINE;
+
     }
 
     switch (cmd)
@@ -453,12 +457,12 @@ void Client::getMessage()
         PairStringList FriendList;
         ChatListVector chatList;
 
-        in >> PublicFriendKey >> FriendList >> chatList;
+        in >> PublicFriendKey >> FriendList >> chatList >> FriendOnlineStatus;
         getMessage_UserList(PublicFriendKey, FriendList, chatList);
         break;
     }
 
-    // Response to a request on the search friend
+        // Response to a request on the search friend
     case COMMAND::FINDUSER:
     {
         QString find_user = commandList.at(1);
@@ -477,7 +481,7 @@ void Client::getMessage()
         break;
     }
 
-    // Response for an invitation to friends
+        // Response for an invitation to friends
     case COMMAND::INVITE:
     {
         QList <QPair<QString, QString> > a;
@@ -488,7 +492,7 @@ void Client::getMessage()
         break;
     }
 
-    // Information about the user or group
+        // Information about the user or group
     case COMMAND::USINFO:
     {
         QStringList *usData = new QStringList;
@@ -504,7 +508,13 @@ void Client::getMessage()
         break;
     }
 
-    // Receiving file
+        // Receiving file
+    case COMMAND::ISONLINE:
+    {
+        QString username = commandList.at(1);
+        FriendOnlineStatus[username] = "Online";
+    }
+
     case COMMAND::GETFILE:
     {
         QByteArray buffer;
@@ -547,7 +557,10 @@ void Client::getMessage()
                     QListWidgetItem *item = new QListWidgetItem();
                     item->setData(Qt::UserRole + 1, "FROMF");
                     item->setData(Qt::DisplayRole, filename);
-                    item->setData(Qt::ToolTipRole, QString::number((float)fileSize/1024, 'f', 2)  + " KB  " +  QDateTime::currentDateTime().toString("dd.MM.yy hh:mm"));
+                    item->setData(Qt::ToolTipRole, QString::number((float)fileSize/1024, 'f', 2)
+                                  + " KB  "
+                                  +  QDateTime::currentDateTime().toString("dd.MM.yy hh:mm"));
+
                     item->setData(Qt::DecorationRole, pic);
                     vec.at(i)->setData(Qt::UserRole + 1, lan_dict.value("File") + ": " + filename);
                     vec.at(i)->setData(Qt::ToolTipRole, QDateTime::currentDateTime().toString("dd.MM.yy hh:mm"));
@@ -574,7 +587,7 @@ void Client::getMessage()
         break;
     }
 
-    // Standard text message
+        // Standard text message
     default:
 
         if(QStringRef(&message, 0, 3)=="*To")
@@ -1248,7 +1261,77 @@ void Client::on_userList_clicked(const QModelIndex &index)
         U_start_textBrowser->hide();
         U_stackedWidget_2->show();
         U_stackedWidget_2->setCurrentIndex(index.row());
+
+        QString cur_user = vec.at(U_userList->currentRow())->data(Qt::DisplayRole).toString();
+        QString status = FriendOnlineStatus.value(cur_user);
+
+        // Setting in the header name of the selected friend
+        U_head_name->setText(cur_user);
+
+        QDate _Today = QDate::currentDate();
+        QDate _Date = QDate::fromString(status.left(10), "dd.MM.yyyy");
+        qint32 difference_days = _Today.daysTo(_Date);
+
+        if (status == "Online")
+            U_online_status->setText(status);
+
+        else {
+            switch(difference_days)
+            {
+            case -1:
+                U_online_status->setText(lan_dict.value("was_yesterday") + status.right(status.size()-10));
+                break;
+            case 0:
+                U_online_status->setText(lan_dict.value("was_today") + status.right(status.size()-10));
+                break;
+            default:
+            {
+                QString setHead = Pronoun(cur_user)
+                        + lan_dict.value("was_online")
+                        +  QString::number(abs(difference_days))
+                        + " "
+                        + SuffixDay(difference_days)
+                        + lan_dict.value("ago");
+
+                U_online_status->setText(setHead);
+                break;
+            }
+            }
+        }
     }
+}
+
+QString Client::Pronoun(QString username)
+{
+    QString pronoun;
+    QStringList sex_person = lan_dict.value("sex_person").split(',');
+
+    if (SexOfUsers[username] == sex_person.at(2))
+        pronoun = lan_dict.value("she_was");
+    else pronoun = lan_dict.value("he_was");;
+
+    return pronoun;
+}
+
+QString Client::SuffixDay(int difference_days)
+{
+    QString suffix_day;
+    int day = abs(difference_days) % 100;
+
+    if(day > 10 && day < 20)
+        suffix_day = lan_dict.value("days");
+    else
+    {
+        day = day % 10;
+        if (day == 1)
+            suffix_day = lan_dict.value("day");
+        else if (day>=2 && day <= 4)
+            suffix_day = lan_dict.value("of_the_day");
+        else
+            suffix_day = lan_dict.value("days");
+    }
+
+    return suffix_day;
 }
 
 //////////////////////////////////////////////////////////

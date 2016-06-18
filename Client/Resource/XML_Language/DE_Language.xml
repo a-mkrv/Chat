@@ -252,6 +252,44 @@
 		</item>
 	</Screen>
 
+	<Screen w="date/time">
+		<item>
+			<line>was_yesterday</line>
+			<value>Kam gestern in </value>
+		</item>
+		<item>
+			<line>was_today</line>
+			<value>Kam heute in </value>
+		</item>
+		<item>
+			<line>was_online</line>
+			<value> im Netz </value>
+		</item>
+		<item>
+			<line>ago</line>
+			<value> ago</value>
+		</item>
+		<item>
+			<line>she_was</line>
+			<value>Sie war</value>
+		</item>
+		<item>
+			<line>he_was</line>
+			<value>Er war</value>
+		</item>
+		<item>
+			<line>days</line>
+			<value>tage</value>
+		</item>
+		<item>
+			<line>day</line>
+			<value>tag</value>
+		</item>
+		<item>
+			<line>of_the_day</line>
+			<value>tag</value>
+		</item>
+	</Screen>
 
 	<Screen w="other">	
 		<item>

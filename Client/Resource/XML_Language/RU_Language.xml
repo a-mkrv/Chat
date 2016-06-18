@@ -253,6 +253,49 @@
 		</item>
 	</Screen>
 
+	<Screen w="date/time">
+		<item>
+			<line>was_yesterday</line>
+			<value>Заходил вчера в </value>
+		</item>
+		<item>
+			<line>was_today</line>
+			<value>Заходил сегодня в </value>
+		</item>
+		<item>
+			<line>was_online</line>
+			<value> в сети </value>
+		</item>
+		<item>
+			<line>was_online</line>
+			<value> в сети </value>
+		</item>
+		<item>
+			<line>ago</line>
+			<value> назад</value>
+		</item>
+		<item>
+			<line>she_was</line>
+			<value>Была</value>
+		</item>
+		<item>
+			<line>he_was</line>
+			<value>Был</value>
+		</item>
+		<item>
+			<line>days</line>
+			<value>дней</value>
+		</item>
+		<item>
+			<line>day</line>
+			<value>день</value>
+		</item>
+		<item>
+			<line>of_the_day</line>
+			<value>дня</value>
+		</item>
+	</Screen>
+	
 	<Screen w="other">	
 		<item>
 			<line>ContextDelUser</line>
