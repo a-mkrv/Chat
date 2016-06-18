@@ -511,8 +511,15 @@ void Client::getMessage()
         // Receiving file
     case COMMAND::ISONLINE:
     {
-        QString username = commandList.at(1);
-        FriendOnlineStatus[username] = "Online";
+        QString username = commandList.at(2);
+
+        if (commandList.at(1) == "Online")
+             FriendOnlineStatus[username] = "Online";
+        else
+        {
+            FriendOnlineStatus[username] = QDateTime::currentDateTime().toString("dd.MM.yyyy hh:mm");
+        }
+
     }
 
     case COMMAND::GETFILE:

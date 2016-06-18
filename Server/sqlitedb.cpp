@@ -242,3 +242,14 @@ QStringList SQLiteDB::UserData(QString name)
     query.exec();
     return uList;
 }
+
+void SQLiteDB::FriendListName(QString username, QStringList &user_list)
+{
+    QSqlQuery query(myDB);
+
+    if(query.exec("SELECT name FROM Friend" + username))
+        while (query.next())
+        {
+            user_list.push_back(query.value(0).toString());
+        }
+}

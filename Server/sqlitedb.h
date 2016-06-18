@@ -33,6 +33,7 @@ public slots:
     void getOnlineStatus(const QString&, QHash<QString, QString> &, QStringList &);
     QString CorrectInput(QString, QString);
     QStringList UserData(QString);
+    void  FriendListName(QString, QStringList &);
 };
 
 #endif // SQLITEDB_H

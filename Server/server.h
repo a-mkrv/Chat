@@ -40,7 +40,7 @@ private slots:
     void PrivateMessage(QTcpSocket *client, QString _message, QString);
     void SendingFile(QTcpSocket *client);
     void LogIn(QTcpSocket *client, QString &U, QString &C, QString &P, QString &A, QString &S, QString &PubK, QString &Salt);
-    void NotificationNetwork(const QString, const QStringList &);
+    void NotificationNetwork(const QString, const QStringList &, int);
 
 private:
     Ui::Server *ui;

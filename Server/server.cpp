@@ -44,6 +44,8 @@ void Server::NewConnect()
 void Server::onDisconnect()
 {
     QTcpSocket *socket = qobject_cast<QTcpSocket*>(sender());
+    QStringList user_list;
+
     qDebug() << "Disconnect";
 
     User* disconnectedUser;
@@ -61,6 +63,8 @@ void Server::onDisconnect()
                         ui->userList->removeItemWidget(ui->userList->takeItem(j));
                         ui->chatDialog->addItem(timeconnect() + " - " + disconnectedUser->getUserName() + " disconnected ");
                         sqlitedb->UpOnlineStatus("Offline", disconnectedUser->getUserName());
+                        sqlitedb->FriendListName(disconnectedUser->getUserName(), user_list);
+                        NotificationNetwork(disconnectedUser->getUserName(), user_list, 0);
                     }
             }
         }
@@ -297,7 +301,7 @@ void Server::NewUser(QTcpSocket *client, QString _user)
     out << quint32(0) << QString("FRLST") << PublicFriendKeys << FriendsList << ChatFriendList << FriendOnlineStatus;
     client->write(block);
 
-    NotificationNetwork(UserName, SendMyStatus);
+    NotificationNetwork(UserName, SendMyStatus, 1);
     while (AlreadyName)
     {
         AlreadyName = false;
@@ -324,11 +328,18 @@ void Server::NewUser(QTcpSocket *client, QString _user)
         }
 }
 
-void Server::NotificationNetwork(const QString username, const QStringList &friend_list)
+void Server::NotificationNetwork(const QString username, const QStringList &friend_list, int state)
 {
     QStringList online_now;
-
-    QString message = "STATE " + username;
+    QString message;
+    if (state == 1)
+    {
+      message = "STATE Online " + username;
+    }
+    else if (state == 0)
+    {
+       message = "STATE Offline " + username;
+    }
 
     for (int i=0; i < ui->userList->count(); i++)
         online_now.push_back(ui->userList->item(i)->text());
