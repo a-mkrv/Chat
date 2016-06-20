@@ -8,81 +8,81 @@
 
 EmojiManager::EmojiManager(QObject *parent) : QObject(parent)
 {
-    QString binDir = QCoreApplication::applicationDirPath();
-    QString dataDir = binDir;
-    dataDir = QDir::cleanPath(dataDir + "/");
-    QDir dataLocation(dataDir + "/data");
+  QString binDir = QCoreApplication::applicationDirPath();
+  QString dataDir = binDir;
+  dataDir = QDir::cleanPath(dataDir + "/");
+  QDir dataLocation(dataDir + "/data");
 
-    QString fileName = dataLocation.absolutePath() + "/emojilist.txt";
+  QString fileName = dataLocation.absolutePath() + "/emojilist.txt";
 
-    QStringList listTmp = readText(fileName);
+  QStringList listTmp = readText(fileName);
 
-    // Insert firts category of emoji (ALL)
-    EmojiCategory emojiCat;
-    emojiCat.categoryName = "All";
-    emojiCat.iconNumber = "093";
+  // Insert firts category of emoji (ALL)
+  EmojiCategory emojiCat;
+  emojiCat.categoryName = "All";
+  emojiCat.iconNumber = "093";
 
-    categoryList << emojiCat;
+  categoryList << emojiCat;
 
-    parseEmoticonList(listTmp);
+  parseEmoticonList(listTmp);
 
 }
 
 QStringList EmojiManager::readText(QString fileName)
 {
-    QStringList content;
+  QStringList content;
 
-    QFile file(fileName);
-    if (file.open(QFile::ReadOnly | QFile::Text)) {
-        QTextStream in(&file);
-        QString line;
-        do {
-            line = in.readLine();
-            content << line;
+  QFile file(fileName);
+  if (file.open(QFile::ReadOnly | QFile::Text)) {
+      QTextStream in(&file);
+      QString line;
+      do {
+          line = in.readLine();
+          content << line;
         } while (!line.isNull());
     }
 
-    return content;
+  return content;
 }
 
 void EmojiManager::parseEmoticonList(QStringList content)
 {
-    QString currentCategory;    // currentCategory remembers the current category for every emoji!
+  QString currentCategory;    // currentCategory remembers the current category for every emoji!
 
-    for (int i = 0; i < content.count(); i++) {
-        QString line = content.at(i);
+  for (int i = 0; i < content.count(); i++) {
+      QString line = content.at(i);
 
-        if (line.isEmpty())
-            break;
+      if (line.isEmpty())
+        break;
 
-        if (line[0] == ';') {
-            QStringList splitLine = line.split(" = ");
+      if (line[0] == ';') {
+          QStringList splitLine = line.split(" = ");
 
-            currentCategory = splitLine.at(0);
-            currentCategory = currentCategory.remove(";");
+          currentCategory = splitLine.at(0);
+          currentCategory = currentCategory.remove(";");
 
-            EmojiCategory emojiCat;
-            emojiCat.categoryName = currentCategory;
-            emojiCat.iconNumber = splitLine.at(1);
+          EmojiCategory emojiCat;
+          emojiCat.categoryName = currentCategory;
+          emojiCat.iconNumber = splitLine.at(1);
 
-            categoryList << emojiCat;
+          categoryList << emojiCat;
         }
-        else {
-            QStringList splitLine = line.split(" = ");
+      else {
+          QStringList splitLine = line.split(" = ");
 
-            Emoji emoji;
+          Emoji emoji;
 
-            emoji.symbol = splitLine.at(0);
-            emoji.description = splitLine.at(1);
-            emoji.pixmapIconNumber = splitLine.at(2);
-            emoji.category = currentCategory;
+          emoji.symbol = splitLine.at(0);
+          emoji.description = splitLine.at(1);
+          emoji.pixmapIconNumber = splitLine.at(2);
+          emoji.category = currentCategory;
 
-            symbolNumberMap.insert(emoji.symbol, emoji.pixmapIconNumber);
-            numberSymbolMap.insert(emoji.pixmapIconNumber, emoji.symbol);
+          symbolNumberMap.insert(emoji.symbol, emoji.pixmapIconNumber);
+          numberSymbolMap.insert(emoji.pixmapIconNumber, emoji.symbol);
 
-            emojiList << emoji;
+          emojiList << emoji;
 
-            /*qDebug() << "Symbol " << splitLine.at(0);
+          /*qDebug() << "Symbol " << splitLine.at(0);
             qDebug() << "Name " << splitLine.at(1);
             qDebug() << "Number " << splitLine.at(2);
             qDebug() << "Category " << currentCategory;
@@ -93,20 +93,20 @@ void EmojiManager::parseEmoticonList(QStringList content)
 
 QList<Emoji> EmojiManager::getEmojiList()
 {
-    return emojiList;
+  return emojiList;
 }
 
 QList<EmojiCategory> EmojiManager::getEmojiCategoryList()
 {
-    return categoryList;
+  return categoryList;
 }
 
 QString EmojiManager::getEmojiNumberFromSymbol(QString symbol)
 {
-    return symbolNumberMap[symbol];
+  return symbolNumberMap[symbol];
 }
 
 QString EmojiManager::getEmojiSymbolFromNumber(QString number)
 {
-    return numberSymbolMap[number];
+  return numberSymbolMap[number];
 }

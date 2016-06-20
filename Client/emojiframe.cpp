@@ -2,55 +2,55 @@
 #include "ui_emojiframe.h"
 
 EmojiFrame::EmojiFrame(QWidget *parent, QString emojiPath) :
-    QFrame(parent),
-    ui(new Ui::EmojiFrame)
+  QFrame(parent),
+  ui(new Ui::EmojiFrame)
 {
-    ui->setupUi(this);
-    this->setWindowFlags(Qt::Popup | Qt::Window);
+  ui->setupUi(this);
+  this->setWindowFlags(Qt::Popup | Qt::Window);
 
-    m_emojiPath = emojiPath;
+  m_emojiPath = emojiPath;
 
-    emojiMan = new EmojiManager();
+  emojiMan = new EmojiManager();
 
-    loadComboCategories();
-    connect(ui->comboEmojiCategory, SIGNAL(currentIndexChanged(QString)), this, SLOT(loadEmojiCategory(QString)));
-    connect(ui->listWidgetEmoji, SIGNAL(sendEmoji(QString)), this, SLOT(emojiDoubleClickReceived(QString)));
+  loadComboCategories();
+  connect(ui->comboEmojiCategory, SIGNAL(currentIndexChanged(QString)), this, SLOT(loadEmojiCategory(QString)));
+  connect(ui->listWidgetEmoji, SIGNAL(sendEmoji(QString)), this, SLOT(emojiDoubleClickReceived(QString)));
 
-    ui->listWidgetEmoji->setEmojiManager(emojiMan);
-    ui->listWidgetEmoji->loadEmojiListView("All");
+  ui->listWidgetEmoji->setEmojiManager(emojiMan);
+  ui->listWidgetEmoji->loadEmojiListView("All");
 }
 
 EmojiFrame::~EmojiFrame()
 {
-    delete ui;
+  delete ui;
 }
 
 void EmojiFrame::loadComboCategories()
 {
-    QList<EmojiCategory> eCatList = emojiMan->getEmojiCategoryList();
+  QList<EmojiCategory> eCatList = emojiMan->getEmojiCategoryList();
 
-    for (int i = 0; i < eCatList.count(); i++) {
-        QString name = eCatList.at(i).categoryName;
-        QString iconNumber = eCatList.at(i).iconNumber;
+  for (int i = 0; i < eCatList.count(); i++) {
+      QString name = eCatList.at(i).categoryName;
+      QString iconNumber = eCatList.at(i).iconNumber;
 
-        QIcon ico;
-        QString iconFileName = QString("%1/x-%2.png")
-                .arg(m_emojiPath)
-                .arg(iconNumber);
-        QPixmap p(iconFileName);
-        ico.addPixmap(p);
+      QIcon ico;
+      QString iconFileName = QString("%1/x-%2.png")
+          .arg(m_emojiPath)
+          .arg(iconNumber);
+      QPixmap p(iconFileName);
+      ico.addPixmap(p);
 
-        ui->comboEmojiCategory->addItem(p, name);
+      ui->comboEmojiCategory->addItem(p, name);
     }
 }
 
 void EmojiFrame::loadEmojiCategory(QString category)
 {
-    ui->listWidgetEmoji->clear();
-    ui->listWidgetEmoji->loadEmojiListView(category);
+  ui->listWidgetEmoji->clear();
+  ui->listWidgetEmoji->loadEmojiListView(category);
 }
 
 void EmojiFrame::emojiDoubleClickReceived(QString symbol)
 {
-    emit sendEmoji(symbol);
+  emit sendEmoji(symbol);
 }

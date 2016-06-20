@@ -9,24 +9,24 @@
 /******************************************************/
 
 AboutDialog::AboutDialog(QWidget *parent) :
-    QFrame(parent),
-    ui(new Ui::AboutDialog)
+  QFrame(parent),
+  ui(new Ui::AboutDialog)
 {
-    ui->setupUi(this);
-    this->setWindowFlags(Qt::Popup | Qt::Window);
-    setWindowOpacity(0);
-    show();
+  ui->setupUi(this);
+  this->setWindowFlags(Qt::Popup | Qt::Window);
+  setWindowOpacity(0);
+  show();
 
-    QPropertyAnimation* animation = new QPropertyAnimation(this, "windowOpacity");
+  QPropertyAnimation* animation = new QPropertyAnimation(this, "windowOpacity");
 
-    animation->setDuration(1000);
-    animation->setStartValue(0);
-    animation->setEndValue(1);
-    animation->start();
+  animation->setDuration(1000);
+  animation->setStartValue(0);
+  animation->setEndValue(1);
+  animation->start();
 
 }
 
 AboutDialog::~AboutDialog()
 {
-    delete ui;
+  delete ui;
 }

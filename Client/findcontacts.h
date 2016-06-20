@@ -6,33 +6,33 @@
 #include <QVector>
 
 namespace Ui {
-class findcontacts;
+  class findcontacts;
 }
 
 class findcontacts : public QFrame
 {
-    Q_OBJECT
+  Q_OBJECT
 
 private:
-    QStringList errors;
+  QStringList errors;
 
 public:
-    explicit findcontacts(QWidget *parent = 0);
+  explicit findcontacts(QWidget *parent = 0);
 
-    Ui::findcontacts *ui;
-    QString username;
-    void SetErrorLayout(int _show);
+  Ui::findcontacts *ui;
+  QString username;
+  void SetErrorLayout(int _show);
 
-    ~findcontacts();
+  ~findcontacts();
 
 signals:
-    void findUsers(QString str);
+  void findUsers(QString str);
 
 private slots:
-    void on_invite_cont_button_clicked();
+  void on_invite_cont_button_clicked();
 
 public slots:
-    void set_lang(QMap<QString, QString> &);
+  void SetLanguage(QMap<QString, QString> &);
 };
 
 #endif // FINDCONTACTS_H

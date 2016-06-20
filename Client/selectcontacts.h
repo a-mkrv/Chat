@@ -8,31 +8,31 @@
 #include "userlistdelegate.h"
 
 namespace Ui {
-class SelectContacts;
+  class SelectContacts;
 }
 
 class SelectContacts : public QFrame
 {
-    Q_OBJECT
+  Q_OBJECT
 
 public:
-    explicit SelectContacts(QWidget *parent = 0, QListWidget *list = 0);
-    ~SelectContacts();
+  explicit SelectContacts(QWidget *parent = 0, QListWidget *list = 0);
+  ~SelectContacts();
 
 signals:
-    void SelectUsersSignal(QStringList, QString);
+  void SelectUsersSignal(QStringList, QString);
 
 private slots:
-    void on_crGroup_button_clicked();
-    void on_cancel_button_clicked();
-    void on_userList_itemSelectionChanged();
+  void on_crGroup_button_clicked();
+  void on_cancel_button_clicked();
+  void on_userList_itemSelectionChanged();
 
 public slots:
-    void set_lang(QMap<QString, QString> &);
+  void SetLanguage(QMap<QString, QString> &);
 
 private:
-    Ui::SelectContacts *ui;
-    QString languageMembers;
+  Ui::SelectContacts *ui;
+  QString languageMembers;
 };
 
 #endif // SELECTCONTACTS_H

@@ -9,33 +9,33 @@
 
 class Notification : public QWidget
 {
-    Q_OBJECT
+  Q_OBJECT
 
-    Q_PROPERTY(float popupOpacity READ getPopupOpacity WRITE setPopupOpacity)
-
-        void setPopupOpacity(float opacity);
-        float getPopupOpacity() const;
+  Q_PROPERTY(float popupOpacity READ GetPopupOpacity WRITE SetPopupOpacity)
 
 public:
-    explicit Notification(QWidget *parent = 0);
+  explicit Notification(QWidget *parent = 0);
 
 protected:
-    void paintEvent(QPaintEvent *event);
+  void paintEvent(QPaintEvent *event);
 
 public slots:
-    void setPopupText(const QString& text);
-    void show();
+  void SetPopupText(const QString& text);
+  void Show();
 
 private slots:
-    void hideAnimation();
-    void hide();
+  void HideAnimation();
+  void Hide();
 
 private:
-    QLabel label;
-    QGridLayout layout;
-    QPropertyAnimation animation;
-    float popupOpacity;     // Свойства полупрозрачности виджета
-    QTimer *timer;          // Таймер, по которому виджет будет скрыт
+  QLabel label;
+  QGridLayout layout;
+  QPropertyAnimation animation;
+  float popupOpacity;     // Properties translucent widget
+  QTimer *timer;          // The timer on which the widget is hidden
+
+  void SetPopupOpacity(float opacity);
+  float GetPopupOpacity() const;
 };
 
 #endif // NOTIFICATION_H

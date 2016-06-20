@@ -11,22 +11,22 @@
 /******************************************************/
 
 ConfirmWindow::ConfirmWindow(QWidget *parent, QString _message) :
-    QFrame(parent),
-    ui(new Ui::ConfirmWindow)
+  QFrame(parent),
+  ui(new Ui::ConfirmWindow)
 {
-    ui->setupUi(this);
-    message = _message;
-    ui->confirm_message->setText(message);
+  ui->setupUi(this);
+  message = _message;
+  ui->confirm_message->setText(message);
 
-    this->setWindowFlags(Qt::Popup | Qt::Window);
-    setWindowOpacity(0);
-    show();
+  this->setWindowFlags(Qt::Popup | Qt::Window);
+  setWindowOpacity(0);
+  show();
 
-    QPropertyAnimation* animation = new QPropertyAnimation(this, "windowOpacity");
-    animation->setDuration(1000);
-    animation->setStartValue(0);
-    animation->setEndValue(1);
-    animation->start();
+  QPropertyAnimation* animation = new QPropertyAnimation(this, "windowOpacity");
+  animation->setDuration(1000);
+  animation->setStartValue(0);
+  animation->setEndValue(1);
+  animation->start();
 }
 
 
@@ -35,7 +35,7 @@ ConfirmWindow::ConfirmWindow(QWidget *parent, QString _message) :
 /// Confirm selection
 void ConfirmWindow::on_ok_Button_clicked()
 {
-    emit response(QString("OK"));
+  emit response(QString("OK"));
 }
 
 //////////////////////////////////////////////////////////
@@ -43,19 +43,19 @@ void ConfirmWindow::on_ok_Button_clicked()
 /// Cancel selection
 void ConfirmWindow::on_cancel_Button_clicked()
 {
-    emit response(QString("Cancel"));
+  emit response(QString("Cancel"));
 }
 
 //////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////
 /// Language setting.
-void ConfirmWindow::set_lang(QMap<QString, QString> & lan_dict)
+void ConfirmWindow::SetLanguage(QMap<QString, QString> & lan_dict)
 {
-    ui->cancel_Button->setText(lan_dict.value("cancel_Button_conf"));
-    ui->ok_Button->setText(lan_dict.value(ui->ok_Button->objectName()));
+  ui->cancel_Button->setText(lan_dict.value("cancel_Button_conf"));
+  ui->ok_Button->setText(lan_dict.value(ui->ok_Button->objectName()));
 }
 
 ConfirmWindow::~ConfirmWindow()
 {
-    delete ui;
+  delete ui;
 }

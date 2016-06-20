@@ -11,15 +11,15 @@
 
 class XML_Language : public QObject
 {
-    Q_OBJECT
+  Q_OBJECT
 public:
-    explicit XML_Language(QObject *parent = 0);
-    QMap<QString, QString> parseXML(QString);
+  explicit XML_Language(QObject *parent = 0);
+  QMap<QString, QString> ParseXML(QString);
 
 private:
-    QString XML_fileName;
-    QFile *fileLanguage;
-    QMap<QString, QString> dictionary;
+  QString XML_fileName;
+  QFile *fileLanguage;
+  QMap<QString, QString> dictionary;
 
 };
 

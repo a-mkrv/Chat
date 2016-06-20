@@ -11,42 +11,42 @@
 #include "hashmd5.h"
 
 namespace Ui {
-class Registration;
+  class Registration;
 }
 
 class Registration : public QWidget
 {
-    Q_OBJECT
+  Q_OBJECT
 
 public:
-    explicit Registration(QWidget *parent = 0);
-    ~Registration();
+  explicit Registration(QWidget *parent = 0);
+  ~Registration();
 
 protected:
-    void mouseMoveEvent(QMouseEvent *event);
-    void mousePressEvent(QMouseEvent *event);
+  void mouseMoveEvent(QMouseEvent *event);
+  void mousePressEvent(QMouseEvent *event);
 
 private slots:
-    void on_accept_button_clicked();
-    void on_come_back_clicked();
-    void on_close_window_clicked();
-    void on_turn_window_clicked();
-    void getMessagee();
+  void on_accept_button_clicked();
+  void on_come_back_clicked();
+  void on_close_window_clicked();
+  void on_turn_window_clicked();
+  void getMessagee();
 
 public slots:
-    void set_lang(QMap<QString, QString> &);
+  void SetLanguage(QMap<QString, QString> &);
 
 signals:
-    void sendData(QString str);
+  void sendData(QString str);
 
 private:
-    Ui::Registration *ui;
+  Ui::Registration *ui;
 
-    HashMD5 *hashmd5;
-    RSACrypt *rsacrypt;
-    QTcpSocket *socket;
-    QPoint m_dragPosition;
-    QStringList errors;
+  HashMD5 *hashmd5;
+  RSACrypt *rsacrypt;
+  QTcpSocket *socket;
+  QPoint m_dragPosition;
+  QStringList errors;
 };
 
 #endif // NEWCONTACT_H

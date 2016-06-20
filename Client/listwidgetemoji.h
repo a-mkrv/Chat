@@ -11,24 +11,24 @@
 
 class ListWidgetEmoji : public QListWidget
 {
-     Q_OBJECT
+  Q_OBJECT
 public:
-    explicit ListWidgetEmoji(QWidget *parent = 0);
-    void loadEmojiListView(QString category);
-    void setEmojiManager(EmojiManager *emojiMan);
+  explicit ListWidgetEmoji(QWidget *parent = 0);
+  void loadEmojiListView(QString category);
+  void setEmojiManager(EmojiManager *emojiMan);
 
 private:
-    EmojiManager *m_emojiMan;
-    QList<Emoji> m_emojiList;
-    QMap<QString, int> map;    // Description / index
+  EmojiManager *m_emojiMan;
+  QList<Emoji> m_emojiList;
+  QMap<QString, int> map;    // Description / index
 
 signals:
-    void sendEmoji(QString);
+  void sendEmoji(QString);
 
 public slots:
 
 private slots:
-    void getCurrentIndex(QListWidgetItem *item);
+  void getCurrentIndex(QListWidgetItem *item);
 };
 
 

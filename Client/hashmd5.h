@@ -14,18 +14,18 @@ typedef unsigned int  uint32_t;
 class HashMD5
 {
 private:
-    QString hashPas;
-    QString hashFile;
-    QString salt;
-    uint32_t rotateLeft32(uint32_t val, int amount);
+  QString hashPas;
+  QString hashFile;
+  QString salt;
+  uint32_t RotateLeft32(uint32_t val, int amount);
 
 public:
-    HashMD5();
-    QString hashSumPass(QString);
-    QString saltGeneration();
+  HashMD5();
+  QString HashSumPass(QString);
+  QString SaltGeneration();
 
-    void hash(QString message);
-    ~HashMD5();
+  void Hash(QString message);
+  ~HashMD5();
 };
 
 #endif // HASHMD5_H

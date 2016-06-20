@@ -6,29 +6,29 @@
 
 
 namespace Ui {
-class ChoiceCreate;
+  class ChoiceCreate;
 }
 
 class ChoiceCreate : public QFrame
 {
-    Q_OBJECT
+  Q_OBJECT
 
 public:
-    explicit ChoiceCreate(QWidget *parent = 0);
-    ~ChoiceCreate();
+  explicit ChoiceCreate(QWidget *parent = 0);
+  ~ChoiceCreate();
 
 private slots:
-    void on_next_choice_clicked();
-    void on_close_choice_clicked();
+  void on_next_choice_clicked();
+  void on_close_choice_clicked();
 
 signals:
-    void choice(QString);
+  void choice(QString);
 
 public slots:
-    void set_lang(QMap<QString, QString> &);
+  void SetLanguage(QMap<QString, QString> &);
 
 private:
-    Ui::ChoiceCreate *ui;
+  Ui::ChoiceCreate *ui;
 };
 
 #endif // CHOICECREATE_H

@@ -5,30 +5,30 @@
 #include <QString>
 
 namespace Ui {
-class ConfirmWindow;
+  class ConfirmWindow;
 }
 
 class ConfirmWindow : public QFrame
 {
-    Q_OBJECT
+  Q_OBJECT
 
 public:
-    explicit ConfirmWindow(QWidget *parent = 0, QString _message = 0);
-    ~ConfirmWindow();
+  explicit ConfirmWindow(QWidget *parent = 0, QString _message = 0);
+  ~ConfirmWindow();
 
 private:
-    Ui::ConfirmWindow *ui;
-    QString message;
+  Ui::ConfirmWindow *ui;
+  QString message;
 
 signals:
-    void response(QString);
+  void response(QString);
 
 private slots:
-    void on_ok_Button_clicked();
-    void on_cancel_Button_clicked();
+  void on_ok_Button_clicked();
+  void on_cancel_Button_clicked();
 
 public slots:
-    void set_lang(QMap<QString, QString> &);
+  void SetLanguage(QMap<QString, QString> &);
 };
 
 #endif // CONFIRMWINDOW_H

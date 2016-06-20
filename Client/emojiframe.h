@@ -7,29 +7,29 @@
 
 
 namespace Ui {
-class EmojiFrame;
+  class EmojiFrame;
 }
 
 class EmojiFrame : public QFrame
 {
-    Q_OBJECT
+  Q_OBJECT
 
 public:
-    explicit EmojiFrame(QWidget *parent = 0, QString emojiPath = "");
-    ~EmojiFrame();
+  explicit EmojiFrame(QWidget *parent = 0, QString emojiPath = "");
+  ~EmojiFrame();
 
 private:
-    Ui::EmojiFrame *ui;
-    EmojiManager *emojiMan;
-    QString m_emojiPath;
-    void loadComboCategories();
+  Ui::EmojiFrame *ui;
+  EmojiManager *emojiMan;
+  QString m_emojiPath;
+  void loadComboCategories();
 
 private slots:
-    void loadEmojiCategory(QString category);
-    void emojiDoubleClickReceived(QString symbol);
+  void loadEmojiCategory(QString category);
+  void emojiDoubleClickReceived(QString symbol);
 
 signals:
-    void sendEmoji(QString);
+  void sendEmoji(QString);
 };
 
 #endif // EMOJIFRAME_H
