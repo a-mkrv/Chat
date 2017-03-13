@@ -2,9 +2,8 @@
 #include "ui_server.h"
 #include <QDir>
 
-Server::Server(QWidget *parent) :
-    QMainWindow(parent), nextBlockSize(0), nextBlockSize2(0),
-    ui(new Ui::Server)
+Server::Server(QWidget *parent) : QMainWindow(parent),
+    ui(new Ui::Server), nextBlockSize(0)
 {
     ui->setupUi(this);
 
@@ -76,38 +75,29 @@ void Server::SendResponseToID(QString message, int ID)
 {
     // - Отправка конкретному пользователю
 
-    QByteArray msg;
-    QDataStream out(&msg, QIODevice::WriteOnly);
-    out.setVersion(QDataStream::Qt_5_4);
-    out << quint32(0) << message;
-
     for (auto i : clientConnections)
         if (i->getSocket()->socketDescriptor() == ID)
-            i->getSocket()->write(msg);
+        {
+            i->getSocket()->write(message.toUtf8());
+            break;
+        }
 }
 
 void Server::getMessage()
 {
-    QTime   time;
+    QString time;
     QString typePacket;
 
-    QTcpSocket *client = (QTcpSocket*)(sender());
-    QDataStream in(client);
-    in.setVersion(QDataStream::Qt_5_4);
+    QStringList splitWords;
 
-    qDebug() << client->bytesAvailable();
-    if (!nextBlockSize) {
-        if (quint32(client->bytesAvailable()) < sizeof(quint32)) {
-            return;
-        }
-        in >> nextBlockSize;
-    }
+    QTcpSocket *clientSocket = static_cast<QTcpSocket *>(QObject::sender());
 
-    if (client->bytesAvailable() < nextBlockSize) {
-        return;
-    }
+    //19 - for time
+    //time = clientSocket->read(19);
+    typePacket = clientSocket->read(4);
 
-    in >> time >> typePacket;
+    //clientSocket->flush();
+    //clientSocket->waitForBytesWritten(4000);
 
     int command = 0;
     // 0 - пусто,
@@ -117,31 +107,31 @@ void Server::getMessage()
     // 4 - Файл
     // 5 - Регистрация
 
-    if (typePacket == "_USR_")
+    if (typePacket == "LOAD")
         command = 1;
 
-    else if (typePacket == "_UCD_")
+    else if (typePacket == "MESS")
         command = 2;
 
-    else if (typePacket == "_FND_")
+    else if (typePacket == "FIND")
         command = 3;
 
-    else if (typePacket == "_FILE_")
+    else if (typePacket == "FILE")
         command = 4;
 
-    else if(typePacket == "_REG_")
+    else if (typePacket == "REGI")
         command = 5;
 
-    else if(typePacket == "_LOG_IN_")
+    else if (typePacket == "AUTH")
         command = 6;
 
-    else if(typePacket == "_CLNHISTORY_" || typePacket == "_DELFRIEND_")
+    else if (typePacket == "CLNH" || typePacket == "DELF")
         command = 7;
 
-    else if(typePacket == "_USERINFO_")
+    else if (typePacket == "UINF")
         command = 8;
 
-    else if(typePacket == "_NEWGROUP_")
+    else if (typePacket == "NGRP")
         command = 9;
 
     switch (command)
@@ -150,17 +140,26 @@ void Server::getMessage()
     case 1:
     {
         QString newUser;
-        in >> newUser;
-        NewUser(client, newUser);
+        newUser = clientSocket->readAll();
+        userIsOnline(clientSocket, newUser);
+
         break;
     }
 
     case 2:
     {
-        QString newMessage;
-        QString MyMsg;
-        in >> newMessage >> MyMsg;
-        PrivateMessage(client, newMessage, MyMsg);
+        QString newMessage, MyMsg;
+
+        splitWords = requestSeparation(clientSocket->readAll());
+
+        if (splitWords.size() == 2)
+        {
+            newMessage = splitWords[0];
+            MyMsg = splitWords[1];
+        }
+
+        PrivateMessage(clientSocket, newMessage, MyMsg);
+
         break;
     }
 
@@ -168,12 +167,22 @@ void Server::getMessage()
     {
         qDebug() << "FIND";
         QString findUser, whoFind;
-        in >> findUser >> whoFind;
+
+        splitWords = requestSeparation(clientSocket->readAll());
+
+        if (splitWords.size() == 2)
+        {
+            findUser = splitWords[0];
+            whoFind = splitWords[1];
+        }
+
         QString result = sqlitedb->FindInDB(findUser, whoFind);
 
         if (result!="false")
         {
-            SendResponseToID("_FIN_ OKFIN " + result, client->socketDescriptor());
+            // FNDP - Find Positive
+            // FNDN - Find Negative
+            SendResponseToID("FNDP" + result, clientSocket->socketDescriptor());
             sqlitedb->addChatTable(whoFind, findUser);
             sqlitedb->addChatTable(findUser, whoFind);  // Инвайт
             sqlitedb->FindInDB(whoFind, findUser);      // инвайт
@@ -183,52 +192,67 @@ void Server::getMessage()
                 if (i->getUserName() == findUser)
                 {
                     result = sqlitedb->FindInDB(whoFind, 0);
-                    SendResponseToID("_INV_ " + whoFind + " " + result, i->getSocket()->socketDescriptor());
+                    SendResponseToID("INVT" + whoFind + " " + result, i->getSocket()->socketDescriptor());
+                    break;
                 }
 
         }
         else
-            SendResponseToID("_FIN_ NOFIN", client->socketDescriptor() );
+            SendResponseToID("FNDN", clientSocket->socketDescriptor() );
 
         break;
     }
 
     case 4:
     {
-        SendingFile(client);
+        SendingFile(clientSocket);
         nextBlockSize = 0;
+
         break;
     }
 
     case 5:
     {
-        QString UserName, City, Password, Age, Sex, PublicKey, Salt;
-        in >> UserName >> City >> Password >> Age >> Sex >> PublicKey >> Salt;
-        LogIn(client, UserName, City, Password, Age, Sex, PublicKey, Salt);
+        QString userName, city, password, age, sex, publicKey, salt;
+
+        splitWords = requestSeparation(clientSocket->readAll());
+
+        if (splitWords.size() == 7)
+        {
+            userName = splitWords[0];
+            city = splitWords[1];
+            password = splitWords[2];
+            age = splitWords[3];
+            sex = splitWords[4];
+            publicKey = splitWords[5];
+            salt = splitWords[6];
+        }
+
+        LogIn(clientSocket, userName, city, password, age, sex, publicKey, salt);
+
         break;
     }
 
     case 6:
     {
-        QString Login, Password;
-        in >> Login >> Password;
+        QString login, password;
+        splitWords = requestSeparation(clientSocket->readAll());
 
-        QByteArray block;
-        QDataStream out(&block, QIODevice::WriteOnly);
-        out.setVersion(QDataStream::Qt_5_4);
-
-        QString result_return = sqlitedb->CorrectInput(Login, Password);
-
-        if(result_return=="false")
+        if (splitWords.size() == 2)
         {
-            out  <<  QString("Error_Login_Pass") << QString("not_key");
-            client->write(block);
+            login = splitWords[0];
+            password = splitWords[1];
+        }
+
+        QString result_return = sqlitedb->CorrectInput(login, password);
+
+        if (result_return == "false")
+        {
+            clientSocket->write(QString("Error_Login_Pass /s not_key").toUtf8());
         }
         else
         {
-            QString message = "LogInOK!";
-            out  << message << result_return;
-            client->write(block);
+            clientSocket->write(QString("Error_Login_Pass /s not_key").toUtf8());
         }
 
         break;
@@ -236,13 +260,21 @@ void Server::getMessage()
     case 7:
     {
         QString from, to;
-        in >> from >> to;
 
-        if(typePacket=="_CLNHISTORY_")
+        splitWords = requestSeparation(clientSocket->readAll());
+
+        if (splitWords.size() == 2)
+        {
+            from = splitWords[0];
+            to = splitWords[1];
+        }
+
+        if (typePacket == "CLNH")
             sqlitedb->ClearHistory(from, to);
 
-        else if(typePacket=="_DELFRIEND_")
+        else if (typePacket == "DELF")
             sqlitedb->delFriend(from, to);
+
         break;
     }
 
@@ -250,17 +282,15 @@ void Server::getMessage()
     {
         QString  userInfo;
         QStringList dataList;
-        in >> userInfo;
 
+        userInfo = clientSocket->readAll();
         dataList = sqlitedb->UserData(userInfo);
 
-        QByteArray block;
-        QDataStream out(&block, QIODevice::WriteOnly);
-        out.setVersion(QDataStream::Qt_5_4);
+        //FIXME
+        //Send List insted string
+        //clientSocket->write(QString("UINF" + dataList).toUtf8());
 
-        QString message = "_USINFO_";
-        out << quint32(0) << message << dataList;
-        client->write(block);
+        clientSocket->write(QString("UINF").toUtf8());
 
         break;
     }
@@ -269,14 +299,22 @@ void Server::getMessage()
         QStringList userList;
         QString groupName, groupDescr;
 
-        in >> groupName >> groupDescr >> userList;
+        //FIXME
+        //in >> groupName >> groupDescr >> userList;
         sqlitedb->createGroup(groupName, groupDescr, userList);
     }
     }
 }
 
+QStringList Server::requestSeparation(QString text)
+{
+    QString outStr =  text;
+    QStringList list = outStr.split(" /s ");
 
-void Server::NewUser(QTcpSocket *client, QString _user)
+    return list;
+}
+
+void Server::userIsOnline(QTcpSocket *client, QString _user)
 {
     QString UserName = _user;
     QString TMPName = UserName;
@@ -298,6 +336,7 @@ void Server::NewUser(QTcpSocket *client, QString _user)
     PublicFriendKeys = sqlitedb->FriendKeys(UserName);
     FriendsList = sqlitedb->FriendList(UserName, ChatFriendList);
 
+    //FIXME, List insted string
     out << quint32(0) << QString("FRLST") << PublicFriendKeys << FriendsList << ChatFriendList << FriendOnlineStatus;
     client->write(block);
 
@@ -307,8 +346,13 @@ void Server::NewUser(QTcpSocket *client, QString _user)
         AlreadyName = false;
 
         for (auto i : clientConnections)
+        {
             if (i->getUserName() == UserName)
+            {
                 AlreadyName = true;
+                break;
+            }
+        }
 
         if (AlreadyName)
         {
@@ -320,18 +364,22 @@ void Server::NewUser(QTcpSocket *client, QString _user)
     UserName = TMPName;
 
     for (auto i : clientConnections)
+    {
         if (i->getSocket() == client)
         {
             i->setUserName(UserName);
             ui->userList->addItem(i->getUserName());
             ui->chatDialog->addItem(timeconnect() + " - " + i->getUserName() + " is online (" + QString::number(client->socketDescriptor()) + ")");
+            break;
         }
+    }
 }
 
 void Server::NotificationNetwork(const QString username, const QStringList &friend_list, int state)
 {
     QStringList online_now;
     QString message;
+
     if (state == 1)
     {
       message = "STATE Online " + username;
@@ -341,14 +389,14 @@ void Server::NotificationNetwork(const QString username, const QStringList &frie
        message = "STATE Offline " + username;
     }
 
-    for (int i=0; i < ui->userList->count(); i++)
+    for (int i = 0; i < ui->userList->count(); i++)
         online_now.push_back(ui->userList->item(i)->text());
 
     QSet<QString> whom_alert = friend_list.toSet().intersect(online_now.toSet());
 
     for (auto i : clientConnections)
     {
-        for (int j=0; j<whom_alert.size(); j++)
+        for (int j = 0; j < whom_alert.size(); j++)
         {
             if (whom_alert.contains(i->getUserName()))
             {
@@ -371,8 +419,13 @@ void Server::PrivateMessage(QTcpSocket *client, QString _message, QString _mymsg
     Message = WordList.takeFirst();
 
     for (auto i : clientConnections)
+    {
         if (i->getSocket() == client)
+        {
             fromUser = i;
+            break;
+        }
+    }
 
     QString recipient = WordList.takeFirst();
     QString text;
@@ -386,9 +439,16 @@ void Server::PrivateMessage(QTcpSocket *client, QString _message, QString _mymsg
 
 
     if (!WordList.isEmpty())
+    {
         for (auto i : clientConnections)
+        {
             if (i->getUserName() == recipient)
+            {
                 toUser = i;
+                break;
+            }
+        }
+    }
 
     QString newMessage = "*To: " + recipient + ": " + _mymsg;
     SendResponseToID(newMessage, fromUser->getSocket()->socketDescriptor());
@@ -412,6 +472,7 @@ void Server::PrivateMessage(QTcpSocket *client, QString _message, QString _mymsg
 
 void Server::SendingFile(QTcpSocket *client)
 {
+    // Overwrite send files
     QTcpSocket* mClientSocket = (QTcpSocket*)sender();
     QDataStream in(mClientSocket);
     in.setVersion(QDataStream::Qt_5_4);
@@ -485,39 +546,27 @@ void Server::SendingFile(QTcpSocket *client)
 }
 
 
-//void Server::CreateAvatar(QString uName)
-//{
-//    QString letter = uName.at(0);
-
-//}
-
 void Server::LogIn(QTcpSocket *client, QString &U, QString &C, QString &P, QString &A, QString &S, QString &PubK, QString &Salt)
 {
-    QByteArray block;
-    QDataStream out(&block, QIODevice::WriteOnly);
-    out.setVersion(QDataStream::Qt_5_4);
-
     if(U.isEmpty() || P.isEmpty())
     {
-        out << QString("PassEmpty");
-        client->write(block);
+        // Password is empty (pass nill)
+        client->write(QString("PNIL").toUtf8());
     }
-    else if(sqlitedb->FindInDB(U, 0)=="false")
+    else if (sqlitedb->FindInDB(U, 0) == "false")
     {
-        if(C.isEmpty())
-            C="Unknown";
+        if (C.isEmpty())
+            C = "Unknown";
 
         sqlitedb->AddContact(U, S, A.toInt(), C, P, PubK, Salt);
         ui->chatDialog->addItem(timeconnect() + " - User registration: " + U);
         qDebug() << "Новый пользователь: " << U;
 
-        out  << QString("Welcome!");
-        client->write(block);
+        client->write(QString("WELC").toUtf8());
     }
     else
     {
-        out  << QString("Already!");
-        client->write(block);
+        client->write(QString("ALRD").toUtf8());
     }
 }
 
