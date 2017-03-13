@@ -49,6 +49,8 @@ void Authorization::onButtonSendUser()
 
 void Authorization::on_log_in_clicked()
 {
+  QString request = "AUTH";
+
   if (socket->state() != QAbstractSocket::ConnectedState)
     ui->errorconnect_label->show();
   else
@@ -59,32 +61,29 @@ void Authorization::on_log_in_clicked()
 
   if (!login.isEmpty() && !ui->pass_enter->text().simplified().isEmpty())
     {
-      QByteArray block;
-      QDataStream out(&block, QIODevice::WriteOnly);
-      out.setVersion(QDataStream::Qt_5_4);
-
-      out << quint32(0) << QTime::currentTime() << QString("_LOG_IN_") << login << password;
-      socket->write(block);
+      request.append(QString("%1 /s %2").arg(login).arg(password));
+      socket->write(request.toUtf8());
     }
 }
 
 void Authorization::GetMessage()
 {
-  QString received_message, tmp;
-  QDataStream in(socket);
-  in.setVersion(QDataStream::Qt_5_4);
-  in  >> received_message >> tmp;
+  QString received_message, pub_key;
 
-  qDebug() << "Get" << received_message;
-  if (received_message == "Error_Login_Pass")
+  received_message = socket->read(4);
+  pub_key = socket->read(8);
+
+   qDebug() << received_message << pub_key;
+
+  if (received_message == "ERRA")
     ui->error_label->show();
 
-  else if (received_message == "LogInOK!"
+  else if (received_message == "OKEY"
            && !ui->username_enter->text().simplified().isEmpty()
            && !ui->pass_enter->text().simplified().isEmpty()
            )
     {
-      emit sendData(ui->username_enter->text().simplified(), ui->pass_enter->text().simplified(), tmp);
+      emit sendData(ui->username_enter->text().simplified(), ui->pass_enter->text().simplified(), pub_key);
       socket->close();
       socket->disconnectFromHost();
     }

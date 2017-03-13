@@ -15,7 +15,7 @@
 
 QString gl_fname;
 
-Client::Client(QWidget *parent) : QMainWindow(parent), download_path("(C:/...)"), personDates(false),ui(new Ui::Client)
+Client::Client(QWidget *parent) : QMainWindow(parent), ui(new Ui::Client), personDates(false), download_path("(C:/...)")
 {
   srand((time(NULL)));
   ui->setupUi(this);
@@ -220,7 +220,7 @@ void Client::InsertEmoticon(QString symbol)
 /// Adding users to contact list
 void Client::AddUserChat(QString _username, QString _sex, PairStringList lst, int count)
 {
-  int rand_avatar;
+  int rand_avatar = 0;
   QIcon pic;
   QString first_letter = _username.at(0).toLower();
   QString RU_Full_Path = RU_AVATARS_PATH + first_letter +".jpg";
@@ -398,21 +398,22 @@ void Client::GetMessageUserList(PairStringList &PublicFriendKey, PairStringList 
 /// Receiving a message from a user / server
 void Client::GetMessage()
 {
+  QString typePacket;
   QString message;
-  QDataStream in(tcpSocket);
-  in.setVersion(QDataStream::Qt_5_4);
 
-  if (!nextBlockSize) {
-      if (quint32(tcpSocket->bytesAvailable()) < sizeof(quint32)) {
-          return;
-        }
-      in >> nextBlockSize;
-    }
-  if (tcpSocket->bytesAvailable() < nextBlockSize) {
-      return;
-    }
+  typePacket = tcpSocket->read(4);
+  message = tcpSocket->readAll();
+  qDebug() << typePacket <<  message;
+//  if (!nextBlockSize) {
+//      if (quint32(tcpSocket->bytesAvailable()) < sizeof(quint32)) {
+//          return;
+//        }
+//      in >> nextBlockSize;
+//    }
+//  if (tcpSocket->bytesAvailable() < nextBlockSize) {
+//      return;
+//  }
 
-  in >> message;
   QStringList commandList;
   QString fromname;
 
@@ -421,31 +422,30 @@ void Client::GetMessage()
   enum class COMMAND { NONE, USERLIST, FINDUSER, INVITE, GETFILE, USINFO, ISONLINE};
   COMMAND cmd = COMMAND::NONE;
 
-  if (message == "FRLST")
+  if (typePacket == "FLST")
     cmd = COMMAND::USERLIST;
 
-  else if (message == "_GetFILE_")
+  else if (typePacket == "GETF")
     cmd = COMMAND::GETFILE;
 
-  else if (message == "_USINFO_")
+  else if (typePacket == "UINF")
     cmd = COMMAND::USINFO;
 
-  else
-    {
-      commandList = message.split(" ", QString::SkipEmptyParts);
-      if (commandList.at(1) == name)
-        return;
-      fromname = commandList.at(1);
+  else if (typePacket == "FNDP" || typePacket == "FNDN")
+    cmd = COMMAND::FINDUSER;
 
-      QStringRef checkCmd(&message, 0, 5);
-      if (checkCmd == "_FIN_")
-        cmd = COMMAND::FINDUSER;
-      if (checkCmd == "_INV_")
-        cmd = COMMAND::INVITE;
-      if (checkCmd == "STATE")
-        cmd = COMMAND::ISONLINE;
+  else if (typePacket == "INVT")
+    cmd = COMMAND::INVITE;
 
-    }
+  else if (typePacket == "STON" || typePacket == "STOF")
+    cmd = COMMAND::ISONLINE;
+
+  commandList = message.split(" /s ");
+  if (commandList.at(0) == name)
+    return;
+
+  fromname = commandList.at(0);
+
 
   switch (cmd)
     {
@@ -457,7 +457,8 @@ void Client::GetMessage()
         PairStringList FriendList;
         ChatListVector chatList;
 
-        in >> PublicFriendKey >> FriendList >> chatList >> FriendOnlineStatus;
+        //FIXME: List
+        //in >> PublicFriendKey >> FriendList >> chatList >> FriendOnlineStatus;
         GetMessageUserList(PublicFriendKey, FriendList, chatList);
         break;
       }
@@ -465,14 +466,15 @@ void Client::GetMessage()
       // Response to a request on the search friend
     case COMMAND::FINDUSER:
       {
-        QString find_user = commandList.at(1);
+        QString find_user = typePacket;
+        qDebug() << commandList;
 
-        if (find_user == "OKFIN" && gl_fname!=name)
+        if (find_user == "FNDP" && gl_fname!=name)
           {
-            QString pubKey = commandList.at(3) + " " + commandList.at(4);
+            QString pubKey = commandList.at(1);
             pubFriendKey.push_back(qMakePair(gl_fname, pubKey));
             QList <QPair<QString, QString> > a;
-            AddUserChat(gl_fname, commandList.at(2), a , -1);
+            AddUserChat(gl_fname, commandList.at(0), a , -1);
             findcont->~findcontacts();
             on_glass_button_clicked();
           }
@@ -485,10 +487,10 @@ void Client::GetMessage()
     case COMMAND::INVITE:
       {
         QList <QPair<QString, QString> > a;
-        QString pubKey = commandList.at(3) + " " + commandList.at(4);
-        pubFriendKey.push_back(qMakePair(commandList.at(1), pubKey));
+        QString pubKey = commandList.at(2);
+        pubFriendKey.push_back(qMakePair(commandList.at(0), pubKey));
 
-        AddUserChat(commandList.at(1), commandList.at(2), a , -2);
+        AddUserChat(commandList.at(0), commandList.at(1), a , -2);
         break;
       }
 
@@ -497,7 +499,8 @@ void Client::GetMessage()
       {
         QStringList *usData = new QStringList;
         QStringList UData;
-        in >> UData;
+        //FIXME: List
+        //in >> UData;
         for (int i = 0; i < 4; i++)
           usData->push_back(UData.at(i));
 
@@ -511,9 +514,9 @@ void Client::GetMessage()
       // Receiving file
     case COMMAND::ISONLINE:
       {
-        QString username = commandList.at(2);
+        QString username = commandList.at(0);
 
-        if (commandList.at(1) == "Online")
+        if (typePacket == "STON")
           FriendOnlineStatus[username] = "Online";
         else
           {
@@ -531,7 +534,8 @@ void Client::GetMessage()
         QString dirDownloads = U_label_6->text();
         QDir(dirDownloads).mkdir(dirDownloads);
 
-        in >> fromname >> filename >> fileSize;
+        //FIXME
+        //in >> fromname >> filename >> fileSize;
 
         QThread::sleep(2);
         forever
@@ -541,9 +545,11 @@ void Client::GetMessage()
               if (quint32(tcpSocket->bytesAvailable()) < sizeof(quint32)) {
                   break;
                 }
-              in >> nextBlockSize;
+              //FIXME
+              //in >> nextBlockSize;
             }
-          in >> buffer;
+          //FIXME
+          //in >> buffer;
           if (tcpSocket->bytesAvailable() < nextBlockSize) {
               break;
             }
@@ -729,15 +735,11 @@ void Client::SendPersonalData()
     {
       personDates = true;
 
-      QByteArray block;
-      QDataStream out(&block, QIODevice::WriteOnly);
-      out.setVersion(QDataStream::Qt_5_4);
+      QString request = "LOAD";
 
-      QString command = "_USR_";
-      QString UserName = U_usernameEdit->text();
-      out << quint32(0) << QTime::currentTime() << command << UserName ;
+      request.append(U_usernameEdit->text());
 
-      tcpSocket->write(block);
+      tcpSocket->write(request.toUtf8());
       authorization->close();
     }
 }
@@ -756,11 +758,11 @@ void Client::OnDisconnect()
 void Client::SendUserCommand(QString Command, QString myMessage)
 {
   QByteArray msg;
-  QDataStream out(&msg, QIODevice::WriteOnly);
-  out.setVersion(QDataStream::Qt_5_4);
+  QString request = "MESS";
 
-  out << quint32(0) << QTime::currentTime() << QString("_UCD_") << Command << myMessage;
-  tcpSocket->write(msg);
+  request.append(Command + " /s " + myMessage);
+
+  tcpSocket->write(request.toUtf8());
 }
 
 //////////////////////////////////////////////////////////
@@ -873,12 +875,11 @@ void Client::FindUserInServer(QString name_user)
 
   if (tmp)
     {
-      QByteArray msg;
-      QDataStream out(&msg, QIODevice::WriteOnly);
-      out.setVersion(QDataStream::Qt_5_4);
+      QString request = "FIND";
 
-      out << quint32(0) << QTime::currentTime() << QString("_FND_") << name_user << name;
-      tcpSocket->write(msg);
+      request.append(name_user + " /s " + name);
+
+      tcpSocket->write(request.toUtf8());
       tmp=false;
     }
   else    // Костылек :)
@@ -925,7 +926,7 @@ void Client::ChoiceWindow(QString str)
 /// Create a group
 void Client::ShowCreateGroup()
 {
-  QPoint p = QCursor::pos();
+  //QPoint p = QCursor::pos();
   create_group->setGeometry(this->x()+330, this->y()+130, 400, 230);
   create_group->show();
 
@@ -1005,6 +1006,7 @@ void Client::AddGroupToList(QStringList userList, QString state)
       QDataStream out(&msg, QIODevice::WriteOnly);
       out.setVersion(QDataStream::Qt_5_4);
 
+      //FIXME: Split userList into Strings .. or send separate sctructure
       out << quint32(0) << QTime::currentTime() << QString("_NEWGROUP_") << groupData.at(0) << groupData.at(1) <<  userList;
       tcpSocket->write(msg);
 
@@ -1201,6 +1203,7 @@ void Client::on_Download_path_PB_clicked()
 /// Select file for sending to the user from the list.
 void Client::on_pushButton_2_clicked()
 {
+  //FIXME: Sending files
   if (U_stackedWidget_2->isHidden())
     return;
 
@@ -1388,16 +1391,12 @@ void Client::ClearCurHistory(QString cmd)
     {
       chatvec.at(U_stackedWidget_2->currentIndex())->clear();
 
-      QByteArray msg;
-      QDataStream out(&msg, QIODevice::WriteOnly);
-      out.setVersion(QDataStream::Qt_5_4);
+      QString request = "CLNH";
 
-      QString to = vec.at(U_userList->currentRow())->data(Qt::DisplayRole).toString();
-      out << quint32(0) << QTime::currentTime() << QString("_CLNHISTORY_") << name << to;
-      tcpSocket->write(msg);
+      request.append(name + " /s " + vec.at(U_userList->currentRow())->data(Qt::DisplayRole).toString());
+
+      tcpSocket->write(request.toUtf8());
     }
-
-
 
   //conf_message->~ConfirmWindow();
 }
@@ -1414,13 +1413,11 @@ void Client::ClearCurUser(QString cmd)
       // If you have contacts in the list, remove the right.
       if (!U_userList->size().isEmpty())
         {
-          QByteArray msg;
-          QDataStream out(&msg, QIODevice::WriteOnly);
-          out.setVersion(QDataStream::Qt_5_4);
+          QString request = "DELF";
 
-          QString delfriend = vec.at(U_userList->currentRow())->data(Qt::DisplayRole).toString();
-          out << quint32(0) << QTime::currentTime() << QString("_DELFRIEND_") << name << delfriend;
-          tcpSocket->write(msg);
+          request.append(name + " /s " + vec.at(U_userList->currentRow())->data(Qt::DisplayRole).toString());
+
+          tcpSocket->write(request.toUtf8());
 
           // Removing a widget from the Widget Stack
           QWidget* widget = U_stackedWidget_2->widget(U_userList->currentRow());
@@ -1630,13 +1627,11 @@ void Client::on_info_user_button_clicked()
   if (U_stackedWidget_2->count()==0 || U_stackedWidget->isHidden())
     return;
 
-  QByteArray msg;
-  QDataStream out(&msg, QIODevice::WriteOnly);
-  out.setVersion(QDataStream::Qt_5_4);
+  QString request = "UINF";
 
-  QString name_user = vec.at(U_userList->currentRow())->data(Qt::DisplayRole).toString();
-  out << quint32(0) << QTime::currentTime() << QString("_USERINFO_") << name_user;
-  tcpSocket->write(msg);
+  request.append(vec.at(U_userList->currentRow())->data(Qt::DisplayRole).toString());
+
+  tcpSocket->write(request.toUtf8());
 }
 
 //////////////////////////////////////////////////////////

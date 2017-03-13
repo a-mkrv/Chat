@@ -4,7 +4,7 @@ SQLiteDB::SQLiteDB(QObject *parent) : QObject(parent)
 {
     myDB = QSqlDatabase::addDatabase("QSQLITE");
 
-    QString pathToDB = QString("C:/Users/Makarov/Desktop/mydatabase.sqlite");
+    QString pathToDB = QString("/Users/antmakar/Projects/Qt/mydatabase.sqlite");
     myDB.setDatabaseName(pathToDB);
 
     QFileInfo checkFile(pathToDB);
@@ -58,7 +58,7 @@ QString SQLiteDB::FindInDB(QString UserName, QString whoFind)
                     queryAdFr.bindValue(":Key", query.value(2).toString());
                     queryAdFr.exec();
                 }
-                return query.value(1).toString() + " " + query.value(2).toString();
+                return query.value(1).toString() + " /s " + query.value(2).toString();
             }
 
     query.exec();

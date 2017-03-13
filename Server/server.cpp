@@ -192,7 +192,7 @@ void Server::getMessage()
                 if (i->getUserName() == findUser)
                 {
                     result = sqlitedb->FindInDB(whoFind, 0);
-                    SendResponseToID("INVT" + whoFind + " " + result, i->getSocket()->socketDescriptor());
+                    SendResponseToID("INVT" + whoFind + " /s " + result, i->getSocket()->socketDescriptor());
                     break;
                 }
 
@@ -216,6 +216,7 @@ void Server::getMessage()
         QString userName, city, password, age, sex, publicKey, salt;
 
         splitWords = requestSeparation(clientSocket->readAll());
+        qDebug() << splitWords;
 
         if (splitWords.size() == 7)
         {
@@ -247,12 +248,13 @@ void Server::getMessage()
         QString result_return = sqlitedb->CorrectInput(login, password);
 
         if (result_return == "false")
-        {
-            clientSocket->write(QString("Error_Login_Pass /s not_key").toUtf8());
+        {   // Error Auth = Error login / password
+            clientSocket->write(QString("ERRA").toUtf8());
         }
         else
         {
-            clientSocket->write(QString("Error_Login_Pass /s not_key").toUtf8());
+            clientSocket->write(QString("OKEY").toUtf8());
+            clientSocket->write(result_return.toUtf8());
         }
 
         break;
@@ -337,7 +339,7 @@ void Server::userIsOnline(QTcpSocket *client, QString _user)
     FriendsList = sqlitedb->FriendList(UserName, ChatFriendList);
 
     //FIXME, List insted string
-    out << quint32(0) << QString("FRLST") << PublicFriendKeys << FriendsList << ChatFriendList << FriendOnlineStatus;
+    out << quint32(0) << QString("FLST") << PublicFriendKeys << FriendsList << ChatFriendList << FriendOnlineStatus;
     client->write(block);
 
     NotificationNetwork(UserName, SendMyStatus, 1);
@@ -382,11 +384,11 @@ void Server::NotificationNetwork(const QString username, const QStringList &frie
 
     if (state == 1)
     {
-      message = "STATE Online " + username;
+      message = "STON" + username;
     }
     else if (state == 0)
     {
-       message = "STATE Offline " + username;
+       message = "STOF" + username;
     }
 
     for (int i = 0; i < ui->userList->count(); i++)
@@ -518,7 +520,7 @@ void Server::SendingFile(QTcpSocket *client)
                 QDataStream out(&arrBlock, QIODevice::WriteOnly);
                 out.setVersion(QDataStream::Qt_5_4);
 
-                out << quint32(0) << QString("_GetFILE_") << from_name
+                out << quint32(0) << QString("GETF") << from_name
                     << fileName << fileSize << buffer;
 
                 out.device()->seek(0);

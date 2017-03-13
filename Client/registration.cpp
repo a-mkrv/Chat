@@ -23,24 +23,22 @@ void Registration::getMessagee()
 {
   QString  received_message;
 
-  QDataStream in(socket);
-  in.setVersion(QDataStream::Qt_5_4);
-  in >> received_message;
+  received_message  = socket->read(4);
 
-  if (received_message == "PassEmpty")
+  if (received_message == "PNIL")
     {
       ui->Error_label->hide();
       ui->Error_label_2->setText(errors.at(0));
       ui->Error_label_2->show();
     }
-  else  if (received_message == "Already!")
+  else  if (received_message == "ALRD")
     {
       ui->Error_label_2->hide();
       ui->Error_label->setText(errors.at(1));
       ui->Error_label->show();
     }
 
-  else if (received_message == "Welcome!")
+  else if (received_message == "WELC")
     {
       QString nameKey = QDir::homePath() + "/WhisperServer/Whisper Close Key/";
       QFile *receiveFile = new QFile(nameKey + ui->enter_user_name->text()+".txt");
@@ -56,30 +54,28 @@ void Registration::getMessagee()
 
 void Registration::on_accept_button_clicked()
 {
+  QString request = "REGI";
+
   if (ui->enter_password->text().isEmpty())
-    {
+  {
       ui->Error_label_2->show();
       return;
-    }
+  }
   else if (ui->password_confirm->text().isEmpty())
-    {
-      ui->Error_label_2->show();
-      ui->Error_label_2->setText(errors.at(3));
-      return;     //"Confirm pass is empty"
-    }
+  {
+    ui->Error_label_2->show();
+    ui->Error_label_2->setText(errors.at(3));
+    return;     //"Confirm pass is empty"
+  }
   else if (ui->password_confirm->text() != ui->enter_password->text())
-    {
-      ui->Error_label_2->show();
-      ui->Error_label_2->setText(errors.at(2));
-      return;     //"Passwords are different"
-    }
+  {
+    ui->Error_label_2->show();
+    ui->Error_label_2->setText(errors.at(2));
+    return;     //"Passwords are different"
+  }
 
   socket->abort();
   socket->connectToHost("127.0.0.1", 55155);
-
-  QByteArray block;
-  QDataStream out(&block, QIODevice::WriteOnly);
-  out.setVersion(QDataStream::Qt_5_4);
 
   // use password = md5(md5(password) + salt)
 
@@ -87,18 +83,12 @@ void Registration::on_accept_button_clicked()
   QString salt = hashmd5->SaltGeneration();
   passmd5 = hashmd5->HashSumPass(passmd5 + salt);
 
-  out << quint32(0)
-      << QTime::currentTime()
-      << QString("_REG_")
-      << ui->enter_user_name->text()
-      << ui->enter_city->text()
-      << passmd5
-      << ui->age->text()
-      << ui->sex_person->currentText()
-      << QString::number(rsacrypt->GetE()) + "  " + QString::number(rsacrypt->GetModule())
-      << salt ;
+  request.append(QString("%1 /s %2 /s ").arg(ui->enter_user_name->text()).arg(ui->enter_city->text()));
+  request.append(QString("%1 /s %2 /s ").arg(passmd5).arg(ui->age->text()));
+  request.append(QString("%1 /s %2 /s ").arg(ui->sex_person->currentText()).arg(QString::number(rsacrypt->GetE()) + "  " + QString::number(rsacrypt->GetModule())));
+  request.append(QString("%1").arg(salt));
 
-  socket->write(block);
+  socket->write(request.toUtf8());
 }
 
 void Registration::mouseMoveEvent(QMouseEvent *event)
