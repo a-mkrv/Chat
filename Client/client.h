@@ -103,7 +103,7 @@ private slots:
   void ClearSelect();
   void DeleteUser();
   void SetGlass();
-  void ParseResponseData(QString, PairStringList &, PairStringList &);
+  void ParseResponseData(QString, ChatListVector &);
   void AddUserChat(QString, QString, PairStringList, int);
   void InsertEmoticon(QString symbol);
   void FindUserInServer(QString str);
@@ -120,7 +120,6 @@ private slots:
   void ShowUserFound();
   void ShowCreateGroup();
   void GetCreateGroupSig(QString, QString, QString, QString);
-  void GetMessageUserList(PairStringList &, PairStringList &, ChatListVector &);
   void SetDefaultLanguage();
   void SetLanguage();
   QString SuffixDay(int day);

@@ -383,32 +383,31 @@ void Client::AddUserChat(QString _username, QString _sex, PairStringList lst, in
 
 //////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////
-/// Get a list of friends and keys. Adding through Client::AddUserChat(...)
-void Client::GetMessageUserList(PairStringList &PublicFriendKey, PairStringList &FriendList, ChatListVector &chatList)
+/// Parse response from server - Users / Keys / Messages. Adding through Client::AddUserChat(...)
+void Client::ParseResponseData(QString response, ChatListVector &chatList)
 {
-  for (int i = 0; i < PublicFriendKey.size(); i++)
-    pubFriendKey.push_back(qMakePair(PublicFriendKey.at(i).first, PublicFriendKey.at(i).second));
+    // chatList.at(i);
+    PairStringList tmp;
 
-  for (int i = 0; i < FriendList.size(); i++)
-    AddUserChat(FriendList.at(i).first, FriendList.at(i).second, chatList.at(i).second, i);
-}
-
-//////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////
-/// Parse response from server - Users / Keys / Messages
-void Client::ParseResponseData(QString response, PairStringList &keys, PairStringList &users)
-{
+    QStringList split;
     QStringList dataList;
     dataList = response.split(" //s ");
 
-    QStringList keyList, userList;
-    keyList = dataList.at(0).split(" _ ");
-    userList = dataList.at(1).split(" _ ");
+    QStringList keyList, userList, presenceStatus;
+    keyList = dataList.at(0).split(" /s ");
+    userList = dataList.at(1).split(" /s ");
+    presenceStatus = dataList.at(2).split(" /s ");
 
-    for (int i = 0; i < keyList.size(); i+=2)
+    for (int i = 0; i < keyList.size(); i++)
     {
-        keys.push_back(qMakePair(keyList.at(i), keyList.at(i+1)));
-        users.push_back(qMakePair(userList.at(i), userList.at(i+1)));
+        split = keyList.at(i).split(" _ ");
+        pubFriendKey.push_back(qMakePair(split.at(0), split.at(1)));
+
+        split = userList.at(i).split(" _ ");
+        AddUserChat(split.at(0), split.at(1), tmp, i);
+
+        split = presenceStatus.at(i).split(" _ ");
+        FriendOnlineStatus[split.at(0)] = split.at(1);
     }
 }
 
@@ -475,18 +474,10 @@ void Client::GetMessage()
     // Friends List, keys and chat dialogue
     case COMMAND::USERLIST:
       {        
-        PairStringList PublicFriendKey;
-        PairStringList FriendList;
+        ChatListVector chatList;
 
-        ParseResponseData(message, PublicFriendKey, FriendList);
+        ParseResponseData(message, chatList);
 
-        qDebug() << PublicFriendKey;
-
-        //ChatListVector chatList;
-
-        //FIXME: List
-        //in >> PublicFriendKey >> FriendList >> chatList >> FriendOnlineStatus;
-        //GetMessageUserList(PublicFriendKey, FriendList, chatList);
         break;
       }
 
