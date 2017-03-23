@@ -100,12 +100,6 @@ void Server::getMessage()
     //clientSocket->waitForBytesWritten(4000);
 
     int command = 0;
-    // 0 - пусто,
-    // 1 - имя пользователя,
-    // 2 - команда,
-    // 3 - поиск
-    // 4 - Файл
-    // 5 - Регистрация
 
     if (typePacket == "LOAD")
         command = 1;
@@ -316,33 +310,70 @@ QStringList Server::requestSeparation(QString text)
     return list;
 }
 
+void checkString(QString &response)
+{
+    if (response.length() > 4)
+    {
+        response = response.left(response.length() - 4);
+        response.append(" //s ");
+    }
+}
+
 void Server::userIsOnline(QTcpSocket *client, QString _user)
 {
+    QString response = "FLST";
     QString UserName = _user;
     QString TMPName = UserName;
+
     bool AlreadyName = true;
     int numInc = 0;
 
-    QByteArray block;
-    QDataStream out(&block, QIODevice::WriteOnly);
-    out.setVersion(QDataStream::Qt_5_4);
-
     QStringList SendMyStatus;
-    QHash<QString, QString> FriendOnlineStatus;
     ChatListVector ChatFriendList;
-    PairStringList FriendsList;
-    PairStringList PublicFriendKeys;
+    PairStringList friendOnlineStatus;
+    PairStringList friendsList;
+    PairStringList publicFriendKeys;
 
     sqlitedb->UpOnlineStatus("Online", UserName);
-    sqlitedb->getOnlineStatus(UserName, FriendOnlineStatus, SendMyStatus);
-    PublicFriendKeys = sqlitedb->FriendKeys(UserName);
-    FriendsList = sqlitedb->FriendList(UserName, ChatFriendList);
+    sqlitedb->getOnlineStatus(UserName, friendOnlineStatus, SendMyStatus);
+    publicFriendKeys = sqlitedb->FriendKeys(UserName);
+    friendsList = sqlitedb->FriendList(UserName, ChatFriendList);
 
-    //FIXME, List insted string
-    out << quint32(0) << QString("FLST") << PublicFriendKeys << FriendsList << ChatFriendList << FriendOnlineStatus;
-    client->write(block);
+    int countUsers = friendsList.size();
 
-    NotificationNetwork(UserName, SendMyStatus, 1);
+    if (countUsers > 0) {
+        for (int i = 0; i < countUsers; i++) {
+            response.append(publicFriendKeys.at(i).first + " _ " + publicFriendKeys.at(i).second + " /s ");
+        }
+
+        checkString(response);
+
+        for (int i = 0; i < countUsers; i++) {
+            response.append(friendsList.at(i).first + " _ " + friendsList.at(i).second + " /s ");
+        }
+
+        checkString(response);
+
+        ////////////
+
+        //FIXME
+        //MESSAGES
+
+        ////////////
+
+        for (int i = 0; i < countUsers; i++) {
+            response.append(friendOnlineStatus.at(i).first + " _ " + friendOnlineStatus.at(i).second + " /s ");
+        }
+
+        checkString(response);
+
+        qDebug() << response;
+        client->write(response.toUtf8());
+    }
+
+    //FIXME
+    //NotificationNetwork(UserName, SendMyStatus, 1);
+
     while (AlreadyName)
     {
         AlreadyName = false;

@@ -208,7 +208,7 @@ void SQLiteDB::UpOnlineStatus(const QString &status, const QString &user_name)
     query.exec();
 }
 
-void SQLiteDB::getOnlineStatus(const QString & user_name, QHash<QString, QString> &status, QStringList &StatusForFriends)
+void SQLiteDB::getOnlineStatus(const QString & user_name, PairStringList &status, QStringList &StatusForFriends)
 {
     QSqlQuery query_search(myDB);
     QSqlQuery query_add(myDB);
@@ -218,7 +218,7 @@ void SQLiteDB::getOnlineStatus(const QString & user_name, QHash<QString, QString
             query_add.exec("SELECT UserName, OnlineStatus FROM Users WHERE UserName=\'" + query_search.value(0).toString() + "\'");
             query_add.next();
 
-            status.insert(query_add.value(0).toString(), query_add.value(1).toString());
+            status.push_back(qMakePair(query_add.value(0).toString(), query_add.value(1).toString()));
             StatusForFriends.push_back(query_search.value(0).toString());
         }
 }

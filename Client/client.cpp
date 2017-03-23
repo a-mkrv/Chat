@@ -395,6 +395,25 @@ void Client::GetMessageUserList(PairStringList &PublicFriendKey, PairStringList 
 
 //////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////
+/// Parse response from server - Users / Keys / Messages
+void Client::ParseResponseData(QString response, PairStringList &keys, PairStringList &users)
+{
+    QStringList dataList;
+    dataList = response.split(" //s ");
+
+    QStringList keyList, userList;
+    keyList = dataList.at(0).split(" _ ");
+    userList = dataList.at(1).split(" _ ");
+
+    for (int i = 0; i < keyList.size(); i+=2)
+    {
+        keys.push_back(qMakePair(keyList.at(i), keyList.at(i+1)));
+        users.push_back(qMakePair(userList.at(i), userList.at(i+1)));
+    }
+}
+
+//////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////
 /// Receiving a message from a user / server
 void Client::GetMessage()
 {
@@ -403,7 +422,7 @@ void Client::GetMessage()
 
   typePacket = tcpSocket->read(4);
   message = tcpSocket->readAll();
-  qDebug() << typePacket <<  message;
+  //qDebug() << typePacket <<  message;
 //  if (!nextBlockSize) {
 //      if (quint32(tcpSocket->bytesAvailable()) < sizeof(quint32)) {
 //          return;
@@ -440,26 +459,34 @@ void Client::GetMessage()
   else if (typePacket == "STON" || typePacket == "STOF")
     cmd = COMMAND::ISONLINE;
 
-  commandList = message.split(" /s ");
-  if (commandList.at(0) == name)
-    return;
+  if (typePacket != "FLST")
+  {
+    commandList = message.split(" /s ");
 
-  fromname = commandList.at(0);
+        if (commandList.at(0) == name)
+            return;
 
+    fromname = commandList.at(0);
+  }
 
   switch (cmd)
     {
 
     // Friends List, keys and chat dialogue
     case COMMAND::USERLIST:
-      {
+      {        
         PairStringList PublicFriendKey;
         PairStringList FriendList;
-        ChatListVector chatList;
+
+        ParseResponseData(message, PublicFriendKey, FriendList);
+
+        qDebug() << PublicFriendKey;
+
+        //ChatListVector chatList;
 
         //FIXME: List
         //in >> PublicFriendKey >> FriendList >> chatList >> FriendOnlineStatus;
-        GetMessageUserList(PublicFriendKey, FriendList, chatList);
+        //GetMessageUserList(PublicFriendKey, FriendList, chatList);
         break;
       }
 

@@ -103,6 +103,7 @@ private slots:
   void ClearSelect();
   void DeleteUser();
   void SetGlass();
+  void ParseResponseData(QString, PairStringList &, PairStringList &);
   void AddUserChat(QString, QString, PairStringList, int);
   void InsertEmoticon(QString symbol);
   void FindUserInServer(QString str);

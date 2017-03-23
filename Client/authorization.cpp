@@ -71,9 +71,9 @@ void Authorization::GetMessage()
   QString received_message, pub_key;
 
   received_message = socket->read(4);
-  pub_key = socket->read(8);
+  pub_key = socket->readAll();
 
-   qDebug() << received_message << pub_key;
+  qDebug() << received_message << pub_key;
 
   if (received_message == "ERRA")
     ui->error_label->show();

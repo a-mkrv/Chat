@@ -6,6 +6,7 @@
 #include <QPair>
 
 typedef QList <QPair <QString, QList<QPair <QString, QString> > > > ChatListVector;
+typedef QList <QPair <QString, QString>> PairStringList;
 
 class SQLiteDB : public QObject
 {
@@ -30,7 +31,7 @@ public slots:
     void ClearHistory(QString, QString);
     void delFriend(QString, QString);
     void UpOnlineStatus(const QString&, const QString&);
-    void getOnlineStatus(const QString&, QHash<QString, QString> &, QStringList &);
+    void getOnlineStatus(const QString&, PairStringList &, QStringList &);
     QString CorrectInput(QString, QString);
     QStringList UserData(QString);
     void  FriendListName(QString, QStringList &);
