@@ -389,6 +389,7 @@ void Client::ParseResponseData(QString response, ChatListVector &chatList)
     // chatList.at(i);
     PairStringList tmp;
 
+    QString userName;
     QStringList split;
     QStringList dataList;
     dataList = response.split(" //s ");
@@ -401,13 +402,15 @@ void Client::ParseResponseData(QString response, ChatListVector &chatList)
     for (int i = 0; i < keyList.size(); i++)
     {
         split = keyList.at(i).split(" _ ");
+        userName = split.at(0);
         pubFriendKey.push_back(qMakePair(split.at(0), split.at(1)));
 
         split = userList.at(i).split(" _ ");
         AddUserChat(split.at(0), split.at(1), tmp, i);
 
+        // Split[0] - Live Status, Split[2] - Phone/Email
         split = presenceStatus.at(i).split(" _ ");
-        FriendOnlineStatus[split.at(0)] = split.at(1);
+        FriendOnlineStatus[userName] = split.at(1);
     }
 }
 

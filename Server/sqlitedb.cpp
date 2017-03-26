@@ -215,10 +215,9 @@ void SQLiteDB::getOnlineStatus(const QString & user_name, PairStringList &status
     if(query_search.exec("SELECT name FROM Friend" + user_name))
         while (query_search.next())
         {
-            query_add.exec("SELECT UserName, OnlineStatus FROM Users WHERE UserName=\'" + query_search.value(0).toString() + "\'");
+            query_add.exec("SELECT UserName, OnlineStatus, EmailPhone, LiveStatus FROM Users WHERE UserName=\'" + query_search.value(0).toString() + "\'");
             query_add.next();
-
-            status.push_back(qMakePair(query_add.value(0).toString(), query_add.value(1).toString()));
+            status.push_back(qMakePair(query_add.value(3).toString() + " _ " + query_add.value(1).toString(), query_add.value(2).toString()));
             StatusForFriends.push_back(query_search.value(0).toString());
         }
 }

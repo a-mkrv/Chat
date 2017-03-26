@@ -238,8 +238,9 @@ void Server::getMessage()
             login = splitWords[0];
             password = splitWords[1];
         }
-
+        qDebug() << login << password;
         QString result_return = sqlitedb->CorrectInput(login, password);
+        qDebug() << result_return;
 
         if (result_return == "false")
         {   // Error Auth = Error login / password
