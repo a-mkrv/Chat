@@ -45,7 +45,7 @@ void SQLiteDB::AddContact(QString UserName, QString Sex, int Age, QString City, 
 QString SQLiteDB::FindInDB(QString UserName, QString whoFind)
 {
     QSqlQuery query(myDB);
-    if(query.exec("SELECT UserName, Sex, PubKey FROM Users WHERE UserName=\'" +UserName+ "\'"))
+    if(query.exec("SELECT UserName, Sex, PubKey, OnlineStatus, EmailPhone, LiveStatus FROM Users WHERE UserName=\'" +UserName+ "\'"))
         if(query.next())
             if (query.value(0).toString()==UserName)
             {
@@ -58,7 +58,11 @@ QString SQLiteDB::FindInDB(QString UserName, QString whoFind)
                     queryAdFr.bindValue(":Key", query.value(2).toString());
                     queryAdFr.exec();
                 }
-                return query.value(1).toString() + " /s " + query.value(2).toString();
+                return query.value(1).toString() + " /s " +
+                       query.value(2).toString() + " /s " +
+                       query.value(3).toString() + " /s " +
+                       query.value(4).toString() + " /s " +
+                       query.value(5).toString();
             }
 
     query.exec();
@@ -221,6 +225,30 @@ void SQLiteDB::getOnlineStatus(const QString & user_name, PairStringList &status
             StatusForFriends.push_back(query_search.value(0).toString());
         }
 }
+
+
+QString SQLiteDB::getFullUserInformations(QString userName)
+{
+    QString uInfo = "INFP";
+    QSqlQuery query(myDB);
+    if(query.exec("SELECT UserName, Sex, Age, City, OnlineStatus, EmailPhone, LiveStatus FROM Users WHERE UserName=\'" +userName+ "\'"))
+        if(query.next())
+            if (query.value(0).toString() == userName)
+            {
+                uInfo.append(query.value(1).toString() + " /s " +
+                             query.value(2).toString() + " /s " +
+                             query.value(3).toString() + " /s " +
+                             query.value(4).toString() + " /s " +
+                             query.value(5).toString() + " /s " +
+                             query.value(6).toString() + " /s " );
+
+                return uInfo;
+            }
+
+    query.exec();
+    return "INFN";
+}
+
 
 QStringList SQLiteDB::UserData(QString name)
 {

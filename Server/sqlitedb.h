@@ -32,6 +32,7 @@ public slots:
     void delFriend(QString, QString);
     void UpOnlineStatus(const QString&, const QString&);
     void getOnlineStatus(const QString&, PairStringList &, QStringList &);
+    QString getFullUserInformations(QString);
     QString CorrectInput(QString, QString);
     QStringList UserData(QString);
     void  FriendListName(QString, QStringList &);

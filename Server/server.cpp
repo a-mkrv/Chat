@@ -128,6 +128,9 @@ void Server::getMessage()
     else if (typePacket == "NGRP")
         command = 9;
 
+    else if (typePacket == "GETI")
+        command = 10;
+
     switch (command)
     {
 
@@ -299,6 +302,17 @@ void Server::getMessage()
         //FIXME
         //in >> groupName >> groupDescr >> userList;
         sqlitedb->createGroup(groupName, groupDescr, userList);
+
+        break;
+    }
+
+    case 10:
+    {
+        QString user;
+        user = clientSocket->readAll();
+
+        QString userInfo = sqlitedb->getFullUserInformations(user);
+        clientSocket->write(userInfo.toUtf8());
     }
     }
 }
