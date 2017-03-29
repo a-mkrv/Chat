@@ -384,6 +384,8 @@ void Server::userIsOnline(QTcpSocket *client, QString _user)
 
         qDebug() << response;
         client->write(response.toUtf8());
+    } else {
+        client->write(QString("NOFL").toUtf8());
     }
 
     //FIXME
