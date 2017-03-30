@@ -226,12 +226,22 @@ void SQLiteDB::getOnlineStatus(const QString & user_name, PairStringList &status
         }
 }
 
+void SQLiteDB::updateAllDataOfUser(QStringList dataset)
+{
+    QSqlQuery query(myDB);
+
+    QString q = QString("UPDATE Users SET FirstName='%1', LastName='%2', EmailPhone='%3', Sex='%4', ").arg(dataset[1]).arg(dataset[2]).arg(dataset[3]).arg(dataset[4]);
+    q.append(QString("Age='%1', City='%2', LiveStatus='%3' WHERE UserName='%4'").arg(dataset[5]).arg(dataset[6]).arg(dataset[7]).arg(dataset[0]));
+
+    query.prepare(q);
+    query.exec();
+}
 
 QString SQLiteDB::getFullUserInformations(QString userName)
 {
     QString uInfo = "INFP";
     QSqlQuery query(myDB);
-    if(query.exec("SELECT UserName, Sex, Age, City, OnlineStatus, EmailPhone, LiveStatus FROM Users WHERE UserName=\'" +userName+ "\'"))
+    if(query.exec("SELECT UserName, Sex, Age, City, OnlineStatus, EmailPhone, LiveStatus, FirstName, LastName FROM Users WHERE UserName=\'" +userName+ "\'"))
         if(query.next())
             if (query.value(0).toString() == userName)
             {
@@ -240,7 +250,9 @@ QString SQLiteDB::getFullUserInformations(QString userName)
                              query.value(3).toString() + " /s " +
                              query.value(4).toString() + " /s " +
                              query.value(5).toString() + " /s " +
-                             query.value(6).toString() + " /s " );
+                             query.value(6).toString() + " /s " +
+                             query.value(7).toString() + " /s " +
+                             query.value(8).toString() + " /s " );
 
                 return uInfo;
             }

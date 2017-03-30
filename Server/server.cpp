@@ -131,6 +131,9 @@ void Server::getMessage()
     else if (typePacket == "GETI")
         command = 10;
 
+    else if (typePacket == "UPUI")
+        command = 11;
+
     switch (command)
     {
 
@@ -312,7 +315,18 @@ void Server::getMessage()
         user = clientSocket->readAll();
 
         QString userInfo = sqlitedb->getFullUserInformations(user);
+        qDebug() << userInfo;
         clientSocket->write(userInfo.toUtf8());
+
+        break;
+    }
+
+    case 11:
+    {
+        splitWords = requestSeparation(clientSocket->readAll());
+        sqlitedb->updateAllDataOfUser(splitWords);
+
+        break;
     }
     }
 }
