@@ -134,6 +134,9 @@ void Server::getMessage()
     else if (typePacket == "UPUI")
         command = 11;
 
+    else if (typePacket == "LCHT")
+        command = 12;
+
     switch (command)
     {
 
@@ -328,6 +331,25 @@ void Server::getMessage()
 
         break;
     }
+
+    case 12:
+    {
+        QString chatHistory;
+        QString user;
+
+        user = clientSocket->readAll();
+        chatHistory = sqlitedb->getChatHistory(user);
+
+        // TODO: Check isEmptyDialogList
+        if (chatHistory == "EMPT") {
+            clientSocket->write(QString("EMPT").toUtf8());
+        } else {
+            clientSocket->write(QString("EXST").toUtf8());
+            clientSocket->write(chatHistory.toUtf8());
+        }
+
+        break;
+    }
     }
 }
 
@@ -353,12 +375,12 @@ void Server::userIsOnline(QTcpSocket *client, QString _user)
     QString response = "FLST";
     QString UserName = _user;
     QString TMPName = UserName;
+    QString chatHistory;
 
     bool AlreadyName = true;
     int numInc = 0;
 
     QStringList SendMyStatus;
-    ChatListVector ChatFriendList;
     PairStringList friendOnlineStatus;
     PairStringList friendsList;
     PairStringList publicFriendKeys;
@@ -366,7 +388,10 @@ void Server::userIsOnline(QTcpSocket *client, QString _user)
     sqlitedb->UpOnlineStatus("Online", UserName);
     sqlitedb->getOnlineStatus(UserName, friendOnlineStatus, SendMyStatus);
     publicFriendKeys = sqlitedb->FriendKeys(UserName);
-    friendsList = sqlitedb->FriendList(UserName, ChatFriendList);
+    friendsList = sqlitedb->FriendList(UserName);
+    chatHistory = sqlitedb->getChatHistory(UserName);
+
+    qDebug() << chatHistory;
 
     int countUsers = friendsList.size();
 
@@ -396,7 +421,6 @@ void Server::userIsOnline(QTcpSocket *client, QString _user)
 
         checkString(response);
 
-        qDebug() << response;
         client->write(response.toUtf8());
     } else {
         client->write(QString("NOFL").toUtf8());

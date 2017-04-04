@@ -100,7 +100,7 @@ QString SQLiteDB::CorrectInput(QString _login, QString _password)
     return "false";
 }
 
-QList <QPair<QString, QString>> SQLiteDB::FriendList(QString user, ChatListVector &lst)
+QList <QPair<QString, QString>> SQLiteDB::FriendList(QString user)
 {
     QSqlQuery query(myDB);
     QList <QPair <QString, QString>> FriendSex;
@@ -109,10 +109,35 @@ QList <QPair<QString, QString>> SQLiteDB::FriendList(QString user, ChatListVecto
         while (query.next())
         {
             FriendSex.push_back(qMakePair(query.value(0).toString(), query.value(1).toString()));
-            LoadChatList(user, query.value(0).toString(), lst);
         }
 
     return FriendSex;
+}
+
+QString SQLiteDB::getChatHistory(QString user)
+{
+    QSqlQuery queryUser(myDB);
+    QSqlQuery queryChat(myDB);
+    QString chatHistory;
+
+    if(queryUser.exec("SELECT name FROM Friend" + user))
+        while (queryUser.next())
+        {
+            if(queryChat.exec("SELECT Message, Who, Time FROM Chat" + user + queryUser.value(0).toString()))
+            {
+                if (queryChat.next())
+                {
+                    chatHistory.append(" //s " + queryUser.value(0).toString());
+                    chatHistory.append(" /pm " + queryChat.value(1).toString() + " /s " + queryChat.value(0).toString() + " /s " + queryChat.value(2).toString());
+                }
+                while (queryChat.next())
+                {
+                    chatHistory.append(" /pm " + queryChat.value(1).toString() + " /s " + queryChat.value(0).toString() + " /s " + queryChat.value(2).toString());
+                }
+            }
+        }
+
+    return chatHistory;
 }
 
 QList <QPair <QString, QString> > SQLiteDB::FriendKeys(QString user)
@@ -127,17 +152,6 @@ QList <QPair <QString, QString> > SQLiteDB::FriendKeys(QString user)
         }
 
     return FriendKey;
-}
-
-void SQLiteDB::LoadChatList(QString who, QString find, ChatListVector &lst)
-{
-
-    QList <QPair <QString, QString>> msg;
-    QSqlQuery query(myDB);
-    if(query.exec("SELECT Message, Who, Time FROM Chat" + who + find))
-        while (query.next())
-            msg.push_back(qMakePair(query.value(2).toString() + query.value(0).toString(), query.value(1).toString()));
-    lst.push_back(qMakePair(find, msg));
 }
 
 void SQLiteDB::addChatTable(QString who, QString find)
@@ -229,7 +243,7 @@ void SQLiteDB::getOnlineStatus(const QString & user_name, PairStringList &status
 void SQLiteDB::updateAllDataOfUser(QStringList dataset)
 {
     QSqlQuery query(myDB);
-
+    qDebug() << dataset;
     QString q = QString("UPDATE Users SET FirstName='%1', LastName='%2', EmailPhone='%3', Sex='%4', ").arg(dataset[1]).arg(dataset[2]).arg(dataset[3]).arg(dataset[4]);
     q.append(QString("Age='%1', City='%2', LiveStatus='%3' WHERE UserName='%4'").arg(dataset[5]).arg(dataset[6]).arg(dataset[7]).arg(dataset[0]));
 

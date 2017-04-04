@@ -22,9 +22,9 @@ private:
 public slots:
     void AddContact(QString, QString, int, QString, QString, QString, QString);
     void addMessInChat(QString, QString, QString, QString);
-    QList <QPair <QString, QString> > FriendList(QString, ChatListVector&);
+    QList <QPair <QString, QString> > FriendList(QString);
     QList <QPair <QString, QString> > FriendKeys(QString);
-    void LoadChatList(QString, QString, ChatListVector&);
+    QString getChatHistory(QString user);
     void createGroup(QString , QString , QStringList);
     void addChatTable(QString, QString);
     QString FindInDB(QString, QString);
