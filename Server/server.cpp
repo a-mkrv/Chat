@@ -137,6 +137,12 @@ void Server::getMessage()
     else if (typePacket == "LCHT")
         command = 12;
 
+    else if (typePacket == "LCPU")
+        command = 13;
+
+    else if (typePacket == "UPNU")
+        command = 14;
+
     switch (command)
     {
 
@@ -318,7 +324,6 @@ void Server::getMessage()
         user = clientSocket->readAll();
 
         QString userInfo = sqlitedb->getFullUserInformations(user);
-        qDebug() << userInfo;
         clientSocket->write(userInfo.toUtf8());
 
         break;
@@ -350,6 +355,45 @@ void Server::getMessage()
 
         break;
     }
+
+    case 13:
+    {
+        QString from, userDialog;
+        QString chatHistory;
+
+        splitWords = requestSeparation(clientSocket->readAll());
+        if (splitWords.size() == 2)
+        {
+            from = splitWords[0];
+            userDialog = splitWords[1];
+
+            chatHistory = sqlitedb->getChatHistoryPerUser(from, userDialog);
+        }
+
+        if (chatHistory == "") {
+            clientSocket->write(QString("EMPT").toUtf8());
+        } else {
+            clientSocket->write(QString("PERU").toUtf8());
+            clientSocket->write(chatHistory.toUtf8());
+        }
+
+        break;
+    }
+
+    case 14:
+    {
+        QString from, user, state;
+
+        splitWords = requestSeparation(clientSocket->readAll());
+        if (splitWords.size() == 3)
+        {
+            from = splitWords[0];
+            user = splitWords[1];
+            state = splitWords[2];
+        }
+
+        sqlitedb->updateStateNotificationFromUser(from, user, state);
+    }
     }
 }
 
@@ -375,59 +419,21 @@ void Server::userIsOnline(QTcpSocket *client, QString _user)
     QString response = "FLST";
     QString UserName = _user;
     QString TMPName = UserName;
-    QString chatHistory;
 
     bool AlreadyName = true;
     int numInc = 0;
+    int countUsers = 0;
 
-    QStringList SendMyStatus;
-    PairStringList friendOnlineStatus;
-    PairStringList friendsList;
-    PairStringList publicFriendKeys;
-
+    QString friendsList;
     sqlitedb->UpOnlineStatus("Online", UserName);
-    sqlitedb->getOnlineStatus(UserName, friendOnlineStatus, SendMyStatus);
-    publicFriendKeys = sqlitedb->FriendKeys(UserName);
-    friendsList = sqlitedb->FriendList(UserName);
-    chatHistory = sqlitedb->getChatHistory(UserName);
-
-    qDebug() << chatHistory;
-
-    int countUsers = friendsList.size();
+    friendsList = sqlitedb->FriendList(UserName, countUsers);
 
     if (countUsers > 0) {
-        for (int i = 0; i < countUsers; i++) {
-            response.append(publicFriendKeys.at(i).first + " _ " + publicFriendKeys.at(i).second + " /s ");
-        }
-
-        checkString(response);
-
-        for (int i = 0; i < countUsers; i++) {
-            response.append(friendsList.at(i).first + " _ " + friendsList.at(i).second + " /s ");
-        }
-
-        checkString(response);
-
-        ////////////
-
-        //FIXME
-        //MESSAGES
-
-        ////////////
-
-        for (int i = 0; i < countUsers; i++) {
-            response.append(friendOnlineStatus.at(i).first + " _ " + friendOnlineStatus.at(i).second + " /s ");
-        }
-
-        checkString(response);
-
+        response.append(friendsList);
         client->write(response.toUtf8());
     } else {
         client->write(QString("NOFL").toUtf8());
     }
-
-    //FIXME
-    //NotificationNetwork(UserName, SendMyStatus, 1);
 
     while (AlreadyName)
     {

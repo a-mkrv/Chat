@@ -39,7 +39,7 @@ void SQLiteDB::AddContact(QString UserName, QString Sex, int Age, QString City, 
     query.exec();
 
     QSqlQuery queryCreate(myDB);
-    queryCreate.exec("CREATE TABLE Friend" + UserName + " (name text NOT NULL, sex text NOT NULL, key text NOT NULL)");
+    queryCreate.exec("CREATE TABLE Friend" + UserName + " (name text NOT NULL, sex text NOT NULL, key text NOT NULL, notifications text NOT NULL)");
 }
 
 QString SQLiteDB::FindInDB(QString UserName, QString whoFind)
@@ -52,10 +52,11 @@ QString SQLiteDB::FindInDB(QString UserName, QString whoFind)
                 if(!whoFind.isEmpty())
                 {
                     QSqlQuery queryAdFr(myDB);
-                    queryAdFr.prepare("INSERT INTO Friend"+whoFind+" (name, sex, key) VALUES (:UserName, :Sex, :Key)");
+                    queryAdFr.prepare("INSERT INTO Friend"+whoFind+" (name, sex, key, notifications) VALUES (:UserName, :Sex, :Key, :Notifications)");
                     queryAdFr.bindValue(":UserName", UserName);
                     queryAdFr.bindValue(":Sex", query.value(1).toString());
                     queryAdFr.bindValue(":Key", query.value(2).toString());
+                    queryAdFr.bindValue(":Notifications", "YES");
                     queryAdFr.exec();
                 }
                 return query.value(1).toString() + " /s " +
@@ -100,18 +101,39 @@ QString SQLiteDB::CorrectInput(QString _login, QString _password)
     return "false";
 }
 
-QList <QPair<QString, QString>> SQLiteDB::FriendList(QString user)
+QString SQLiteDB::FriendList(QString user, int &sizeList)
 {
     QSqlQuery query(myDB);
-    QList <QPair <QString, QString>> FriendSex;
+    QString friendInfo;
+    int i = 0;
+    QStringList moreData = getOnlineStatus(user);
 
-    if(query.exec("SELECT name, sex FROM Friend" + user))
+    if(query.exec("SELECT name, sex, key, notifications FROM Friend" + user))
         while (query.next())
         {
-            FriendSex.push_back(qMakePair(query.value(0).toString(), query.value(1).toString()));
+            friendInfo.append(query.value(0).toString() + " _ " + query.value(1).toString() + " _ ");
+            friendInfo.append(query.value(2).toString() + " _ " + query.value(3).toString());
+            friendInfo.append(moreData[i++] + " /s ");
         }
 
-    return FriendSex;
+    sizeList = moreData.size();
+    return friendInfo;
+}
+
+QString SQLiteDB::getChatHistoryPerUser(QString myName, QString user)
+{
+    QSqlQuery queryChat(myDB);
+    QString chatHistory = "";
+
+    if(queryChat.exec("SELECT Message, Who, Time FROM Chat" + myName + user))
+    {
+        while (queryChat.next())
+        {
+            chatHistory.append(" /pm " + queryChat.value(1).toString() + " /s " + queryChat.value(0).toString() + " /s " + queryChat.value(2).toString());
+        }
+    }
+
+    return chatHistory;
 }
 
 QString SQLiteDB::getChatHistory(QString user)
@@ -138,20 +160,6 @@ QString SQLiteDB::getChatHistory(QString user)
         }
 
     return chatHistory;
-}
-
-QList <QPair <QString, QString> > SQLiteDB::FriendKeys(QString user)
-{
-    QSqlQuery query(myDB);
-    QList <QPair <QString, QString>> FriendKey;
-
-    if(query.exec("SELECT name, key FROM Friend" + user))
-        while (query.next())
-        {
-            FriendKey.push_back(qMakePair(query.value(0).toString(), query.value(1).toString()));
-        }
-
-    return FriendKey;
 }
 
 void SQLiteDB::addChatTable(QString who, QString find)
@@ -226,18 +234,27 @@ void SQLiteDB::UpOnlineStatus(const QString &status, const QString &user_name)
     query.exec();
 }
 
-void SQLiteDB::getOnlineStatus(const QString & user_name, PairStringList &status, QStringList &StatusForFriends)
+QStringList SQLiteDB::getOnlineStatus(const QString & user_name)
 {
     QSqlQuery query_search(myDB);
     QSqlQuery query_add(myDB);
+    QStringList userData;
+
     if(query_search.exec("SELECT name FROM Friend" + user_name))
         while (query_search.next())
         {
             query_add.exec("SELECT UserName, OnlineStatus, EmailPhone, LiveStatus FROM Users WHERE UserName=\'" + query_search.value(0).toString() + "\'");
             query_add.next();
-            status.push_back(qMakePair(query_add.value(3).toString() + " _ " + query_add.value(1).toString(), query_add.value(2).toString()));
-            StatusForFriends.push_back(query_search.value(0).toString());
+            userData.push_back(" _ " + query_add.value(1).toString() + " _ " + query_add.value(2).toString() + " _ " + query_add.value(3).toString());
         }
+
+    return userData;
+}
+
+void SQLiteDB::updateStateNotificationFromUser(QString from, QString user, QString state)
+{
+    QSqlQuery query(myDB);
+    query.prepare(QString("UPDATE Friend='%1' SET notifications='%2' WHERE name='" + user + "'").arg(from).arg(state));
 }
 
 void SQLiteDB::updateAllDataOfUser(QStringList dataset)

@@ -22,9 +22,9 @@ private:
 public slots:
     void AddContact(QString, QString, int, QString, QString, QString, QString);
     void addMessInChat(QString, QString, QString, QString);
-    QList <QPair <QString, QString> > FriendList(QString);
-    QList <QPair <QString, QString> > FriendKeys(QString);
+    QString FriendList(QString, int &);
     QString getChatHistory(QString user);
+    QString getChatHistoryPerUser(QString myName, QString user);
     void createGroup(QString , QString , QStringList);
     void addChatTable(QString, QString);
     QString FindInDB(QString, QString);
@@ -32,7 +32,8 @@ public slots:
     void delFriend(QString, QString);
     void UpOnlineStatus(const QString&, const QString&);
     void updateAllDataOfUser(QStringList);
-    void getOnlineStatus(const QString&, PairStringList &, QStringList &);
+    void updateStateNotificationFromUser(QString, QString, QString);
+    QStringList getOnlineStatus(const QString & user_name);
     QString getFullUserInformations(QString);
     QString CorrectInput(QString, QString);
     QStringList UserData(QString);
