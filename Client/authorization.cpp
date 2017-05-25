@@ -6,6 +6,12 @@ Authorization::Authorization(QWidget *parent) :
   ui(new Ui::Authorization)
 {
   ui->setupUi(this);
+
+#ifdef __APPLE__
+    ui->username_enter->setAttribute(Qt::WA_MacShowFocusRect, false);
+    ui->pass_enter->setAttribute(Qt::WA_MacShowFocusRect, false);
+#endif
+
   socket = new QTcpSocket;
   registration = new Registration(parent);
   passhash = new HashMD5;

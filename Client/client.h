@@ -122,6 +122,7 @@ private slots:
   void GetCreateGroupSig(QString, QString, QString, QString);
   void SetDefaultLanguage();
   void SetLanguage();
+  void RemoveSelections();
   QString SuffixDay(int day);
   QString Pronoun(QString username);
 

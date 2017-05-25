@@ -298,7 +298,7 @@ QStringList SQLiteDB::UserData(QString name)
     QStringList uList;
 
     QSqlQuery query(myDB);
-    if(query.exec("SELECT UserName, Sex, Age, City FROM Users WHERE UserName=\'" +name+ "\'"))
+    if(query.exec("SELECT UserName, Sex, Age, City, LiveStatus, EmailPhone FROM Users WHERE UserName=\'" +name+ "\'"))
         if(query.next())
             if (query.value(0).toString() == name)
             {
@@ -306,6 +306,8 @@ QStringList SQLiteDB::UserData(QString name)
                 uList.push_back(query.value(1).toString());
                 uList.push_back(query.value(2).toString());
                 uList.push_back(query.value(3).toString());
+                uList.push_back(query.value(4).toString());
+                uList.push_back(query.value(5).toString());
                 return uList;
             }
 

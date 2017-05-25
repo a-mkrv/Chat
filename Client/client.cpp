@@ -21,6 +21,9 @@ Client::Client(QWidget *parent) : QMainWindow(parent), ui(new Ui::Client), perso
   ui->setupUi(this);
   this->setWindowFlags(Qt::Window | Qt::FramelessWindowHint | Qt::CustomizeWindowHint);
 
+#ifdef __APPLE__
+  RemoveSelections();
+#endif
 
   frameEmoji      = new EmojiFrame();
   emojiMan        = new EmojiManager();
@@ -255,6 +258,7 @@ void Client::AddUserChat(QString _username, QString _sex, PairStringList lst, in
   QListWidgetItem *item = new QListWidgetItem();
   QListWidget *chatlist = new QListWidget();
   chatlist->setItemDelegate(new ChatListDelegate(chatlist, colorchat));
+  chatlist->setAttribute(Qt::WA_MacShowFocusRect, false);
   U_stackedWidget_2->addWidget(chatlist);
 
   // Adding a new user through the search.
@@ -294,7 +298,7 @@ void Client::AddUserChat(QString _username, QString _sex, PairStringList lst, in
 
   // Adding a user (friend) from the database
   item->setData(Qt::DisplayRole, _username);
-  item->setData(Qt::ToolTipRole, QDateTime::currentDateTime().toString("dd.MM.yy hh:mm"));
+  item->setData(Qt::ToolTipRole, FriendOnlineStatus[_username]);
   item->setData(Qt::DecorationRole, pic);
   vec.push_back(item);
   chatvec.push_back(chatlist);
@@ -386,31 +390,26 @@ void Client::AddUserChat(QString _username, QString _sex, PairStringList lst, in
 /// Parse response from server - Users / Keys / Messages. Adding through Client::AddUserChat(...)
 void Client::ParseResponseData(QString response, ChatListVector &chatList)
 {
-    // chatList.at(i);
-    PairStringList tmp;
-
     QString userName;
-    QStringList split;
-    QStringList dataList;
-    dataList = response.split(" //s ");
+    PairStringList tmp;
+    QStringList keyList, presenceStatus;
+    QString res = response;
+    QStringList dataList = res.split(" /s ");
+    dataList.removeLast();
 
-    QStringList keyList, userList, presenceStatus;
-    keyList = dataList.at(0).split(" /s ");
-    userList = dataList.at(1).split(" /s ");
-    presenceStatus = dataList.at(2).split(" /s ");
-
-    for (int i = 0; i < keyList.size(); i++)
+    for (int i = 0; i < dataList.size(); ++i)
     {
-        split = keyList.at(i).split(" _ ");
-        userName = split.at(0);
-        pubFriendKey.push_back(qMakePair(split.at(0), split.at(1)));
+        qDebug() << dataList[i];
 
-        split = userList.at(i).split(" _ ");
-        AddUserChat(split.at(0), split.at(1), tmp, i);
+        QStringList dataSet = dataList[i].split(" _ ");
+        userName = dataSet[0];
+        keyList = dataSet[2].split(" ");
 
-        // Split[0] - Live Status, Split[2] - Phone/Email
-        split = presenceStatus.at(i).split(" _ ");
-        FriendOnlineStatus[userName] = split.at(1);
+        pubFriendKey.push_back(qMakePair(keyList.at(0), keyList.at(1)));
+        FriendOnlineStatus[userName] = dataSet[4];
+
+        //TODO: The sex of a person is not indicated temporarily.
+        AddUserChat(userName, "Man", tmp, 0);
     }
 }
 
@@ -449,7 +448,7 @@ void Client::GetMessage()
   else if (typePacket == "GETF")
     cmd = COMMAND::GETFILE;
 
-  else if (typePacket == "UINF")
+  else if (typePacket == "INFP" || typePacket == "INFN")
     cmd = COMMAND::USINFO;
 
   else if (typePacket == "FNDP" || typePacket == "FNDN")
@@ -515,21 +514,26 @@ void Client::GetMessage()
         break;
       }
 
-      // Information about the user or group
+      // Information about the user
     case COMMAND::USINFO:
       {
-        QStringList *usData = new QStringList;
-        QStringList UData;
-        //FIXME: List
-        //in >> UData;
-        for (int i = 0; i < 4; i++)
-          usData->push_back(UData.at(i));
+        if (typePacket == "INFP")
+        {
+          QStringList *usData = new QStringList;
+          QStringList UData = message.split(" /s ");
+          // 0 - Sex, 1 - Age, 2 - City, 3 - OnlineStatus, 4 - Email/Phone, 5 - LiveStatus
 
-        users_info = new UsersGroupInfo(this, usData);
-        users_info->setGeometry(this->x()+365, this->y()+70, 330, 480);
-        SetGlass();
-        users_info->show();
-        break;
+          usData->push_back(vec.at(U_userList->currentRow())->data(Qt::DisplayRole).toString());
+          usData->push_back(UData.at(0));
+          usData->push_back(UData.at(1));
+          usData->push_back(UData.at(2));
+
+          users_info = new UsersGroupInfo(this, usData);
+          users_info->setGeometry(this->x()+365, this->y()+70, 330, 480);
+          SetGlass();
+          users_info->show();
+          break;
+      }
       }
 
       // Receiving file
@@ -1559,6 +1563,21 @@ void Client::SetLanguage()
 
 //////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////
+/// Remove views selections
+void Client::RemoveSelections()
+{
+    U_search_line_edit->setAttribute(Qt::WA_MacShowFocusRect, false);
+    U_editText->setAttribute(Qt::WA_MacShowFocusRect, false);
+    U_userList_3->setAttribute(Qt::WA_MacShowFocusRect, false);
+    U_userList->setAttribute(Qt::WA_MacShowFocusRect, false);
+    U_stackedWidget->setAttribute(Qt::WA_MacShowFocusRect, false);
+
+    // ???
+    U_stackedWidget_2->setAttribute(Qt::WA_MacShowFocusRect, false);
+}
+
+//////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////
 /// Removing a user
 void Client::DeleteUser()
 {
@@ -1648,7 +1667,7 @@ void Client::on_info_user_button_clicked()
   if (U_stackedWidget_2->count()==0 || U_stackedWidget->isHidden())
     return;
 
-  QString request = "UINF";
+  QString request = "GETI";
 
   request.append(vec.at(U_userList->currentRow())->data(Qt::DisplayRole).toString());
 

@@ -37,11 +37,13 @@ private slots:
 
     void SendResponseToID(QString message, int ID);     //Отправка личных сообщений
     void userIsOnline(QTcpSocket *client, QString _user);
-    void PrivateMessage(QTcpSocket *client, QString _message, QString);
+    void privateMessage(QTcpSocket *client, QStringList);
     void SendingFile(QTcpSocket *client);
     void LogIn(QTcpSocket *client, QString &U, QString &C, QString &P, QString &A, QString &S, QString &PubK, QString &Salt);
     void NotificationNetwork(const QString, const QStringList &, int);
     QStringList requestSeparation(QString text);
+
+    void on_pushButton_clicked();
 
 private:
     Ui::Server *ui;

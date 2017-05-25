@@ -6,11 +6,20 @@ Registration::Registration(QWidget *parent) :
   QWidget(parent),
   ui(new Ui::Registration)
 {
+  ui->setupUi(this);
   this->setWindowFlags(Qt::Window | Qt::FramelessWindowHint | Qt::CustomizeWindowHint);
+
+#ifdef __APPLE__
+  ui->enter_city->setAttribute(Qt::WA_MacShowFocusRect, false);
+  ui->enter_password->setAttribute(Qt::WA_MacShowFocusRect, false);
+  ui->enter_user_name->setAttribute(Qt::WA_MacShowFocusRect, false);
+  ui->password_confirm->setAttribute(Qt::WA_MacShowFocusRect, false);
+  ui->age->setAttribute(Qt::WA_MacShowFocusRect, false);
+#endif
+
   socket = new QTcpSocket();
   rsacrypt = new RSACrypt();
 
-  ui->setupUi(this);
   ui->Error_label->hide();
   ui->Error_label_2->hide();
 

@@ -104,7 +104,7 @@ void Server::getMessage()
     if (typePacket == "LOAD")
         command = 1;
 
-    else if (typePacket == "MESS")
+    else if (typePacket == "MESG")
         command = 2;
 
     else if (typePacket == "FIND")
@@ -157,17 +157,12 @@ void Server::getMessage()
 
     case 2:
     {
-        QString newMessage, MyMsg;
-
         splitWords = requestSeparation(clientSocket->readAll());
 
-        if (splitWords.size() == 2)
+        if (splitWords.size() == 4)
         {
-            newMessage = splitWords[0];
-            MyMsg = splitWords[1];
+            privateMessage(clientSocket, splitWords);
         }
-
-        PrivateMessage(clientSocket, newMessage, MyMsg);
 
         break;
     }
@@ -290,6 +285,7 @@ void Server::getMessage()
         break;
     }
 
+    // dublicate CASE 10
     case 8:
     {
         QString  userInfo;
@@ -349,6 +345,7 @@ void Server::getMessage()
         if (chatHistory == "EMPT") {
             clientSocket->write(QString("EMPT").toUtf8());
         } else {
+            qDebug() << chatHistory;
             clientSocket->write(QString("EXST").toUtf8());
             clientSocket->write(chatHistory.toUtf8());
         }
@@ -501,67 +498,38 @@ void Server::NotificationNetwork(const QString username, const QStringList &frie
     }
 }
 
-void Server::PrivateMessage(QTcpSocket *client, QString _message, QString _mymsg)
+void Server::privateMessage(QTcpSocket *client, QStringList msgList)
 {
-    User* toUser = nullptr;
-    User* fromUser = nullptr;
+    QString fromUser = msgList[0];
+    QString fromMsg = msgList[2];
 
-    QStringList WordList;
-    QString Message = _message;
+    QString toUser = msgList[1];
+    QString toMsg = msgList[3];
 
-    WordList = Message.split(" ", QString::SkipEmptyParts);
-    Message = WordList.takeFirst();
+    User* toUserSocket = nullptr;
 
-    for (auto i : clientConnections)
-    {
-        if (i->getSocket() == client)
-        {
-            fromUser = i;
-            break;
-        }
-    }
-
-    QString recipient = WordList.takeFirst();
-    QString text;
-
-    text.clear();
-    for (auto i : WordList)
-    {
-        text += i;
-        text += " ";
-    }
-
-
-    if (!WordList.isEmpty())
+    if (!toMsg.isEmpty())
     {
         for (auto i : clientConnections)
         {
-            if (i->getUserName() == recipient)
+            if (i->getUserName() == toUser)
             {
-                toUser = i;
+                toUserSocket = i;
                 break;
             }
         }
     }
 
-    QString newMessage = "*To: " + recipient + ": " + _mymsg;
-    SendResponseToID(newMessage, fromUser->getSocket()->socketDescriptor());
+    ui->chatDialog->addItem(timeconnect() + " - PM: " + fromUser + " -> " + toUser + ":  " + toMsg);
 
-    if (toUser != nullptr)
+    if (toUserSocket != nullptr && !toMsg.isEmpty())
     {
-        newMessage.clear();
-        newMessage = "*From: " + fromUser->getUserName() + ": " + text;
-        SendResponseToID(newMessage, toUser->getSocket()->socketDescriptor());
+        QString newMessage = "NMSG" + fromUser + " /s " + toMsg;
+        SendResponseToID(newMessage, toUserSocket->getSocket()->socketDescriptor());
+    }
 
-        ui->chatDialog->addItem(timeconnect() + " - PM: " + fromUser->getUserName() + " -> " + toUser->getUserName() + ":  " + text);
-        sqlitedb->addMessInChat(fromUser->getUserName(), toUser->getUserName(), _mymsg, QString("To"));
-        sqlitedb->addMessInChat(toUser->getUserName(), fromUser->getUserName(),  text, QString("From"));
-    }
-    else
-    {
-        sqlitedb->addMessInChat(fromUser->getUserName(), recipient, _mymsg, QString("To"));
-        sqlitedb->addMessInChat(recipient, fromUser->getUserName(),  text, QString("From"));
-    }
+        sqlitedb->addMessInChat(fromUser, toUser, fromMsg, QString("To"));
+        sqlitedb->addMessInChat(toUser, fromUser,  toMsg, QString("From"));
 }
 
 void Server::SendingFile(QTcpSocket *client)
@@ -679,4 +647,10 @@ void Server::Status()
 Server::~Server()
 {
     delete ui;
+}
+
+void Server::on_pushButton_clicked()
+{
+    qDebug() << clientConnections.at(0)->getSocket()->write(QString("test" + ui->lineEdit->text()).toUtf8()) << "Test: " << ui->lineEdit->text();
+
 }
