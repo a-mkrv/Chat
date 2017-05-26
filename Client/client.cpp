@@ -96,13 +96,14 @@ void Client::RecieveData(QString str, QString pas, QString pubKey)
       QLineEdit m_ptxtMask("*.txt");
       QStringList listFiles = keyDir.entryList(m_ptxtMask.text().split(" "), QDir::Files);
       myPublicKey = pubKey;
+      myPrivateKey = "1187 3683"; //temporarily
 
       for (int i = 0; i < listFiles.size(); i++)
         if (listFiles.at(i) == name+".txt")
           {
             QFile myKey(HOME_PATH_KEY + name + ".txt");
             myKey.open(QIODevice::ReadOnly);
-            myPrivateKey = myKey.readAll();
+            //myPrivateKey = myKey.readAll(); // need a solution
             break;
           }
 
@@ -165,21 +166,17 @@ void Client::on_sendMessage_clicked()
       QStringList lst = myPublicKey.split(" ", QString::SkipEmptyParts);
       QString MyMsg = rsaCrypt->EncodeText(message, lst.at(0).toInt(), lst.at(1).toInt());
 
-      for (int i = 0; i < pubFriendKey.size(); i++)
-        {
-          if (RecName == pubFriendKey.at(i).first)
-            {
-              QString user_key = pubFriendKey.at(i).second;
-              qDebug() << "Friend key: " << pubFriendKey.at(i).first << user_key;
+      if (pubFriendKey.keys().contains(RecName))
+      {
+          QString user_key = pubFriendKey[RecName];
+          qDebug() << "Friend key: " << user_key;
 
-              QStringList _key = user_key.split(" ", QString::SkipEmptyParts);
-              encodemsg = rsaCrypt->EncodeText(message, _key.at(0).toInt(), _key.at(1).toInt());
-              qDebug() << "Submitted: " << encodemsg;
-              break;
-            }
-        }
+          QStringList _key = user_key.split(" ", QString::SkipEmptyParts);
+          encodemsg = rsaCrypt->EncodeText(message, _key.at(0).toInt(), _key.at(1).toInt());
+          qDebug() << "Submitted: " << encodemsg;
+      }
 
-      QString new_mes = "/msg " + vec.at(U_userList->currentRow())->data(Qt::DisplayRole).toString() + " " + encodemsg;
+      QString new_mes = "/msg " + RecName + " " + encodemsg;
       SendUserCommand(new_mes, MyMsg);
     }
 }
@@ -220,8 +217,61 @@ void Client::InsertEmoticon(QString symbol)
 
 //////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////
+/// Parsing and adding dialog to chat lists
+void Client::AddChatToList(QString response)
+{
+   QStringList dialogues = response.split(" //s ");
+   dialogues.removeFirst();
+   QStringList prKeys = myPrivateKey.split(" ", QString::SkipEmptyParts);
+
+   for (int i = 0; i < dialogues.size(); ++i)
+   {
+        if (dialogues[i].contains(" /pm ", Qt::CaseInsensitive))
+        {
+            QStringList messages = dialogues[i].split(" /pm ");
+            QString userName = messages[0];
+            messages.removeFirst();
+
+            for (int j = 0; j < messages.size(); ++j)
+            {
+                QStringList msg = messages[j].split(" /s ");
+
+                for (int k = 0; k < U_userList->count(); ++k)
+                {
+                    if ((vec.at(k)->data(Qt::DisplayRole).toString()) == userName)
+                    {
+                        QListWidgetItem *item2 = new QListWidgetItem();
+
+                        if (msg[0] == "To")
+                        {
+                            msg[1] = rsaCrypt->DecodeText(msg[1], prKeys.at(0).toInt(), prKeys.at(1).toInt());
+
+                            item2->setData(Qt::UserRole + 1, "TO");
+                            item2->setData(Qt::DisplayRole, msg[1]); //text
+                            item2->setData(Qt::ToolTipRole, msg[2]); //time
+                        }
+                        else if (msg[0] == "From")
+                        {
+                            QStringList _key = pubFriendKey[userName].split(" ", QString::SkipEmptyParts);
+
+                            msg[1] = rsaCrypt->DecodeText(msg[1], _key.at(0).toInt(), _key.at(1).toInt());
+
+                            item2->setData(Qt::UserRole + 1, "FROM");
+                            item2->setData(Qt::DisplayRole, msg[1]); //text
+                            item2->setData(Qt::ToolTipRole, msg[2]); //time
+                        }
+                        chatvec.at(k)->addItem(item2);
+                    }
+                }
+            }
+        }
+   }
+}
+
+//////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////
 /// Adding users to contact list
-void Client::AddUserChat(QString _username, QString _sex, PairStringList lst, int count)
+void Client::AddUserToList(QString _username, QString _sex, PairStringList lst, int count)
 {
   int rand_avatar = 0;
   QIcon pic;
@@ -387,30 +437,45 @@ void Client::AddUserChat(QString _username, QString _sex, PairStringList lst, in
 
 //////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////
-/// Parse response from server - Users / Keys / Messages. Adding through Client::AddUserChat(...)
-void Client::ParseResponseData(QString response, ChatListVector &chatList)
+/// Parse response from server - Users Info. Adding through Client::AddUserToList(...)
+void Client::ParseResponseUserList(QString response, ChatListVector &chatList)
 {
     QString userName;
-    PairStringList tmp;
-    QStringList keyList, presenceStatus;
+    PairStringList tmp; // Fix - remove this.
+    QStringList keyList;
     QString res = response;
     QStringList dataList = res.split(" /s ");
     dataList.removeLast();
 
     for (int i = 0; i < dataList.size(); ++i)
     {
-        qDebug() << dataList[i];
-
         QStringList dataSet = dataList[i].split(" _ ");
         userName = dataSet[0];
-        keyList = dataSet[2].split(" ");
 
-        pubFriendKey.push_back(qMakePair(keyList.at(0), keyList.at(1)));
+        keyList = dataSet[2].split(" ");
+        pubFriendKey[userName] = keyList.at(0) + " " + keyList.at(1);
         FriendOnlineStatus[userName] = dataSet[4];
 
         //TODO: The sex of a person is not indicated temporarily.
-        AddUserChat(userName, "Man", tmp, 0);
+        AddUserToList(userName, "Man", tmp, i);
     }
+
+    // Request for load chat history per users
+    if (dataList.size() > 0)
+    {
+      QString request = "LCHT";
+      request.append(U_usernameEdit->text());
+
+      tcpSocket->write(request.toUtf8());
+    }
+}
+
+//////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////
+/// Parse response from server - User Chats. Adding through Client::AddChatToList(...)
+void Client::ParseResponseChatList(QString )
+{
+
 }
 
 //////////////////////////////////////////////////////////
@@ -423,7 +488,7 @@ void Client::GetMessage()
 
   typePacket = tcpSocket->read(4);
   message = tcpSocket->readAll();
-  //qDebug() << typePacket <<  message;
+// qDebug() << typePacket <<  message;
 //  if (!nextBlockSize) {
 //      if (quint32(tcpSocket->bytesAvailable()) < sizeof(quint32)) {
 //          return;
@@ -439,13 +504,16 @@ void Client::GetMessage()
 
   // Parsing of an incoming message.
 
-  enum class COMMAND { NONE, USERLIST, FINDUSER, INVITE, GETFILE, USINFO, ISONLINE};
+  enum class COMMAND { NONE, USERLIST, USERMSG, FINDUSER, INVITE, GETFILE, USINFO, ISONLINE};
   COMMAND cmd = COMMAND::NONE;
 
   if (typePacket == "FLST")
     cmd = COMMAND::USERLIST;
 
-  else if (typePacket == "GETF")
+  else if (typePacket == "EXST" || typePacket == "EMPT")
+    cmd = COMMAND::USERMSG;
+
+  else if (typePacket == "GETF") // don't work currently
     cmd = COMMAND::GETFILE;
 
   else if (typePacket == "INFP" || typePacket == "INFN")
@@ -473,12 +541,19 @@ void Client::GetMessage()
   switch (cmd)
     {
 
-    // Friends List, keys and chat dialogue
+    // Friends List, keys
     case COMMAND::USERLIST:
       {        
         ChatListVector chatList;
+        ParseResponseUserList(message, chatList);
 
-        ParseResponseData(message, chatList);
+        break;
+      }
+
+    // Receiving a list of messages
+    case COMMAND::USERMSG:
+      {
+        AddChatToList(message);
 
         break;
       }
@@ -492,9 +567,9 @@ void Client::GetMessage()
         if (find_user == "FNDP" && gl_fname!=name)
           {
             QString pubKey = commandList.at(1);
-            pubFriendKey.push_back(qMakePair(gl_fname, pubKey));
+            pubFriendKey[gl_fname] = pubKey;
             QList <QPair<QString, QString> > a;
-            AddUserChat(gl_fname, commandList.at(0), a , -1);
+            AddUserToList(gl_fname, commandList.at(0), a , -1);
             findcont->~findcontacts();
             on_glass_button_clicked();
           }
@@ -508,9 +583,9 @@ void Client::GetMessage()
       {
         QList <QPair<QString, QString> > a;
         QString pubKey = commandList.at(2);
-        pubFriendKey.push_back(qMakePair(commandList.at(0), pubKey));
+        pubFriendKey[commandList.at(0)] = pubKey;
 
-        AddUserChat(commandList.at(0), commandList.at(1), a , -2);
+        AddUserToList(commandList.at(0), commandList.at(1), a , -2);
         break;
       }
 
@@ -1296,8 +1371,10 @@ void Client::on_userList_clicked(const QModelIndex &index)
       U_start_textBrowser->hide();
       U_stackedWidget_2->show();
       U_stackedWidget_2->setCurrentIndex(index.row());
-
       QString cur_user = vec.at(U_userList->currentRow())->data(Qt::DisplayRole).toString();
+
+      qDebug() << cur_user << U_stackedWidget_2->currentIndex();
+
       QString status = FriendOnlineStatus.value(cur_user);
 
       // Setting in the header name of the selected friend

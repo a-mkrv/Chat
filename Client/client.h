@@ -103,8 +103,10 @@ private slots:
   void ClearSelect();
   void DeleteUser();
   void SetGlass();
-  void ParseResponseData(QString, ChatListVector &);
-  void AddUserChat(QString, QString, PairStringList, int);
+  void ParseResponseUserList(QString, ChatListVector &);
+  void ParseResponseChatList(QString );
+  void AddUserToList(QString, QString, PairStringList, int);
+  void AddChatToList(QString );
   void InsertEmoticon(QString symbol);
   void FindUserInServer(QString str);
   void WhisperOnClickUsers(QListWidgetItem* user);
@@ -148,7 +150,7 @@ private:
   QStackedLayout *layout;
   QTcpSocket *tcpSocket;
 
-  QVector<QPair<QString, QString> > pubFriendKey;
+  QMap<QString, QString> pubFriendKey;
   QVector<QListWidgetItem*> vec;
   QVector<QListWidget*> chatvec;
   QMap<QString, QString> lan_dict;
