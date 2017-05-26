@@ -893,8 +893,10 @@ void Client::WhisperOnClick(QListWidgetItem* User)
     U_stackedWidget->setCurrentIndex(1);
   else if (section == lst_options.at(2))
     U_stackedWidget->setCurrentIndex(2);
-  else
+  else if (section == lst_options.at(3))
     U_stackedWidget->setCurrentIndex(3);
+  U_userList_3->clearSelection();
+  U_setTitle->setText(U_userList_3->currentItem()->text());
 }
 
 //////////////////////////////////////////////////////////

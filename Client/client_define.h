@@ -39,6 +39,7 @@
 #define  U_textEdit1              ui->textEdit1
 #define  U_head_name              ui->head_name
 #define  U_online_status          ui->online_status
+#define  U_setTitle               ui->settingTitle
 
 // Other
 #define DEFAULT_LANGUAGE    QString("EN_Language")
