@@ -89,7 +89,7 @@ void UserListDelegate::paint ( QPainter * painter, const QStyleOptionViewItem & 
   painter->setFont( QFont( "Lucida Grande", 16, QFont::Normal ) );
   painter->drawText(r.left(), r.top(), r.width(), r.height(), Qt::AlignTop|Qt::AlignLeft, title, &r);
   // TIME
-  r = option.rect.adjusted(60, 10, -10, -27);
+  r = option.rect.adjusted(60, 15, -10, -27);
   painter->setFont( QFont( "Lucida Grande", 12, QFont::Normal ) );
   painter->drawText(r.left(), r.top(), r.width(), r.height(), Qt::AlignTop|Qt::AlignRight, time , &r);
   //DESCRIPTION

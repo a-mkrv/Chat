@@ -81,23 +81,23 @@ void ChatListDelegate::paint ( QPainter * painter, const QStyleOptionViewItem & 
         {
           // #eeefff - Pale blue  (From message)
           // #effdde - Pale green (To message)
-          painter->setBrush(QColor("#eeefff"));
+          painter->setBrush(QColor("#d5d7ff"));
           painter->drawRoundedRect(r.left()+2, r.top()+3, SizeMesBox, r.height() - 6, 5, 5);
         }
       else if (description == "FROMF")
         {
-          painter->setBrush(QColor("#eeefff"));
+          //painter->setBrush(QColor("#eeefff"));
           painter->drawRoundedRect(r.left()+2, r.top()+3, SizeMesBox+55, r.height() - 6, 5, 5);
         }
 
       else if (description == "TO")
         {
-          painter->setBrush(QColor("#effdde"));
+          painter->setBrush(QColor("#e3fcc6"));
           painter->drawRoundedRect(r.right()-SizeMesBox, r.top()+3, SizeMesBox-2, r.height() - 6, 5, 5);
         }
       else if (description == "TOF")
         {
-          painter->setBrush(QColor("#effdde"));
+          //painter->setBrush(QColor("#effdde"));
           painter->drawRoundedRect(r.right()-SizeMesBox-55, r.top()+3, SizeMesBox+53, r.height() - 6, 5, 5);
         }
 
@@ -117,17 +117,17 @@ void ChatListDelegate::paint ( QPainter * painter, const QStyleOptionViewItem & 
 
       //TITLE
       r = option.rect.adjusted(imageSpace, 10, -10, -27);
-      painter->setFont( QFont( "Lucida Grande", 11, QFont::Normal ) );
+      painter->setFont( QFont( "Lucida Grande", 16, QFont::Normal ) );
       painter->drawText(r.left(), r.top(), r.width(), r.height(), Qt::AlignTop|Qt::AlignLeft, title, &r);
 
       // TIME
       r = option.rect.adjusted(imageSpace, 10, -10, -27);
-      painter->setFont( QFont( "Lucida Grande", 8, QFont::Normal ) );
+      painter->setFont( QFont( "Lucida Grande", 11, QFont::Normal ) );
       painter->drawText(r.left(), r.top()+10, r.width(), r.height(), Qt::AlignBottom|Qt::AlignLeft, time , &r);
     }
   else if (description == "TO" || description == "TOF")
     {
-      int imageSpace = 10;
+      int imageSpace = 20;
       if (!mediaIcon.isNull()) {
           r = option.rect.adjusted(10, 10, -10, -10);
           mediaIcon.paint(painter, r, Qt::AlignTop|Qt::AlignRight);
@@ -137,23 +137,23 @@ void ChatListDelegate::paint ( QPainter * painter, const QStyleOptionViewItem & 
       if (description == "TOF")
         {
           //TITLE
-          r = option.rect.adjusted(imageSpace, 10, -10, -27);
-          painter->setFont( QFont( "Lucida Grande", 11, QFont::Normal ) );
+          r = option.rect.adjusted(imageSpace, 10, -20, -27);
+          painter->setFont( QFont( "Lucida Grande", 16, QFont::Normal ) );
           painter->drawText(r.left()-75, r.top(), r.width(), r.height(), Qt::AlignTop|Qt::AlignRight, title, &r);
           // TIME
-          r = option.rect.adjusted(imageSpace, 10, -10, -27);
-          painter->setFont( QFont( "Lucida Grande", 8, QFont::Normal ) );
+          r = option.rect.adjusted(imageSpace, 10, -20, -27);
+          painter->setFont( QFont( "Lucida Grande", 11, QFont::Normal ) );
           painter->drawText(r.left()-75, r.top()+10, r.width(), r.height(), Qt::AlignBottom|Qt::AlignRight, time , &r);
         }
       else
         {
           //TITLE
-          r = option.rect.adjusted(imageSpace, 10, -10, -27);
-          painter->setFont( QFont( "Lucida Grande", 11, QFont::Normal ) );
+          r = option.rect.adjusted(imageSpace, 10, -20, -27);
+          painter->setFont( QFont( "Lucida Grande", 16, QFont::Normal ) );
           painter->drawText(r.left(), r.top(), r.width(), r.height(), Qt::AlignTop|Qt::AlignRight, title, &r);
           // TIME
-          r = option.rect.adjusted(imageSpace, 10, -10, -27);
-          painter->setFont( QFont( "Lucida Grande", 8, QFont::Normal ) );
+          r = option.rect.adjusted(imageSpace, 10, -20, -27);
+          painter->setFont( QFont( "Lucida Grande", 11, QFont::Normal ) );
           painter->drawText(r.left()-3, r.top()+10, r.width(), r.height(), Qt::AlignBottom|Qt::AlignRight, time , &r);
         }
     }

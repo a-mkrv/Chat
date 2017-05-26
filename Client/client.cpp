@@ -159,6 +159,13 @@ void Client::on_sendMessage_clicked()
 
   if (!message.isEmpty() && vec.size()!=0)              // Sending messages
     {
+      QListWidgetItem *item = new QListWidgetItem();
+      item->setData(Qt::UserRole + 1, "TO");
+      item->setData(Qt::DisplayRole, message);
+      item->setData(Qt::ToolTipRole, QDateTime::currentDateTime().toString("dd.MM.yy hh:mm"));
+      chatvec.at(U_stackedWidget_2->currentIndex())->addItem(item);
+      chatvec.at(U_stackedWidget_2->currentIndex())->scrollToBottom();
+
       if (U_ChBox_PSound->isChecked())
         QSound::play(SOUND_TO);
 
@@ -167,17 +174,18 @@ void Client::on_sendMessage_clicked()
       QString MyMsg = rsaCrypt->EncodeText(message, lst.at(0).toInt(), lst.at(1).toInt());
 
       if (pubFriendKey.keys().contains(RecName))
-      {
+        {
           QString user_key = pubFriendKey[RecName];
           qDebug() << "Friend key: " << user_key;
 
           QStringList _key = user_key.split(" ", QString::SkipEmptyParts);
           encodemsg = rsaCrypt->EncodeText(message, _key.at(0).toInt(), _key.at(1).toInt());
-          qDebug() << "Submitted: " << encodemsg;
-      }
+        }
 
-      QString new_mes = "/msg " + RecName + " " + encodemsg;
-      SendUserCommand(new_mes, MyMsg);
+      QString new_mes = "MESG" + U_usernameEdit->text() + " /s " + RecName + " /s " + MyMsg + " /s " + encodemsg;
+
+      tcpSocket->write(new_mes.toUtf8());
+
     }
 }
 
@@ -220,52 +228,57 @@ void Client::InsertEmoticon(QString symbol)
 /// Parsing and adding dialog to chat lists
 void Client::AddChatToList(QString response)
 {
-   QStringList dialogues = response.split(" //s ");
-   dialogues.removeFirst();
-   QStringList prKeys = myPrivateKey.split(" ", QString::SkipEmptyParts);
+  QStringList dialogues = response.split(" //s ");
+  dialogues.removeFirst();
+  QStringList prKeys = myPrivateKey.split(" ", QString::SkipEmptyParts);
 
-   for (int i = 0; i < dialogues.size(); ++i)
-   {
-        if (dialogues[i].contains(" /pm ", Qt::CaseInsensitive))
+  for (int i = 0; i < dialogues.size(); ++i)
+    {
+      if (dialogues[i].contains(" /pm ", Qt::CaseInsensitive))
         {
-            QStringList messages = dialogues[i].split(" /pm ");
-            QString userName = messages[0];
-            messages.removeFirst();
+          QStringList messages = dialogues[i].split(" /pm ");
+          QString userName = messages[0];
+          messages.removeFirst();
 
-            for (int j = 0; j < messages.size(); ++j)
+          for (int j = 0; j < messages.size(); ++j)
             {
-                QStringList msg = messages[j].split(" /s ");
+              QStringList msg = messages[j].split(" /s ");
 
-                for (int k = 0; k < U_userList->count(); ++k)
+              for (int k = 0; k < U_userList->count(); ++k)
                 {
-                    if ((vec.at(k)->data(Qt::DisplayRole).toString()) == userName)
+                  if ((vec.at(k)->data(Qt::DisplayRole).toString()) == userName)
                     {
-                        QListWidgetItem *item2 = new QListWidgetItem();
+                      QListWidgetItem *item2 = new QListWidgetItem();
 
-                        if (msg[0] == "To")
+                      if (msg[0] == "To")
                         {
-                            msg[1] = rsaCrypt->DecodeText(msg[1], prKeys.at(0).toInt(), prKeys.at(1).toInt());
+                          msg[1] = rsaCrypt->DecodeText(msg[1], prKeys.at(0).toInt(), prKeys.at(1).toInt());
 
-                            item2->setData(Qt::UserRole + 1, "TO");
-                            item2->setData(Qt::DisplayRole, msg[1]); //text
-                            item2->setData(Qt::ToolTipRole, msg[2]); //time
+                          item2->setData(Qt::UserRole + 1, "TO");
+                          item2->setData(Qt::DisplayRole, msg[1]); //text
+                          item2->setData(Qt::ToolTipRole, msg[2]); //time
+                          U_userList->item(k)->setData(Qt::UserRole + 1, "You: " + msg[1]);
                         }
-                        else if (msg[0] == "From")
+                      else if (msg[0] == "From")
                         {
-                            QStringList _key = pubFriendKey[userName].split(" ", QString::SkipEmptyParts);
+                          QStringList _key = pubFriendKey[userName].split(" ", QString::SkipEmptyParts);
 
-                            msg[1] = rsaCrypt->DecodeText(msg[1], _key.at(0).toInt(), _key.at(1).toInt());
+                          msg[1] = rsaCrypt->DecodeText(msg[1], _key.at(0).toInt(), _key.at(1).toInt());
 
-                            item2->setData(Qt::UserRole + 1, "FROM");
-                            item2->setData(Qt::DisplayRole, msg[1]); //text
-                            item2->setData(Qt::ToolTipRole, msg[2]); //time
+                          item2->setData(Qt::UserRole + 1, "FROM");
+                          item2->setData(Qt::DisplayRole, msg[1]); //text
+                          item2->setData(Qt::ToolTipRole, msg[2]); //time
+                          U_userList->item(k)->setData(Qt::UserRole + 1, msg[1]);
                         }
-                        chatvec.at(k)->addItem(item2);
+
+                      U_userList->item(k)->setData(Qt::ToolTipRole, msg[2]);
+
+                      chatvec.at(k)->addItem(item2);
                     }
                 }
             }
         }
-   }
+    }
 }
 
 //////////////////////////////////////////////////////////
@@ -440,28 +453,28 @@ void Client::AddUserToList(QString _username, QString _sex, PairStringList lst, 
 /// Parse response from server - Users Info. Adding through Client::AddUserToList(...)
 void Client::ParseResponseUserList(QString response, ChatListVector &chatList)
 {
-    QString userName;
-    PairStringList tmp; // Fix - remove this.
-    QStringList keyList;
-    QString res = response;
-    QStringList dataList = res.split(" /s ");
-    dataList.removeLast();
+  QString userName;
+  PairStringList tmp; // Fix - remove this.
+  QStringList keyList;
+  QString res = response;
+  QStringList dataList = res.split(" /s ");
+  dataList.removeLast();
 
-    for (int i = 0; i < dataList.size(); ++i)
+  for (int i = 0; i < dataList.size(); ++i)
     {
-        QStringList dataSet = dataList[i].split(" _ ");
-        userName = dataSet[0];
+      QStringList dataSet = dataList[i].split(" _ ");
+      userName = dataSet[0];
 
-        keyList = dataSet[2].split(" ");
-        pubFriendKey[userName] = keyList.at(0) + " " + keyList.at(1);
-        FriendOnlineStatus[userName] = dataSet[4];
+      keyList = dataSet[2].split(" ");
+      pubFriendKey[userName] = keyList.at(0) + " " + keyList.at(1);
+      FriendOnlineStatus[userName] = dataSet[4];
 
-        //TODO: The sex of a person is not indicated temporarily.
-        AddUserToList(userName, "Man", tmp, i);
+      //TODO: The sex of a person is not indicated temporarily.
+      AddUserToList(userName, "Man", tmp, i);
     }
 
-    // Request for load chat history per users
-    if (dataList.size() > 0)
+  // Request for load chat history per users
+  if (dataList.size() > 0)
     {
       QString request = "LCHT";
       request.append(U_usernameEdit->text());
@@ -488,23 +501,23 @@ void Client::GetMessage()
 
   typePacket = tcpSocket->read(4);
   message = tcpSocket->readAll();
-// qDebug() << typePacket <<  message;
-//  if (!nextBlockSize) {
-//      if (quint32(tcpSocket->bytesAvailable()) < sizeof(quint32)) {
-//          return;
-//        }
-//      in >> nextBlockSize;
-//    }
-//  if (tcpSocket->bytesAvailable() < nextBlockSize) {
-//      return;
-//  }
+  // qDebug() << typePacket <<  message;
+  //  if (!nextBlockSize) {
+  //      if (quint32(tcpSocket->bytesAvailable()) < sizeof(quint32)) {
+  //          return;
+  //        }
+  //      in >> nextBlockSize;
+  //    }
+  //  if (tcpSocket->bytesAvailable() < nextBlockSize) {
+  //      return;
+  //  }
 
   QStringList commandList;
   QString fromname;
 
   // Parsing of an incoming message.
 
-  enum class COMMAND { NONE, USERLIST, USERMSG, FINDUSER, INVITE, GETFILE, USINFO, ISONLINE};
+  enum class COMMAND { NONE, USERLIST, USERMSG, NEWMSG, FINDUSER, INVITE, GETFILE, USINFO, ISONLINE};
   COMMAND cmd = COMMAND::NONE;
 
   if (typePacket == "FLST")
@@ -525,32 +538,35 @@ void Client::GetMessage()
   else if (typePacket == "INVT")
     cmd = COMMAND::INVITE;
 
+  else if (typePacket == "NMSG")
+    cmd = COMMAND::NEWMSG;
+
   else if (typePacket == "STON" || typePacket == "STOF")
     cmd = COMMAND::ISONLINE;
 
   if (typePacket != "FLST")
-  {
-    commandList = message.split(" /s ");
+    {
+      commandList = message.split(" /s ");
 
-        if (commandList.at(0) == name)
-            return;
+      if (commandList.at(0) == name)
+        return;
 
-    fromname = commandList.at(0);
-  }
+      fromname = commandList.at(0);
+    }
 
   switch (cmd)
     {
 
     // Friends List, keys
     case COMMAND::USERLIST:
-      {        
+      {
         ChatListVector chatList;
         ParseResponseUserList(message, chatList);
 
         break;
       }
 
-    // Receiving a list of messages
+      // Receiving a list of messages
     case COMMAND::USERMSG:
       {
         AddChatToList(message);
@@ -593,25 +609,25 @@ void Client::GetMessage()
     case COMMAND::USINFO:
       {
         if (typePacket == "INFP")
-        {
-          QStringList *usData = new QStringList;
-          QStringList UData = message.split(" /s ");
-          // 0 - Sex, 1 - Age, 2 - City, 3 - OnlineStatus, 4 - Email/Phone, 5 - LiveStatus
+          {
+            QStringList *usData = new QStringList;
+            QStringList UData = message.split(" /s ");
+            // 0 - Sex, 1 - Age, 2 - City, 3 - OnlineStatus, 4 - Email/Phone, 5 - LiveStatus
 
-          usData->push_back(vec.at(U_userList->currentRow())->data(Qt::DisplayRole).toString());
-          usData->push_back(UData.at(0));
-          usData->push_back(UData.at(1));
-          usData->push_back(UData.at(2));
+            usData->push_back(vec.at(U_userList->currentRow())->data(Qt::DisplayRole).toString());
+            usData->push_back(UData.at(0));
+            usData->push_back(UData.at(1));
+            usData->push_back(UData.at(2));
 
-          users_info = new UsersGroupInfo(this, usData);
-          users_info->setGeometry(this->x()+365, this->y()+70, 330, 480);
-          SetGlass();
-          users_info->show();
-          break;
+            users_info = new UsersGroupInfo(this, usData);
+            users_info->setGeometry(this->x()+365, this->y()+70, 330, 480);
+            SetGlass();
+            users_info->show();
+            break;
+          }
       }
-      }
 
-      // Receiving file
+      // Presence status
     case COMMAND::ISONLINE:
       {
         QString username = commandList.at(0);
@@ -623,6 +639,60 @@ void Client::GetMessage()
             FriendOnlineStatus[username] = QDateTime::currentDateTime().toString("dd.MM.yyyy hh:mm");
           }
 
+        break;
+      }
+
+      // new message
+    case COMMAND::NEWMSG:
+      {
+        QString msg = commandList.at(1);
+
+        // Sound notification
+        if (U_ChBox_PSound->isChecked())
+          QSound::play(SOUND_FROM);
+
+        if (!vec.empty())
+          {
+            for (int i = 0; i < vec.size(); i++)
+              if (vec.at(i)->data(Qt::DisplayRole) == fromname)
+                {
+                  QStringList lst = myPrivateKey.split(" ", QString::SkipEmptyParts);
+                  QString decodmsg = rsaCrypt->DecodeText(msg, lst.at(0).toInt(), lst.at(1).toInt());
+
+                  QListWidgetItem *item = new QListWidgetItem();
+                  item->setData(Qt::UserRole + 1, "FROM");
+                  item->setData(Qt::DisplayRole, decodmsg);
+                  item->setData(Qt::ToolTipRole, QDateTime::currentDateTime().toString("dd.MM.yy hh:mm"));
+
+                  vec.at(i)->setData(Qt::UserRole + 1, decodmsg);
+                  vec.at(i)->setData(Qt::ToolTipRole, QDateTime::currentDateTime().toString("dd.MM.yy hh:mm"));
+
+                  // Visual notification
+                  if (!this->isVisible())
+                    {
+                      notice->SetPopupText(lan_dict.value("notice_msg") + " (" + fromname + "):\n" + decodmsg);
+                      notice->Show();
+                    }
+
+                  chatvec.at(i)->addItem(item);
+                  chatvec.at(i)->scrollToBottom();
+                  vec.at(i)->setSelected(true);
+                  WhisperOnClickUsers(vec.at(i));
+                  U_start_textBrowser->hide();
+                  U_stackedWidget_2->show();
+                  U_stackedWidget_2->setCurrentIndex(i);
+
+                  break;
+                }
+            // If the user is not in the list (previously removed) to add to the list again.
+            // Make later. Add to the current conversation and again in the database on the server.
+
+            //QList <QPair<QString, QString> > a;
+            //AddUser_Chat(fromname, commandList.at(2), a , -1);
+            //qDebug() << fromname << message;
+          }
+
+        break;
       }
 
     case COMMAND::GETFILE:
@@ -700,73 +770,10 @@ void Client::GetMessage()
         break;
       }
 
-      // Standard text message
     default:
+      {
 
-      if (QStringRef(&message, 0, 3) == "*To")
-        {
-          QString myMsg = message.remove(0, 6+fromname.size());
-          QStringList lst = myPrivateKey.split(" ", QString::SkipEmptyParts);
-          myMsg = rsaCrypt->DecodeText(myMsg, lst.at(0).toInt(), lst.at(1).toInt());
-
-          QListWidgetItem *item = new QListWidgetItem();
-          item->setData(Qt::UserRole + 1, "TO");
-          item->setData(Qt::DisplayRole, myMsg);
-          item->setData(Qt::ToolTipRole, QDateTime::currentDateTime().toString("dd.MM.yy hh:mm"));
-
-          chatvec.at(U_stackedWidget_2->currentIndex())->addItem(item);
-          chatvec.at(U_stackedWidget_2->currentIndex())->scrollToBottom();
-
-        }
-      else
-        {
-          // Sound notification
-          if (U_ChBox_PSound->isChecked())
-            QSound::play(SOUND_FROM);
-
-          fromname.chop(1);
-          if (!vec.empty())
-            {
-              for (int i = 0; i < vec.size(); i++)
-                if (vec.at(i)->data(Qt::DisplayRole) == fromname)
-                  {
-                    QString decodmsg = message.remove(0, 9+fromname.size());
-                    qDebug() << "Accepted: " << decodmsg;
-                    QStringList lst = myPrivateKey.split(" ", QString::SkipEmptyParts);
-                    decodmsg = rsaCrypt->DecodeText(decodmsg, lst.at(0).toInt(), lst.at(1).toInt());
-
-                    QListWidgetItem *item = new QListWidgetItem();
-                    item->setData(Qt::UserRole + 1, "FROM");
-                    item->setData(Qt::DisplayRole, decodmsg);
-                    item->setData(Qt::ToolTipRole, QDateTime::currentDateTime().toString("dd.MM.yy hh:mm"));
-
-                    vec.at(i)->setData(Qt::UserRole + 1, decodmsg);
-                    vec.at(i)->setData(Qt::ToolTipRole, QDateTime::currentDateTime().toString("dd.MM.yy hh:mm"));
-
-                    // Visual notification
-                    if (!this->isVisible())
-                      {
-                        notice->SetPopupText(lan_dict.value("notice_msg") + " (" + fromname + "):\n" + decodmsg);
-                        notice->Show();
-                      }
-                    chatvec.at(i)->addItem(item);
-                    chatvec.at(i)->scrollToBottom();
-                    vec.at(i)->setSelected(true);
-                    WhisperOnClickUsers(vec.at(i));
-                    U_start_textBrowser->hide();
-                    U_stackedWidget_2->show();
-                    U_stackedWidget_2->setCurrentIndex(i);
-
-                    break;
-                  }
-              // If the user is not in the list (previously removed) to add to the list again.
-              // Make later. Add to the current conversation and again in the database on the server.
-
-              //QList <QPair<QString, QString> > a;
-              //AddUser_Chat(fromname, commandList.at(2), a , -1);
-              //qDebug() << fromname << message;
-            }
-        }
+      }
     }
 }
 
@@ -850,19 +857,6 @@ void Client::SendPersonalData()
 void Client::OnDisconnect()
 {
   personDates = false;
-}
-
-//////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////
-/// Send a personal message. Converting data.
-void Client::SendUserCommand(QString Command, QString myMessage)
-{
-  QByteArray msg;
-  QString request = "MESS";
-
-  request.append(Command + " /s " + myMessage);
-
-  tcpSocket->write(request.toUtf8());
 }
 
 //////////////////////////////////////////////////////////
@@ -1643,14 +1637,14 @@ void Client::SetLanguage()
 /// Remove views selections
 void Client::RemoveSelections()
 {
-    U_search_line_edit->setAttribute(Qt::WA_MacShowFocusRect, false);
-    U_editText->setAttribute(Qt::WA_MacShowFocusRect, false);
-    U_userList_3->setAttribute(Qt::WA_MacShowFocusRect, false);
-    U_userList->setAttribute(Qt::WA_MacShowFocusRect, false);
-    U_stackedWidget->setAttribute(Qt::WA_MacShowFocusRect, false);
+  U_search_line_edit->setAttribute(Qt::WA_MacShowFocusRect, false);
+  U_editText->setAttribute(Qt::WA_MacShowFocusRect, false);
+  U_userList_3->setAttribute(Qt::WA_MacShowFocusRect, false);
+  U_userList->setAttribute(Qt::WA_MacShowFocusRect, false);
+  U_stackedWidget->setAttribute(Qt::WA_MacShowFocusRect, false);
 
-    // ???
-    U_stackedWidget_2->setAttribute(Qt::WA_MacShowFocusRect, false);
+  // ???
+  U_stackedWidget_2->setAttribute(Qt::WA_MacShowFocusRect, false);
 }
 
 //////////////////////////////////////////////////////////

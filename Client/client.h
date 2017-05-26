@@ -116,7 +116,6 @@ private slots:
   void ShowError(QAbstractSocket::SocketError errorSocket);
   void SendPersonalData();
   void OnDisconnect();
-  void SendUserCommand(QString command, QString);
   void WhisperOnClick(QListWidgetItem* user);
   void ShowEmoji();
   void ShowUserFound();

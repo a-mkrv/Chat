@@ -177,6 +177,11 @@ background-color: rgb(74, 107, 142);</string>
        <height>51</height>
       </rect>
      </property>
+     <property name="font">
+      <font>
+       <pointsize>15</pointsize>
+      </font>
+     </property>
      <property name="styleSheet">
       <string notr="true">
     background-color: rgb(255, 255, 255);
@@ -1462,7 +1467,7 @@ border:none;</string>
      </size>
     </property>
     <property name="styleSheet">
-     <string notr="true">background-color: rgb(255, 255, 255);</string>
+     <string notr="true">background-color: rgb(246, 244, 255);</string>
     </property>
     <property name="text">
      <string/>

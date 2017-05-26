@@ -528,6 +528,7 @@ void Server::privateMessage(QTcpSocket *client, QStringList msgList)
         SendResponseToID(newMessage, toUserSocket->getSocket()->socketDescriptor());
     }
 
+
         sqlitedb->addMessInChat(fromUser, toUser, fromMsg, QString("To"));
         sqlitedb->addMessInChat(toUser, fromUser,  toMsg, QString("From"));
 }
