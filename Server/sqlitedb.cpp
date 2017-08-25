@@ -293,6 +293,24 @@ QString SQLiteDB::getFullUserInformations(QString userName)
 }
 
 
+QString SQLiteDB::getOnlyPublicKey(QString userName)
+{
+    QString uInfo = "KEYP";
+    QSqlQuery query(myDB);
+    if(query.exec("SELECT UserName, PubKey FROM Users WHERE UserName=\'" +userName+ "\'"))
+        if(query.next())
+            if (query.value(0).toString() == userName)
+            {
+                uInfo.append(query.value(1).toString());
+                return uInfo;
+            }
+
+    query.exec();
+    return "KEYN";
+}
+
+
+
 QStringList SQLiteDB::UserData(QString name)
 {
     QStringList uList;

@@ -35,6 +35,7 @@ public slots:
     void updateStateNotificationFromUser(QString, QString, QString);
     QStringList getOnlineStatus(const QString & user_name);
     QString getFullUserInformations(QString);
+    QString getOnlyPublicKey(QString);
     QString CorrectInput(QString, QString);
     QStringList UserData(QString);
     void  FriendListName(QString, QStringList &);

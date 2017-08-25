@@ -143,6 +143,9 @@ void Server::getMessage()
     else if (typePacket == "UPNU")
         command = 14;
 
+    else if (typePacket == "GETK")
+        command = 15;
+
     switch (command)
     {
 
@@ -390,6 +393,19 @@ void Server::getMessage()
         }
 
         sqlitedb->updateStateNotificationFromUser(from, user, state);
+
+        break;
+    }
+
+    case 15:
+    {
+        QString user;
+        user = clientSocket->readAll();
+
+        QString userPublicKey = sqlitedb->getOnlyPublicKey(user);
+        clientSocket->write(userPublicKey.toUtf8());
+
+        break;
     }
     }
 }
@@ -424,6 +440,7 @@ void Server::userIsOnline(QTcpSocket *client, QString _user)
     QString friendsList;
     sqlitedb->UpOnlineStatus("Online", UserName);
     friendsList = sqlitedb->FriendList(UserName, countUsers);
+    qDebug() << friendsList;
 
     if (countUsers > 0) {
         response.append(friendsList);
@@ -500,6 +517,7 @@ void Server::NotificationNetwork(const QString username, const QStringList &frie
 
 void Server::privateMessage(QTcpSocket *client, QStringList msgList)
 {
+    qDebug() << msgList;
     QString fromUser = msgList[0];
     QString fromMsg = msgList[2];
 
@@ -529,8 +547,8 @@ void Server::privateMessage(QTcpSocket *client, QStringList msgList)
     }
 
 
-        sqlitedb->addMessInChat(fromUser, toUser, fromMsg, QString("To"));
-        sqlitedb->addMessInChat(toUser, fromUser,  toMsg, QString("From"));
+    sqlitedb->addMessInChat(fromUser, toUser, fromMsg, QString("To"));
+    sqlitedb->addMessInChat(toUser, fromUser,  toMsg, QString("From"));
 }
 
 void Server::SendingFile(QTcpSocket *client)
